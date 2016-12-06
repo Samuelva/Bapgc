@@ -313,7 +313,7 @@ public class ViewScreen extends StackPane{
     * met een margin van 5 en een breedte van 150. Daarnaast wordt het
     * rechter gedeelte gezet dat de rest van het scherm opvult.
     */
-    protected void makePane(){
+    protected ViewScreen(){
         VBox selectionBox = makeSelectionBox();
         selectionBox.setMinWidth(150);
         selectionBox.setSpacing(20);
