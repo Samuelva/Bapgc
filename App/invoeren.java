@@ -18,23 +18,31 @@ import javafx.scene.text.FontWeight;
 
 /*
 Programmeur: Anne van Winzum
-Datum laatste aanpassing: 5-12-2016
+Datum laatste aanpassing: 7-12-2016
 Beschrijving: In dit script wordt de eerste layout van het invoerscherm getoond.
 */
 
 public final class Invoeren extends Pane {
+    /*
+    De volgende globale variabelen worden gemaakt:
+    btn1, btn2, btn3 en btn4, deze worden later gebruikt voor de knoppen
+    onderaan het scherm
+    Ook worden de labels lbl1 en lbl2 gemaakt en de textArea.
+    */
+    Button btn1;
+    Button btn2;
+    Button btn3;
+    Button btn4;
+    Label lbl1;
+    Label lbl2;
+    Button btn5;
+    TextArea textArea;
     
    
         
     public Invoeren() {
         /*
-        Eerst worden er 4 knoppen gemaakt, deze komen onderaan het scherm.
-        De knoppen krijgen de label: Toets laden, Leeg maken, Wijzigingen opslaan
-        en Import CSV. De afmetingen worden meegegeven aan de functie maakObject
-        Button.
-        De knoppen worden in een hbox geplaatst en er wordt een Hgrow toegepast,
-        hierdoor zal de grootte meebewegen als het scherm grote of kleiner 
-        wordt gemaakt.
+        De methode menuUnder wordt aangeroepen.
         */
         
         menuUnder();
@@ -44,10 +52,26 @@ public final class Invoeren extends Pane {
     }
     
     public void menuUnder(){
-        Button btn1 = maakObject(new Button(), "Toets laden", 250, 50);
-        Button btn2 = maakObject(new Button(), "Leeg maken", 250, 50);
-        Button btn3 = maakObject(new Button(),"Wijzigingen opslaan", 250, 50);
-        Button btn4 = maakObject(new Button(),"Import CSV", 250,50);
+        /*
+        btn1 krijgt de label Toets laden en de afmetingen 250 bij 50 worden
+        meegegeven aan de methode maakObject.
+        btn2 krijgt de label Leeg maken en de afmetingen 250 bij 50 worden
+        meegegeven aan de methode maakObject.
+        btn3 krijgt de label Wijzigingen opslaan en de afmetingen 250 bij 50
+        worden meegegeven aan de methode maakObject.
+        btn4 krijgt de label Import CSV en de ametingen 250 bij 50 worden
+        meegegeven aan de methode Import CSV.
+        Er wordt een HBox aangemaakt met de naam hbox.
+        setHgrow wordt toegepast op alle knoppen.
+        De grootte van de hbox wordt op 100 bij 1000 gezet.
+        Vervolgens worden alle knoppen toegevoegd aan de hbox.
+        Ten slotte wordt de methode MenuMaken aangeroepen,
+        deze krijgt de parameter hbox mee.
+        */
+        btn1 = maakObject(new Button(), "Toets laden", 250, 50);
+        btn2 = maakObject(new Button(), "Leeg maken", 250, 50);
+        btn3 = maakObject(new Button(),"Wijzigingen opslaan", 250, 50);
+        btn4 = maakObject(new Button(),"Import CSV", 250,50);
 
             
         HBox hbox = new HBox();
@@ -56,7 +80,7 @@ public final class Invoeren extends Pane {
         HBox.setHgrow(btn3,Priority.ALWAYS);
         HBox.setHgrow(btn4,Priority.ALWAYS);
         
-        hbox.setPrefSize(1000, 100);
+        hbox.setPrefSize(100, 1000);
         hbox.getChildren().addAll(btn1, btn2, btn3, btn4);
         
         MenuMaken(hbox);
@@ -67,6 +91,7 @@ public final class Invoeren extends Pane {
             double breedte){
         /*
         Deze functie zet de naam, hoogte en breedte van de knoppen.
+        De maximale breedte en hoogte wordt op maximaal gezet.
         */
         btn.setText(tekst);
         btn.setPrefHeight(hoogte);
@@ -95,6 +120,8 @@ public final class Invoeren extends Pane {
     public void MenuMaken(HBox hbox){
         /*
         In deze functie wordt het menu aan de linkerkant gemaakt.
+        lbl1 krijgt de tekst Keuzemnu en krijgt de afmetingen 100 bij 100 mee
+        aan de methode maakObject.
         De eerste MenuButton is jaartal: de items zijn: 2014-2015, 2015-2016,
         2016-2017.
         De tweede MenuButton is leerjaar: de items zijn: jaar 1, jaar 2, 
@@ -110,8 +137,10 @@ public final class Invoeren extends Pane {
         De MenuButtons worden toegevoegd aan een vbox, de grootte van de buttons
         wordt zo gezet dat de grootte meebeweegt met het groter en kleiner 
         maken van het scherm.
+        Ten slotte wordt de methode BoxenVullen aangeroepen,
+        deze krijgt de parameters vbox2 en hbox mee.
         */
-        Label lbl1 = maakObject(new Label(), "Keuzemenu", 100, 100);
+        lbl1 = maakObject(new Label(), "Keuzemenu", 100, 100);
  
         MenuItem jaartal1 = new MenuItem("2014-2015");
         MenuItem jaartal2 = new MenuItem("2015-2016");
@@ -168,31 +197,38 @@ public final class Invoeren extends Pane {
 
     public void BoxenVullen(VBox vbox2, HBox hbox){
         /*
-        Er wordt eerst een label aangemaakt met de naam: Vragen.
+        Er wordt eerst een label aangemaakt met de naam: Vragen,
+        deze krijgt de afmetingen 50 bij 700 mee aan de maakObject methoden.
         Ook wordt er een knop aangemaakt met de label: nieuwe student.
-        De label en de knop worden toegevoegd aan een hbox.
-        Vervolgens wordt er een textArea gemaakt, met een grote van 850 bij 500.
+        Er wordt een HBox aangemaakt,
+        de label en de knop worden toegevoegd aan een hbox.
+        Vervolgens wordt er een textArea gemaakt, 
+        met een grootte van 500 bij 500.
         In deze ruimte komen later de studenten en hun punten te staan.
-        De textArea wordt toegevoegd aan een vbox en hier wordt een Vgrow
+        Er wordt een VBox aangemaakt,
+        de textArea wordt toegevoegd aan de vbox en hier wordt een Vgrow
         aan toegevoegd. Aan de vbox wordt ook de hbox met de label en knop
         toegevoegd.
-        Aan een nieuwe hbox wordt de vbox met het keuzemenu toegevoegd,
+        Er wordt nog een HBox aangemaakt,
+        aan deze hbox wordt de vbox met het keuzemenu toegevoegd,
         ook wordt de vbox toegevoegd met de textArea, knop en label die
         net is gemaakt.
-        Aan een nieuwe vbox wordt de net gemaakte hbox toegevoegd en de hbox met
+        Ten slotte wordt nog een VBox aangemaakt,
+        aan deze vbox wordt de net gemaakte hbox toegevoegd en de hbox met
         de knoppen die onderaan het scherm komen.
-        De scene wordt gezet op de vbox en de grootte van het scherm wordt 
-        1000 bij 600.
-        
+        Er wordt een Vgrow toegepast op de hboxen die in de laatste vbox
+        aanwezig zijn.
+        Ten slotte wordt de vbox toegepast aan this, hierdoor kan
+        deze klasse ook gebruikt worden in de main.
         */
         
-        Label lbl2 = maakObject(new Label(), "Vragen", 50, 700);
-        Button btn5 = maakObject(new Button(),"Nieuwe Student", 50, 150);
+        lbl2 = maakObject(new Label(), "Vragen", 50, 700);
+        btn5 = maakObject(new Button(),"Nieuwe Student", 50, 150);
         
         HBox hbox3 = new HBox();
         hbox3.getChildren().addAll(btn5, lbl2);
        
-        TextArea textArea = new TextArea();
+        textArea = new TextArea();
         textArea.setPrefSize(500,500);
         
         VBox vbox3 = new VBox();
@@ -212,6 +248,10 @@ public final class Invoeren extends Pane {
     }
     
  }
+    
+
+
+
     
 
 
