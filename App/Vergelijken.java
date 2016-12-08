@@ -6,24 +6,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tab;
-import java.util.HashMap;
-import javafx.scene.control.Label;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Button;
 
-
 public class Vergelijken extends Pane {
     HBox vergelijk = new HBox();
-    VBox statistiek = new VBox();
-    HBox info = new HBox();
+    VBox statisticBox = new VBox();
+    HBox info = new HBox(10);
     HBox infoButtons = new HBox();
     HBox grafiek = new HBox();
     ComboBox<String> grafiekSoort = new ComboBox<String>();
     Button opslaan = new Button("Opslaan");
-    Button test1 = new Button("Test1");
-    Button test2 = new Button("test2");
-    HBox toetsBox = new HBox();
-
+    HBox testTabBox = new HBox();
+    HBox moduleTabBox = new HBox();
+    HBox periodTabBox = new HBox();
 
     public Vergelijken(){
         TabPane tabPane = new TabPane();
@@ -39,47 +35,46 @@ public class Vergelijken extends Pane {
         tabPane.getTabs().add(module);
         tabPane.getTabs().add(periode);
 
-        Keuzemenu toetsMenu = new Keuzemenu("Jaartal", "Leerjaar", "Periode", "Module", "Toetsvorm", "Gelegenheid");
-        Keuzemenu moduleMenu = new Keuzemenu("Jaartal", "Leerjaar", "Periode");
-        Keuzemenu periodeMenu = new Keuzemenu("Jaartal", "Leerjaar");
+        Keuzemenu toetsMenu = new Keuzemenu();
+        Keuzemenu moduleMenu = new Keuzemenu();
+        Keuzemenu periodMenu = new Keuzemenu();
+
+        VBox toetsMenuBox = toetsMenu.getTestMenu();
+        VBox moduleMenuBox = moduleMenu.getModuleMenu();
+        VBox periodMenuBox = periodMenu.getPeriodMenu();
 
         infoButtons.getChildren().addAll(grafiekSoort, opslaan);
         infoButtons.setMinWidth(900);
         opslaan.setAlignment(Pos.BASELINE_RIGHT);
-        info.setMinWidth(900);
-        info.setMinHeight(200);
+        info.getChildren().add(new Statistiek(new int[] {40, 50, 50, 30}).returnStatisticBox());
+        info.getChildren().add(new Statistiek(new int[] {30, 20, 10, 44}).returnStatisticBox());
         grafiek.getChildren().addAll();
         grafiek.setMinHeight(300);
-        statistiek.getChildren().addAll(info, infoButtons, grafiek);
-        toetsBox.getChildren().addAll(toetsMenu.returnMenu(), statistiek);
+        statisticBox.getChildren().addAll(info, infoButtons, grafiek);
+        testTabBox.getChildren().addAll(toetsMenuBox, statisticBox);
+        moduleTabBox.getChildren().addAll(moduleMenuBox, statisticBox);
+        periodTabBox.getChildren().addAll(periodMenuBox, statisticBox);
 
-//        toets.setContent(toetsMenu.returnMenu());
-        toets.setContent(toetsBox);
-        module.setContent(moduleMenu.returnMenu());
-        periode.setContent(periodeMenu.returnMenu());
+        toets.setContent(testTabBox);
+        module.setContent(moduleTabBox);
+        periode.setContent(periodTabBox);
 
         vergelijk.getChildren().addAll(tabPane);
-
-        HashMap<String, Integer> hurdur = new HashMap<>();
-        hurdur.put("Aantal deelnemers", 108);
-        hurdur.put("Aantal Voldoendes", 70);
-        hurdur.put("Aantal onvoldoendes", 31);
 
         tabPane.setMinWidth(1000);
 
         this.setMinWidth(1000);
         this.getChildren().add(vergelijk);
-
     }
 
-    public HBox info(HashMap<String, Integer> data) {
-        HBox infoBox = new HBox();
-        for (HashMap.Entry<String, Integer> entry : data.entrySet()) {
-            Label label = new Label(entry.getKey());
-            infoBox.getChildren().add(label);
-        }
-        return infoBox;
-    }
+//    public HBox info(HashMap<String, Integer> data) {
+//        HBox infoBox = new HBox();
+//        for (HashMap.Entry<String, Integer> entry : data.entrySet()) {
+//            Label label = new Label(entry.getKey());
+//            infoBox.getChildren().add(label);
+//        }
+//        return infoBox;
+//    }
 
 
 
