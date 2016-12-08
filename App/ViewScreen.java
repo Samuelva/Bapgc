@@ -114,7 +114,7 @@ public class ViewScreen extends StackPane{
         //laad knop
         this.loadBtn = new Button("Laad toets");
         this.loadBtn.setPrefWidth(150);
-        this.loadBtn.setMinHeight(30);
+        this.loadBtn.setPrefHeight(30);
         return new VBox(label, this.yearChoiceBox, 
                 this.schoolYearChoiceBox,this.blockChoiceBox, 
                 this.courseChoiceBox, this.typeChoiceBox, this.attemptChoiceBox,

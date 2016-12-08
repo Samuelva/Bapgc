@@ -236,7 +236,6 @@ public final class Invoeren extends StackPane {
         VBox.setVgrow(pointsTable, Priority.ALWAYS);
         
         VBox vbox3 = new VBox();
-        VBox.setVgrow(pointsTable, Priority.ALWAYS);
         
         vbox3.setSpacing(10);
         vbox3.getChildren().addAll(hbox3, pointsTable, hbox);
