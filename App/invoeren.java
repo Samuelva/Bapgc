@@ -2,15 +2,22 @@
 package sample;
 
 
+import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -22,22 +29,27 @@ Datum laatste aanpassing: 7-12-2016
 Beschrijving: In dit script wordt de eerste layout van het invoerscherm getoond.
 */
 
-public final class Invoeren extends Pane {
+public final class Invoeren extends StackPane {
     /*
     De volgende globale variabelen worden gemaakt:
     btn1, btn2, btn3 en btn4, deze worden later gebruikt voor de knoppen
     onderaan het scherm
-    Ook worden de labels lbl1 en lbl2 gemaakt en de textArea.
+    Ook worden de labels lbl1 en lbl2 gemaakt en de pointsTable.
     */
-    Button btn1;
-    Button btn2;
-    Button btn3;
-    Button btn4;
-    Label lbl1;
-    Label lbl2;
-    Button btn5;
-    TextArea textArea;
-    
+    protected Button btn1;
+    protected Button btn2;
+    protected Button btn3;
+    protected Button btn4;
+    protected Label lbl1;
+    protected Label lbl2;
+    protected Button btn5;
+    protected TableView pointsTable;
+    protected ChoiceBox year;
+    protected ChoiceBox studyyear;
+    protected ChoiceBox period;
+    protected ChoiceBox module;
+    protected ChoiceBox type;
+    protected ChoiceBox chance;
    
         
     public Invoeren() {
@@ -45,13 +57,14 @@ public final class Invoeren extends Pane {
         De methode menuUnder wordt aangeroepen.
         */
         
-        menuUnder();
-        
+        HBox hbox = menuUnder();
+        VBox vbox2 = MenuMaken();
+        BoxenVullen(vbox2, hbox); 
 
         
     }
     
-    public void menuUnder(){
+    public HBox menuUnder(){
         /*
         btn1 krijgt de label Toets laden en de afmetingen 250 bij 50 worden
         meegegeven aan de methode maakObject.
@@ -68,26 +81,22 @@ public final class Invoeren extends Pane {
         Ten slotte wordt de methode MenuMaken aangeroepen,
         deze krijgt de parameter hbox mee.
         */
-        btn1 = maakObject(new Button(), "Toets laden", 250, 50);
-        btn2 = maakObject(new Button(), "Leeg maken", 250, 50);
-        btn3 = maakObject(new Button(),"Wijzigingen opslaan", 250, 50);
-        btn4 = maakObject(new Button(),"Import CSV", 250,50);
-
+        Region leftFill = new Region();
+        HBox.setHgrow(leftFill, Priority.ALWAYS);
+        btn2 = maakObject(new Button(), "Leeg maken", 30, 150);
+        btn3 = maakObject(new Button(),"Wijzigingen opslaan", 30, 150);
+        btn4 = maakObject(new Button(),"Import CSV", 30, 150);
+        Region rightFill = new Region();
+        HBox.setHgrow(rightFill, Priority.ALWAYS);
             
         HBox hbox = new HBox();
-        HBox.setHgrow(btn1,Priority.ALWAYS);
-        HBox.setHgrow(btn2,Priority.ALWAYS);
-        HBox.setHgrow(btn3,Priority.ALWAYS);
-        HBox.setHgrow(btn4,Priority.ALWAYS);
-        
-        hbox.setPrefSize(100, 1000);
-        hbox.getChildren().addAll(btn1, btn2, btn3, btn4);
-        
-        MenuMaken(hbox);
+        hbox.getChildren().addAll(rightFill, btn2, btn3, btn4, leftFill);
+        hbox.setSpacing(20);
+        return hbox;
         
     }
 
-    public Button maakObject(Button btn, String tekst, double hoogte,
+    public Button maakObject(Button btn, String tekst, double hoogte, 
             double breedte){
         /*
         Deze functie zet de naam, hoogte en breedte van de knoppen.
@@ -95,29 +104,24 @@ public final class Invoeren extends Pane {
         */
         btn.setText(tekst);
         btn.setPrefHeight(hoogte);
-        btn.setPrefWidth(breedte);
-        btn.setMaxWidth(Double.MAX_VALUE);
-        btn.setMaxHeight(Double.MAX_VALUE);
+        btn.setPrefWidth(150);
         
         return btn;
         
     }
     
-    public Label maakObject(Label lbl, String tekst, 
-            double hoogte, double breedte){
+    public Label maakObject(Label lbl, String tekst){
         /*
         Deze functie zet de naam, hoogte en breedte van de labels.
         */
         lbl.setText(tekst);
-        lbl.setPrefHeight(hoogte);
-        lbl.setPrefWidth(breedte);
         lbl.setAlignment(Pos.CENTER);
-        lbl.setFont(Font.font(null, FontWeight.BOLD, 15));
+        lbl.setFont(new Font("Arial", 18));
         return lbl;
     }
     
     
-    public void MenuMaken(HBox hbox){
+    public VBox MenuMaken(){
         /*
         In deze functie wordt het menu aan de linkerkant gemaakt.
         lbl1 krijgt de tekst Keuzemnu en krijgt de afmetingen 100 bij 100 mee
@@ -140,57 +144,55 @@ public final class Invoeren extends Pane {
         Ten slotte wordt de methode BoxenVullen aangeroepen,
         deze krijgt de parameters vbox2 en hbox mee.
         */
-        lbl1 = maakObject(new Label(), "Keuzemenu", 100, 100);
- 
-        MenuItem jaartal1 = new MenuItem("2014-2015");
-        MenuItem jaartal2 = new MenuItem("2015-2016");
-        MenuItem jaartal3 = new MenuItem("2016-2017");
-        MenuButton jaartal = new MenuButton("Jaartal", null, 
-                jaartal1, jaartal2, jaartal3);
+        lbl1 = maakObject(new Label(), "Keuzemenu");
+        lbl1.setPrefWidth(150);
+        year = new ChoiceBox(FXCollections.observableArrayList("Jaartal", 
+                new Separator(), "placeholder"));
+        year.setValue("Jaartal");
+        year.setPrefWidth(150);
+        year.setPrefHeight(30);
+        studyyear = new ChoiceBox(FXCollections.observableArrayList("Leerjaar", 
+                new Separator(), "Leerjaar 1", "Leerjaar 2", "Leerjaar 3", 
+                "Leerjaar 4"));
+        studyyear.setValue("Leerjaar");
+        studyyear.setPrefWidth(150);
+        studyyear.setPrefHeight(30);
+        period = new ChoiceBox(FXCollections.observableArrayList("Periode",
+                new Separator(), "Periode 1", "Periode 2", "Periode 3", 
+                "Periode 4"));
+        period.setValue("Periode");
+        period.setPrefWidth(150);
+        period.setPrefHeight(30);
+        module = new ChoiceBox(FXCollections.observableArrayList("Module", 
+                new Separator(), "placeholder"));
+        module.setValue("Module");
+        module.setPrefWidth(150);
+        module.setPrefHeight(30);
+        type = new ChoiceBox(FXCollections.observableArrayList("Toetsvorm", 
+                new Separator(), "Theorietoets", "Praktijktoets", "Opdracht",
+                "Aanwezigheid", "Logboek", "Project"));
+        type.setValue("Toetsvorm");
+        type.setPrefWidth(150);
+        type.setPrefHeight(30);
+        chance = new ChoiceBox(FXCollections.observableArrayList("Gelegenheid",
+                new Separator(), "1e kans", "2e kans"));     
+        chance.setValue("Gelegenheid");
+        chance.setPrefWidth(150);
+        chance.setPrefHeight(30);
+        Region fill = new Region();
+        VBox.setVgrow(fill, Priority.ALWAYS);
         
-        MenuItem leerjaar1 = new MenuItem("Jaar 1");
-        MenuItem leerjaar2 = new MenuItem("Jaar 2");
-        MenuItem leerjaar3 = new MenuItem("Jaar 3");
-        MenuItem leerjaar4 = new MenuItem("Jaar 4");
-        MenuButton leerjaar = new MenuButton("Leerjaar", null, leerjaar1, 
-                leerjaar2, leerjaar3, leerjaar4);
-        
-        MenuItem periode1 = new MenuItem("Periode 1");
-        MenuItem periode2 = new MenuItem("Periode 2");
-        MenuItem periode3 = new MenuItem("Periode 3");
-        MenuItem periode4 = new MenuItem("Periode 4");
-        MenuButton periode = new MenuButton("Periode", null, periode1, 
-                periode2, periode3, periode4);
-        
-        MenuItem module1 = new MenuItem("Modules");
-        MenuButton modules = new MenuButton("Module", null, module1);
-        
-        MenuItem theorietoets = new MenuItem("Theorietoets");
-        MenuItem praktijktoets = new MenuItem("Praktijktoets");
-        MenuItem opdracht = new MenuItem("Opdracht");
-        MenuItem aanwezigheid = new MenuItem("Aanwezigheid");
-        MenuItem logboek = new MenuItem("Logboek");
-        MenuItem project = new MenuItem("Project"); 
-        MenuButton toetsvorm = new MenuButton("Toetsvorm", null, theorietoets, 
-                praktijktoets, opdracht, aanwezigheid, logboek, project);
-        
-        MenuItem gelegenheid1 = new MenuItem("Gelegenheid 1");
-        MenuItem gelegenheid2 = new MenuItem("Gelegenheid 2");
-        MenuButton gelegenheid = new MenuButton("Gelegenheid", null, 
-                gelegenheid1, gelegenheid2);     
+        btn1 = maakObject(new Button(), "Toets laden", 30, 150);
+        btn1.setPrefWidth(150);
         
         VBox vbox2 = new VBox();
         vbox2.setPrefSize(150, 600);
-        jaartal.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        leerjaar.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        periode.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        modules.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        toetsvorm.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        gelegenheid.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        vbox2.getChildren().addAll(lbl1, jaartal, leerjaar, periode, modules, 
-                toetsvorm, gelegenheid);
+
+        vbox2.getChildren().addAll(lbl1, year, studyyear, period, module, 
+                type, chance, fill, btn1);
         
-        BoxenVullen(vbox2, hbox);    
+        vbox2.setSpacing(20);
+        return vbox2;   
         
     }
     
@@ -202,16 +204,16 @@ public final class Invoeren extends Pane {
         Ook wordt er een knop aangemaakt met de label: nieuwe student.
         Er wordt een HBox aangemaakt,
         de label en de knop worden toegevoegd aan een hbox.
-        Vervolgens wordt er een textArea gemaakt, 
+        Vervolgens wordt er een pointsTable gemaakt, 
         met een grootte van 500 bij 500.
         In deze ruimte komen later de studenten en hun punten te staan.
         Er wordt een VBox aangemaakt,
-        de textArea wordt toegevoegd aan de vbox en hier wordt een Vgrow
+        de pointsTable wordt toegevoegd aan de vbox en hier wordt een Vgrow
         aan toegevoegd. Aan de vbox wordt ook de hbox met de label en knop
         toegevoegd.
         Er wordt nog een HBox aangemaakt,
         aan deze hbox wordt de vbox met het keuzemenu toegevoegd,
-        ook wordt de vbox toegevoegd met de textArea, knop en label die
+        ook wordt de vbox toegevoegd met de pointsTable, knop en label die
         net is gemaakt.
         Ten slotte wordt nog een VBox aangemaakt,
         aan deze vbox wordt de net gemaakte hbox toegevoegd en de hbox met
@@ -222,28 +224,37 @@ public final class Invoeren extends Pane {
         deze klasse ook gebruikt worden in de main.
         */
         
-        lbl2 = maakObject(new Label(), "Vragen", 50, 700);
-        btn5 = maakObject(new Button(),"Nieuwe Student", 50, 150);
+        Region fillLeft = new Region();
+        HBox.setHgrow(fillLeft, Priority.ALWAYS);
+        lbl2 = maakObject(new Label(), "Vragen");
+        Region fillRight = new Region();
+        HBox.setHgrow(fillRight, Priority.ALWAYS);
+        btn5 = maakObject(new Button(),"Nieuwe Student", 30, 80);
+        btn5.setPrefWidth(150);
         
         HBox hbox3 = new HBox();
-        hbox3.getChildren().addAll(btn5, lbl2);
+        hbox3.getChildren().addAll(btn5, fillLeft, lbl2, fillRight);
        
-        textArea = new TextArea();
-        textArea.setPrefSize(500,500);
+        pointsTable = new TableView();
+        VBox.setVgrow(pointsTable, Priority.ALWAYS);
         
         VBox vbox3 = new VBox();
-        VBox.setVgrow(textArea, Priority.ALWAYS);
-        vbox3.getChildren().addAll(hbox3, textArea);
+        VBox.setVgrow(pointsTable, Priority.ALWAYS);
+        
+        vbox3.setSpacing(10);
+        vbox3.getChildren().addAll(hbox3, pointsTable, hbox);
+        
         
         HBox hbox2 = new HBox();
         HBox.setHgrow(vbox3, Priority.ALWAYS);
+        
+        HBox.setMargin(vbox2, new Insets(5));
+        HBox.setMargin(vbox3, new Insets(5));
+        
+        hbox2.setSpacing(20);
         hbox2.getChildren().addAll(vbox2, vbox3);
         
-        VBox vbox = new VBox();
-        VBox.setVgrow(hbox2, Priority.ALWAYS);
-        VBox.setVgrow(hbox, Priority.ALWAYS);
-        vbox.getChildren().addAll(hbox2, hbox);
-        this.getChildren().add(vbox);
+        this.getChildren().add(hbox2);
         
     }
     
