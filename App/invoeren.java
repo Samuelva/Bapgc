@@ -54,7 +54,10 @@ public final class Invoeren extends StackPane {
         
     public Invoeren() {
         /*
-        De methode menuUnder wordt aangeroepen.
+        De methode menuUnder wordt aangeroepen en maakt een HBox aan met
+        drie knoppen.
+        De methode MenuMaken wordt aangeroepen, deze maakt het keuzemenu aan.
+        BozenVullen zet vervolgens het scherm in elkaar.
         */
         
         HBox hbox = menuUnder();
@@ -66,20 +69,18 @@ public final class Invoeren extends StackPane {
     
     public HBox menuUnder(){
         /*
-        btn1 krijgt de label Toets laden en de afmetingen 250 bij 50 worden
+        Er wordt een regio gemaakt voor centreren van de knoppen.
+        btn2 krijgt de label Leeg maken en de afmetingen 150 bij 30 worden
         meegegeven aan de methode maakObject.
-        btn2 krijgt de label Leeg maken en de afmetingen 250 bij 50 worden
-        meegegeven aan de methode maakObject.
-        btn3 krijgt de label Wijzigingen opslaan en de afmetingen 250 bij 50
+        btn3 krijgt de label Wijzigingen opslaan en de afmetingen 150 bij 30
         worden meegegeven aan de methode maakObject.
-        btn4 krijgt de label Import CSV en de ametingen 250 bij 50 worden
+        btn4 krijgt de label Import CSV en de ametingen 150 bij 30 worden
         meegegeven aan de methode Import CSV.
+        Er wort nog een regio gemaakt voor het centreren van de knoppen.
         Er wordt een HBox aangemaakt met de naam hbox.
-        setHgrow wordt toegepast op alle knoppen.
-        De grootte van de hbox wordt op 100 bij 1000 gezet.
-        Vervolgens worden alle knoppen toegevoegd aan de hbox.
-        Ten slotte wordt de methode MenuMaken aangeroepen,
-        deze krijgt de parameter hbox mee.
+        Vervolgens worden alle knoppen en regios toegevoegd aan de hbox.
+        De spacing in hbox wordt op 20 gezet.
+        hbox wordt terug gegeven.
         */
         Region leftFill = new Region();
         HBox.setHgrow(leftFill, Priority.ALWAYS);
@@ -100,7 +101,6 @@ public final class Invoeren extends StackPane {
             double breedte){
         /*
         Deze functie zet de naam, hoogte en breedte van de knoppen.
-        De maximale breedte en hoogte wordt op maximaal gezet.
         */
         btn.setText(tekst);
         btn.setPrefHeight(hoogte);
@@ -112,7 +112,8 @@ public final class Invoeren extends StackPane {
     
     public Label maakObject(Label lbl, String tekst){
         /*
-        Deze functie zet de naam, hoogte en breedte van de labels.
+        Deze functie zet de naam van de labels, laat ze centreren en
+        geeft ze het font Arial met grootte 18.
         */
         lbl.setText(tekst);
         lbl.setAlignment(Pos.CENTER);
@@ -124,25 +125,25 @@ public final class Invoeren extends StackPane {
     public VBox MenuMaken(){
         /*
         In deze functie wordt het menu aan de linkerkant gemaakt.
-        lbl1 krijgt de tekst Keuzemnu en krijgt de afmetingen 100 bij 100 mee
-        aan de methode maakObject.
-        De eerste MenuButton is jaartal: de items zijn: 2014-2015, 2015-2016,
-        2016-2017.
-        De tweede MenuButton is leerjaar: de items zijn: jaar 1, jaar 2, 
+        lbl1 krijgt de tekst Keuzemnu, de breedte wordt op 150 gezet.
+        De eerste ChoiceBox is year.
+        De tweede ChioceBox is studyyear: de items zijn: jaar 1, jaar 2, 
         jaar 3 of jaar 4.
-        De derde MenuButton is periode: de items zijn: periode 1, periode 2.
-        periode 3 en periode 4.
-        De vierde MenuButton is module, er zijn hier nog geen items, 
+        De derde ChoiceBox is periode: de items zijn: periode 1, periode 2.
+        periode 3, periode 4 en periode 5.
+        De vierde ChoiceBox is module, er zijn hier nog geen items, 
         dit wordt nader bepaald.
-        De vijfde MenuButton is toetsvorm, de items zijn: theorietoets,
+        De vijfde ChoiceBox is toetsvorm, de items zijn: theorietoets,
         praktijktoets, opdracht, aanwezigheid, logboek en project.
-        De laatste MenuButton is gelegenheid, de items zijn: gelegenheid1 en 
-        gelegenheid2.
-        De MenuButtons worden toegevoegd aan een vbox, de grootte van de buttons
-        wordt zo gezet dat de grootte meebeweegt met het groter en kleiner 
-        maken van het scherm.
-        Ten slotte wordt de methode BoxenVullen aangeroepen,
-        deze krijgt de parameters vbox2 en hbox mee.
+        De laatste ChoiceBox is gelegenheid, de items zijn: 1e kans en 
+        2e kans.
+        Alle ChoiceBoxes krijgen een hoogte van 30 en een breedte van 150.
+        er wordt een Region gemaakt die (door VGrow) btn1 naar beneden duwt.
+        btn1 krijgt het label Toets laden, een hoogte van 30 en een breedte
+        van 150.
+        De choiceboxes en btn1 worden toegevoegd aan een vbox.
+        De spacing van de vbox wordt op 20 gezet.
+        De vbox wordt terug gegeven.
         */
         lbl1 = maakObject(new Label(), "Keuzemenu");
         lbl1.setPrefWidth(150);
@@ -186,7 +187,6 @@ public final class Invoeren extends StackPane {
         btn1.setPrefWidth(150);
         
         VBox vbox2 = new VBox();
-        vbox2.setPrefSize(150, 600);
 
         vbox2.getChildren().addAll(lbl1, year, studyyear, period, module, 
                 type, chance, fill, btn1);
@@ -199,28 +199,25 @@ public final class Invoeren extends StackPane {
 
     public void BoxenVullen(VBox vbox2, HBox hbox){
         /*
-        Er wordt eerst een label aangemaakt met de naam: Vragen,
-        deze krijgt de afmetingen 50 bij 700 mee aan de maakObject methoden.
+        Er wordt eerst een label aangemaakt met de naam: Vragen.
         Ook wordt er een knop aangemaakt met de label: nieuwe student.
         Er wordt een HBox aangemaakt,
-        de label en de knop worden toegevoegd aan een hbox.
-        Vervolgens wordt er een pointsTable gemaakt, 
-        met een grootte van 500 bij 500.
+        de label en de knop worden toegevoegd aan een hbox, same met twee
+        Region die er voor zorgen dat het label gecentreerd wordt.
+        Vervolgens wordt er een TableView (pointsTable) gemaakt.
         In deze ruimte komen later de studenten en hun punten te staan.
         Er wordt een VBox aangemaakt,
         de pointsTable wordt toegevoegd aan de vbox en hier wordt een Vgrow
         aan toegevoegd. Aan de vbox wordt ook de hbox met de label en knop
-        toegevoegd.
+        toegevoegd en de hbox die als parameter meegegeven wordt.
+        De vbox krijgt een spacing van 10.
         Er wordt nog een HBox aangemaakt,
         aan deze hbox wordt de vbox met het keuzemenu toegevoegd,
-        ook wordt de vbox toegevoegd met de pointsTable, knop en label die
+        ook wordt de vbox toegevoegd met de pointsTable, knoppen en label die
         net is gemaakt.
-        Ten slotte wordt nog een VBox aangemaakt,
-        aan deze vbox wordt de net gemaakte hbox toegevoegd en de hbox met
-        de knoppen die onderaan het scherm komen.
-        Er wordt een Vgrow toegepast op de hboxen die in de laatste vbox
-        aanwezig zijn.
-        Ten slotte wordt de vbox toegepast aan this, hierdoor kan
+        Hiervoor worden margins van 5 om beide vboxes gezet.
+        De laatste hbox krijget een spacing van 20.
+        Ten slotte wordt de hbox toegepast aan this, hierdoor kan
         deze klasse ook gebruikt worden in de main.
         */
         
