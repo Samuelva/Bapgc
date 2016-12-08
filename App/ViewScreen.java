@@ -1,6 +1,7 @@
 /* Changelog:
- * 1-12-2016    Davy Cats   Start basis script schrijven.
- * 4-12-2016    Davy Cats   Basis script af.
+ * 01-12-2016    Davy Cats   Start basis script schrijven.
+ * 04-12-2016    Davy Cats   Basis script af.
+ * 08-12-2016    Davy Cats   Layout aangepast.
  *
  * Deze class maakt een StackPane dat het inzage scherm bevat.
  */
