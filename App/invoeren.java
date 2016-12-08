@@ -25,7 +25,7 @@ import javafx.scene.text.FontWeight;
 
 /*
 Programmeur: Anne van Winzum
-Datum laatste aanpassing: 7-12-2016
+Datum laatste aanpassing: 08-12-2016 (door Davy Cats, layout aangepast)
 Beschrijving: In dit script wordt de eerste layout van het invoerscherm getoond.
 */
 
