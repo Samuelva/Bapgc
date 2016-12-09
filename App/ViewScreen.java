@@ -80,9 +80,9 @@ public class ViewScreen extends StackPane{
         //Dropdown voor school jaar
         this.schoolYearChoiceBox = new ChoiceBox(
                 FXCollections.observableArrayList(
-                        "School Jaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3",
+                        "Leerjaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3",
                         "Jaar 4"));
-        this.schoolYearChoiceBox.setValue("School Jaar");
+        this.schoolYearChoiceBox.setValue("Leerjaar");
         this.schoolYearChoiceBox.setPrefWidth(150);
         this.schoolYearChoiceBox.setPrefHeight(30);
         //Dropdown voor periode
@@ -94,21 +94,21 @@ public class ViewScreen extends StackPane{
         this.blockChoiceBox.setPrefHeight(30);
         //Dropdown voor module
         this.courseChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "module", new Separator(), "placeholder"));
-        this.courseChoiceBox.setValue("module");
+                "Module", new Separator(), "placeholder"));
+        this.courseChoiceBox.setValue("Module");
         this.courseChoiceBox.setPrefWidth(150);
         this.courseChoiceBox.setPrefHeight(30);
         //Dropdown voor toetsvorm
         this.typeChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                 "Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets", 
                 "Logboek", "Aanwezigheid", "Project"));
-        this.typeChoiceBox.setValue("toetsvorm");
+        this.typeChoiceBox.setValue("Toetsvorm");
         this.typeChoiceBox.setPrefWidth(150);
         this.typeChoiceBox.setPrefHeight(30);
         //Dropdown voor gelegenheid
         this.attemptChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "gelegenheid", new Separator(), "1e kans", "2e kans"));
-        this.attemptChoiceBox.setValue("gelegenheid");
+                "Gelegenheid", new Separator(), "1e kans", "2e kans"));
+        this.attemptChoiceBox.setValue("Gelegenheid");
         this.attemptChoiceBox.setPrefWidth(150);
         this.attemptChoiceBox.setPrefHeight(30);
         //leege ruimte
