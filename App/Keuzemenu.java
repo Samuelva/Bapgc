@@ -1,13 +1,17 @@
 package sample;
 
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.layout.*;
+
 
 /**
  * Created by Samuel on 4-12-2016.
  */
 public class Keuzemenu {
-    private VBox choiceButtonBox = new VBox();
+    private BorderPane choiceMenu;
+    private VBox choiceMenuBox;
+    private HBox choiceMenuButtonBox;
     private ComboBox year;
     private ComboBox studyYear;
     private ComboBox period;
@@ -15,20 +19,40 @@ public class Keuzemenu {
     private ComboBox type;
     private ComboBox chance;
 
+    Button allButton;
+    Button resetButton;
+
     public Keuzemenu() {
-        setComboBoxStyle();
+        setComboBox();
+        setChoiceMenuButtonBox();
     }
-    private void setComboBoxStyle() {
+
+    private void setComboBox() {
+        choiceMenuBox = new VBox();
+        choiceMenuBox.setSpacing(20);
+//        choiceMenuBox.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.SOLID, null, null)));
+
         year = makeComboBox("Jaar");
         studyYear = makeComboBox("Studiejaar");
         period = makeComboBox("Periode");
-        module = makeComboBox("Module");
+        module = makeComboBox("Modules");
         type = makeComboBox("Toetsvorm");
         chance = makeComboBox("Gelegenheid");
 
-        studyYear.getItems().addAll("1", "2", "3", "4");
+        studyYear.getItems().addAll("Leerjaar 1", "Leerjaar 2", "Leerjaar 3", "Leerjaar 4");
+        period.getItems().addAll("Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5");
         type.getItems().addAll("Theorietoets", "Praktijktoets", "Opdracht", "Aanwezigheid",
                 "Logboek", "Project");
+    }
+
+    private void setChoiceMenuButtonBox() {
+        choiceMenuButtonBox = new HBox();
+
+        allButton = new Button("Alles");
+        resetButton = new Button("Reset");
+        allButton.setPrefWidth(75);
+        resetButton.setPrefWidth(75);
+        choiceMenuButtonBox.getChildren().addAll(allButton, resetButton);
     }
 
     private ComboBox makeComboBox(String promptText) {
@@ -39,30 +63,33 @@ public class Keuzemenu {
         return comboBox;
     }
 
-    public VBox getTestMenu() {
-        choiceButtonBox.getChildren().addAll(year, studyYear, period, module, type, chance);
-        return choiceButtonBox;
+    public BorderPane getTestMenu() {
+        choiceMenu = new BorderPane();
+        choiceMenuBox.getChildren().addAll(year, studyYear, period, module, type, chance);
+        choiceMenu.setTop(choiceMenuBox);
+        choiceMenu.setBottom(choiceMenuButtonBox);
+        return choiceMenu;
     }
 
-    public VBox getModuleMenu() {
-        choiceButtonBox.getChildren().addAll(year, studyYear, period);
-        return choiceButtonBox;
+    public BorderPane getModuleMenu() {
+        choiceMenu = new BorderPane();
+        choiceMenuBox.getChildren().addAll(year, studyYear, period, choiceMenuButtonBox);
+        choiceMenu.setTop(choiceMenuBox);
+        choiceMenu.setBottom(choiceMenuButtonBox);
+        return choiceMenu;
     }
 
-    public VBox getPeriodMenu() {
-        choiceButtonBox.getChildren().addAll(year, studyYear);
-        return choiceButtonBox;
+    public BorderPane getPeriodMenu() {
+        choiceMenu = new BorderPane();
+        choiceMenuBox.getChildren().addAll(year, studyYear, choiceMenuButtonBox);
+        choiceMenu.setTop(choiceMenuBox);
+        choiceMenu.setBottom(choiceMenuButtonBox);
+        return choiceMenu;
     }
 
     public void setYearContent(String... values) {
         for (String value : values) {
             year.getItems().add(value);
-        }
-    }
-
-    public void setPeriodContent(String... values) {
-        for (String value : values) {
-            period.getItems().add(value);
         }
     }
 

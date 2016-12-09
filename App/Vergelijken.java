@@ -1,10 +1,8 @@
 package sample;
 
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+
 
 public class Vergelijken extends Pane {
     TabPane tabPane;
@@ -20,13 +18,14 @@ public class Vergelijken extends Pane {
     public Vergelijken(){
         createTabs();
 
-        Keuzemenu toetsMenu = new Keuzemenu();
-        Keuzemenu moduleMenu = new Keuzemenu();
-        Keuzemenu periodMenu = new Keuzemenu();
+        Keuzemenu testChoiceMenu = new Keuzemenu();
+        Keuzemenu moduleChoiceMenu = new Keuzemenu();
+        Keuzemenu periodChoiceMenu = new Keuzemenu();
 
-        VBox toetsMenuBox = toetsMenu.getTestMenu();
-        VBox moduleMenuBox = moduleMenu.getModuleMenu();
-        VBox periodMenuBox = periodMenu.getPeriodMenu();
+        BorderPane toetsMenuBox = testChoiceMenu.getTestMenu();
+        BorderPane moduleMenuBox = moduleChoiceMenu.getModuleMenu();
+        BorderPane periodMenuBox = periodChoiceMenu.getPeriodMenu();
+        toetsMenuBox.setMinHeight(400);
 
         Statistiek testStatistics = new Statistiek();
         Statistiek moduleStatistics = new Statistiek();

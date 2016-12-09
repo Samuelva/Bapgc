@@ -64,4 +64,8 @@ public class Statistiek {
     public VBox returnStatisticsBox() {
         return statisticsBox;
     }
+
+    public void setGraph() {
+
+    }
 }
