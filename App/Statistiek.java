@@ -1,19 +1,45 @@
 package sample;
 
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.control.ComboBox;
+
 /**
  * Created by Samuel on 5-12-2016.
  */
 public class Statistiek {
-    GridPane statisticsGrid = new GridPane();
-    private Label participantsLbl = new Label("Aantal Deelnemers: ");
-    private Label failedLbl = new Label("Aantal onvoldoendes: ");
-    private Label passedLbl = new Label("Aantal voldoendes: ");
-    private Label passRateLbl = new Label("Rendement: ");
+    VBox statisticsBox;
+    HBox statisticsGridBox;
+    HBox graphMenuBox;
+    HBox graphBox;
 
+    ComboBox graphButton;
+    Button saveButton;
 
-    public Statistiek(int[] values) {
+    public Statistiek() {
+        statisticsBox = new VBox();
+        statisticsGridBox = new HBox();
+        graphMenuBox = new HBox();
+        graphBox = new HBox();
+
+        graphButton = new ComboBox();
+        saveButton = new Button("Afbeelding opslaan");
+        graphMenuBox.getChildren().addAll(graphButton, saveButton);
+
+        statisticsBox.getChildren().addAll(statisticsGridBox, graphMenuBox, graphBox);
+    }
+
+    public void addStatistics(int[] values) {
+        GridPane statisticsGrid = new GridPane();
+
+        Label participantsLbl = new Label("Aantal Deelnemers: ");
+        Label failedLbl = new Label("Aantal onvoldoendes: ");
+        Label passedLbl = new Label("Aantal voldoendes: ");
+        Label passRateLbl = new Label("Rendement: ");
+
         Label participants = new Label(Integer.toString(values[0]));
         Label failed = new Label(Integer.toString(values[1]));
         Label passed = new Label(Integer.toString(values[2]));
@@ -28,11 +54,14 @@ public class Statistiek {
         statisticsGrid.add(passed, 2, 3);
         statisticsGrid.add(passRate, 2, 4);
 
-        statisticsGrid.setPrefHeight(100);
-        statisticsGrid.setPrefWidth(150);
+        statisticsGrid.setVgap(5);
+        statisticsGrid.setHgap(5);
+
+        statisticsGridBox.getChildren().add(statisticsGrid);
+
     }
 
-    public GridPane returnStatisticBox() {
-        return statisticsGrid;
+    public VBox returnStatisticsBox() {
+        return statisticsBox;
     }
 }
