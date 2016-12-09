@@ -2,6 +2,7 @@
  * 01-12-2016    Davy Cats   Start basis script schrijven.
  * 04-12-2016    Davy Cats   Basis script af.
  * 08-12-2016    Davy Cats   Layout aangepast.
+ * 09-12-2016    Davy Cats   ChoiceBox labels aangepast.
  *
  * Deze class maakt een StackPane dat het inzage scherm bevat.
  */
@@ -79,13 +80,15 @@ public class ViewScreen extends StackPane{
         //Dropdown voor school jaar
         this.schoolYearChoiceBox = new ChoiceBox(
                 FXCollections.observableArrayList(
-                        "School Jaar", new Separator(), "1", "2", "3", "4"));
+                        "School Jaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3",
+                        "Jaar 4"));
         this.schoolYearChoiceBox.setValue("School Jaar");
         this.schoolYearChoiceBox.setPrefWidth(150);
         this.schoolYearChoiceBox.setPrefHeight(30);
         //Dropdown voor periode
         this.blockChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Periode", new Separator(), "1", "2", "3", "4", "5"));
+                "Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3", 
+                "Periode 4", "Periode 5"));
         this.blockChoiceBox.setValue("Periode");
         this.blockChoiceBox.setPrefWidth(150);
         this.blockChoiceBox.setPrefHeight(30);
@@ -97,14 +100,14 @@ public class ViewScreen extends StackPane{
         this.courseChoiceBox.setPrefHeight(30);
         //Dropdown voor toetsvorm
         this.typeChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "toetsvorm", new Separator(), "theorie", "praktijk", "logboek",
-                "aanwezigheid", "project"));
+                "Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets", 
+                "Logboek", "Aanwezigheid", "Project"));
         this.typeChoiceBox.setValue("toetsvorm");
         this.typeChoiceBox.setPrefWidth(150);
         this.typeChoiceBox.setPrefHeight(30);
         //Dropdown voor gelegenheid
         this.attemptChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "gelegenheid", new Separator(), "placeholder"));
+                "gelegenheid", new Separator(), "1e kans", "2e kans"));
         this.attemptChoiceBox.setValue("gelegenheid");
         this.attemptChoiceBox.setPrefWidth(150);
         this.attemptChoiceBox.setPrefHeight(30);
