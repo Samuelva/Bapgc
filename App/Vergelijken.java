@@ -1,39 +1,24 @@
 package sample;
 
-import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Button;
 
 public class Vergelijken extends Pane {
-    HBox vergelijk = new HBox();
-    VBox statisticBox = new VBox();
-    HBox info = new HBox(10);
-    HBox infoButtons = new HBox();
-    HBox grafiek = new HBox();
-    ComboBox<String> grafiekSoort = new ComboBox<String>();
-    Button opslaan = new Button("Opslaan");
+    TabPane tabPane;
+    Tab testTab;
+    Tab moduleTab;
+    Tab periodTab;
+
     HBox testTabBox = new HBox();
     HBox moduleTabBox = new HBox();
     HBox periodTabBox = new HBox();
 
-    public Vergelijken(){
-        TabPane tabPane = new TabPane();
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        Tab toets = new Tab();
-        Tab module = new Tab();
-        Tab periode = new Tab();
-        toets.setText("Toets");
-        module.setText("Module");
-        periode.setText("Periode");
 
-        tabPane.getTabs().add(toets);
-        tabPane.getTabs().add(module);
-        tabPane.getTabs().add(periode);
+    public Vergelijken(){
+        createTabs();
 
         Keuzemenu toetsMenu = new Keuzemenu();
         Keuzemenu moduleMenu = new Keuzemenu();
@@ -43,39 +28,47 @@ public class Vergelijken extends Pane {
         VBox moduleMenuBox = moduleMenu.getModuleMenu();
         VBox periodMenuBox = periodMenu.getPeriodMenu();
 
-        infoButtons.getChildren().addAll(grafiekSoort, opslaan);
-        infoButtons.setMinWidth(900);
-        opslaan.setAlignment(Pos.BASELINE_RIGHT);
-        info.getChildren().add(new Statistiek(new int[] {40, 50, 50, 30}).returnStatisticBox());
-        info.getChildren().add(new Statistiek(new int[] {30, 20, 10, 44}).returnStatisticBox());
-        grafiek.getChildren().addAll();
-        grafiek.setMinHeight(300);
-        statisticBox.getChildren().addAll(info, infoButtons, grafiek);
-        testTabBox.getChildren().addAll(toetsMenuBox, statisticBox);
-        moduleTabBox.getChildren().addAll(moduleMenuBox, statisticBox);
-        periodTabBox.getChildren().addAll(periodMenuBox, statisticBox);
+        Statistiek testStatistics = new Statistiek();
+        Statistiek moduleStatistics = new Statistiek();
+        Statistiek periodStatistics = new Statistiek();
 
-        toets.setContent(testTabBox);
-        module.setContent(moduleTabBox);
-        periode.setContent(periodTabBox);
+        testTabBox.getChildren().addAll(toetsMenuBox, testStatistics.returnStatisticsBox());
+        moduleTabBox.getChildren().addAll(moduleMenuBox, moduleStatistics.returnStatisticsBox());
+        periodTabBox.getChildren().addAll(periodMenuBox, periodStatistics.returnStatisticsBox());
 
-        vergelijk.getChildren().addAll(tabPane);
+        testTab.setContent(testTabBox);
+        moduleTab.setContent(moduleTabBox);
+        periodTab.setContent(periodTabBox);
 
-        tabPane.setMinWidth(1000);
+        this.getChildren().add(tabPane);
 
-        this.setMinWidth(1000);
-        this.getChildren().add(vergelijk);
+        testStatistics.addStatistics(new int[] {40, 50, 50, 30});
+        testStatistics.addStatistics(new int[] {30, 20, 60, 70});
+        testStatistics.addStatistics(new int[] {50, 80, 60, 40});
+
+        moduleStatistics.addStatistics(new int[] {11, 46, 23 ,77});
+        moduleStatistics.addStatistics(new int[] {33, 6, 43, 6});
+        moduleStatistics.addStatistics(new int[] {7, 23, 5, 77});
+
+        periodStatistics.addStatistics(new int[] {33, 5, 72, 45});
+        periodStatistics.addStatistics(new int[] {64, 45, 64, 44});
     }
 
-//    public HBox info(HashMap<String, Integer> data) {
-//        HBox infoBox = new HBox();
-//        for (HashMap.Entry<String, Integer> entry : data.entrySet()) {
-//            Label label = new Label(entry.getKey());
-//            infoBox.getChildren().add(label);
-//        }
-//        return infoBox;
-//    }
+    private void createTabs() {
+        tabPane = new TabPane();
+        testTab = new Tab();
+        moduleTab = new Tab();
+        periodTab = new Tab();
 
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        testTab.setText("Toets");
+        moduleTab.setText("Module");
+        periodTab.setText("Periode");
 
+        tabPane.getTabs().add(testTab);
+        tabPane.getTabs().add(moduleTab);
+        tabPane.getTabs().add(periodTab);
+        HBox.setHgrow(tabPane, Priority.ALWAYS);
+    }
 
 }
