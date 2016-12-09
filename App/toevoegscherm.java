@@ -18,7 +18,7 @@ import java.util.LinkedList;
 /**
  * Created by Diego Staphorst on 5-12-2016.
  * Diego: 07-12-2016,  Toevgoegscherm is af
- * Diego: 09-12-2016, Documentenren van het script
+ * Diego: 09-12-2016, Documenteren van het script
  */
 public class toevoegscherm extends BorderPane{
 
@@ -70,7 +70,9 @@ public class toevoegscherm extends BorderPane{
     private FlowPane pointBox;
 
     public toevoegscherm() {
-
+    /**
+     * Verschillende methoden aanroepen die nodig zijn voor het juist initialiseren van elementen, panes en events.
+    */
         initButtons();
         initCenterPane();
         createTopPane();
@@ -79,6 +81,13 @@ public class toevoegscherm extends BorderPane{
 
 
     private void events() {
+        /**
+         * Funtionaliteiten binden aan de knoppen, de acties die heermee worden gestart zijn:
+         *      -Ontbruikbaar maken van elementen
+         *      -Functies aanroepen voor het toevoegen van elementen
+         *      -Functies aanroepen die gegevens inladen
+         *      -Waarden uit elementen verkrijgen die van belang zijn voor de database
+         */
         examScreenBtn.setOnAction(e -> {
             this.setCenter(examPane);
             examScreenBtn.setDisable(true);
@@ -111,6 +120,13 @@ public class toevoegscherm extends BorderPane{
 
     }
     private void addPointFields() {
+        /**
+         * Creeeren van een linkedlist waarin TextField elementen staan die nodig zijn voor de punten invoer.
+         * In een loop afhankelijk van het aantal vragen die de toets heeft worden er textfields
+         * toegevoegd aan de lijst. Ook wordt er een label gecreeerd zodat de gebruiker kan zien aan welke
+         * vraag de gebruiker het aantal maximale punten toekent. Er wordt styling gegeven aan de elementen
+         * Als laatst worden deze elementen toegevoegd aan de pointbox.
+         */
 
         scoreDistributionArray = new LinkedList<TextField>();
         pointBox.setOrientation(Orientation.VERTICAL);
@@ -130,6 +146,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private Label createLabel(String header) {
+        /**
+         * Creeeren van label voor de verschillende headers.
+         */
         Label label = new Label(header);
         label.setFont(new Font("Arial", 20));
         label.setAlignment(Pos.CENTER);
@@ -138,6 +157,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private void initButtons() {
+        /**
+         * Initialiseren en styling geven aan de verschillende knoppen die aanwezig zijn op het scherm
+         */
         showExamBtn = new Button("Toets weergeven");
         newExamBtn = new Button("Nieuwe Toets");
         saveExamBtn = new Button("Toets opslaan");
@@ -161,16 +183,29 @@ public class toevoegscherm extends BorderPane{
 
 
     private void initCenterPane() {
+        /**
+         * Verschillende panes initialiseren die van belang zijn voor de centerpane van de borderpane.
+         */
         initExamPane();
         initModulePane();
     }
 
     private void initModulePane() {
+        /**
+         * Initialiseren van het scherm die dient voor het toevoegen van de module. Dit scherm maakt het
+         * scherm aan die zorgt voor het creeren van de module selectie scherm.
+         */
         modulePane = new BorderPane();
         createModuleSelectionScreen();
     }
 
     private void createModuleSelectionScreen() {
+        /**
+         * Aanmaken van het selectiemenu in het module scherm. Deze bevat minder elementen dus worden er een
+         * aantal uit verwijderd (ten opzichte van het toetsscherm). Voor de vbox zijn nog meerdere elementen van
+         * belang deze worden ook toegoevd aan de VBOX. Als laatst wordt de VBOX in de leftPane van de borderpane
+         * geplaatst.
+         */
         VBox vboxSelectionMenu = new VBox();
 
         VBox choiceBoxesInSelectionMenu = createChoiceBoxes();
@@ -184,6 +219,10 @@ public class toevoegscherm extends BorderPane{
     }
 
     private VBox addModuleButtons() {
+        /**
+         * Knoppen toevoegden die van belang zijn voor het weergeven van de module of creeren van een
+         * nieuwe module. Styling wordt hier meegegeven aan de knoppen
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(showModuleBtn, newModuleBtn);
 
@@ -193,12 +232,18 @@ public class toevoegscherm extends BorderPane{
     }
 
     private ListView createModuleSelectionList() {
+        /**
+         * Maken van een selectie lijst voor het kiezen van de module die er moet worden weergeven.
+         */
         moduleOptionsList = new ListView();
         moduleOptionsList.setPrefWidth(150);
         return moduleOptionsList;
     }
 
     private VBox createChoiceBoxes() {
+        /**
+         * Aanmaken van de verschillende dropdown menu's waarin de gebruiker de juistte module of toets kan kiezen.
+         */
         VBox vbox = new VBox();
 
         choiceBox1 = new ChoiceBox(); //Jaartal
@@ -236,6 +281,10 @@ public class toevoegscherm extends BorderPane{
     }
 
     private VBox createModulePropertiesScreen() {
+        /**
+         * Scherm waar de eigenschappen van de modulen op staan, waaronder de module informatie en een knop
+         * om gemaakte aanpassingen aan de info op te slaan.
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(getModuleInformation(), getSaveModuleButton());
         vbox.setVgrow(vbox.getChildren().get(0), Priority.ALWAYS);
@@ -243,6 +292,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private HBox getModuleInformation() {
+        /**
+         * Module informatie en de mogelijkheid om te zien welke toetsen er aanwezig zijn in de module.
+         */
         HBox hbox = new HBox();
         hbox.getChildren().addAll(createModuleDataBox(), getExamsInModule());
         hbox.setHgrow(hbox.getChildren().get(0), Priority.ALWAYS);
@@ -251,6 +303,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private HBox getSaveModuleButton() {
+        /**
+         * Box die de knop voor het opslaan bevat en waarmee sstyling aan de knop wordt gegeven
+         */
         HBox hbox = new HBox();
         hbox.getChildren().add(saveModuleBtn);
         saveExamBtn.setPrefWidth(250);
@@ -259,20 +314,22 @@ public class toevoegscherm extends BorderPane{
     }
 
     private Node getExamsInModule() {
+        /**
+         * Weergeven welke toetsen er aanwezig zijn in de module.
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(createLabel("Toetsen in deze module:"), getModuleExams());
         vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-padding: 10;" +
-                "-fx-border-style: solid inside;" +
-                "-fx-border-width: 2;" +
-                "-fx-border-insets: 5;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;");
+
         vbox.setPrefHeight(200);
         return vbox;
     }
 
     private HBox getModuleExams() {
+        /**
+         * Labels die informatie weergeven of er bepaalde toetsen aan wezig zijn in de module. In de methode
+         * checkIfPresent wordt eer waarde teruggegven die laat zien of de toets aanwezig is.
+         */
         HBox hbox1 = new HBox();
 
         VBox vbox1 = new VBox();
@@ -293,6 +350,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private Label checkIfPresent(Boolean present) {
+        /**
+         * Label teruggegven die weergeeft of een toets aanwezig is door de label groen te maken anders is ie grijs.
+         */
         Label lbl = new Label("✔");
         if (present) {
             lbl.setTextFill(Color.GREEN);
@@ -303,20 +363,20 @@ public class toevoegscherm extends BorderPane{
     }
 
     private VBox createModuleDataBox() {
+        /**
+         * Box die de module gegevens/eigenschappen bevat.
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(createLabel("Module Gegevens:"), getModuleData());
         vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-padding: 10;" +
-                "-fx-border-style: solid inside;" +
-                "-fx-border-width: 2;" +
-                "-fx-border-insets: 5;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;");
         vbox.setPrefHeight(200);
         return vbox;
     }
 
     private HBox getModuleData() {
+        /**
+         * Box met Labels en textfields die de waarden bevatten die behoren tot de module en omscrhijving.
+         */
         HBox hbox = new HBox();
 
         VBox vbox1 = new VBox();
@@ -344,11 +404,19 @@ public class toevoegscherm extends BorderPane{
 
 
     private void initExamPane() {
+        /**
+         * initialiseren van het scherm voor het toevoegen van de toetsen en aanroepen van de methode voor het
+         * maken van de examen selectie menu
+         */
         examPane = new BorderPane();
         createExamSelectionMenu();
     }
 
     private VBox createExamPropertiesScreen() {
+        /**
+         * aanmaken van het toetsscherm. Deze bevat de examen informatie, de puntenverderling en de knop voor het
+         * opslaan van de toets.
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(getExamInformation(), getPointDistribution(), getSaveExamButton());
         vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
@@ -356,6 +424,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private HBox getSaveExamButton() {
+        /**
+         * Aanmaken van de knop en stylen van de knop voor het opslaan van de examens.
+         */
         HBox hbox = new HBox();
         hbox.getChildren().add(saveExamBtn);
         saveExamBtn.setPrefWidth(250);
@@ -366,26 +437,31 @@ public class toevoegscherm extends BorderPane{
 
 
     private ListView createExamSelection() {
+        /**
+         * Aanmaken van de selectie scherm voor de toetsen.
+         */
         examOptionsList = new ListView();
         examOptionsList.setPrefWidth(150);
         return examOptionsList;
     }
 
     private VBox getPointDistribution() {
+        /**
+         * Maken van de punten verdeling gedeelte op het scherm.
+         */
         VBox vbox = new VBox();
         pointBox = new FlowPane();
-        vbox.setStyle("-fx-padding: 10;" +
-                "-fx-border-style: solid inside;" +
-                "-fx-border-width: 2;" +
-                "-fx-border-insets: 5;" +
-                "-fx-border-radius: 5;" +
-                "-fx-border-color: blue;");
         vbox.getChildren().addAll(createLabel("Puntenverdeling:"), getAmountOfQuestions(), pointBox);
 
         return vbox;
     }
 
     private HBox getAmountOfQuestions() {
+        /**
+         * Slider maken die het aantal vragen voor de toets bepaald. De styling aan de slider gebeurt ook in deze functie
+         * Hierna volgt het toevoegen van een event aan de slider, zodat de gebruiker kan zien wat voor waarde de slider
+         * nu heeft.
+         */
         HBox hbox = new HBox();
         Label lbl1 = new Label("Aantal vragen: ");
         slider = new Slider();
@@ -413,12 +489,19 @@ public class toevoegscherm extends BorderPane{
 
 
     private void createExamSelectionMenu() {
+        /**
+         * Selectie menu voor het kiezen van de juistte toets.
+         */
         VBox vboxSelectionMenu = new VBox();
         vboxSelectionMenu.getChildren().addAll(createLabel("Keuzemenu"),createChoiceBoxes(),createExamSelection(), addExamButtons());
         examPane.setLeft(vboxSelectionMenu);
     }
 
     private VBox addExamButtons() {
+        /**
+         * Toevoegen van knoppen voor het weergeven van de geselecteerde toets en de knop voor het aanmmaken van een
+         * nieuwe examen.
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(showExamBtn, newExamBtn);
 
@@ -428,6 +511,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private HBox getExamInformation() {
+        /**
+         * Aanmaken van de box die informatie bevat over de toets en cesuur die daarbij hoort.
+         */
         HBox hbox = new HBox();
         hbox.getChildren().addAll(createExamData(), getExamGrader());
 
@@ -438,6 +524,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private VBox getExamGrader() {
+        /**
+         * Gegevens over het bepalen van een cijfer voor de toets.
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(createLabel("Cijfer Gegevens: "), getGradeData());
         vbox.setAlignment(Pos.CENTER);
@@ -446,6 +535,10 @@ public class toevoegscherm extends BorderPane{
     }
 
     private HBox getGradeData()  {
+        /**
+         * Gegevens over het bepalen van een cijfer voor de toets.
+         * DE FORMATTER WERKT NIET OVERAL!! Waarschijnlijk mist er een library!
+         */
         HBox hbox = new HBox();
 
         VBox vbox1 = new VBox();
@@ -474,6 +567,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private VBox createExamData() {
+        /**
+         * Toets gegevens box
+         */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(createLabel("Toets Gegevens: "), getExamData());
         vbox.setAlignment(Pos.CENTER);
@@ -481,6 +577,9 @@ public class toevoegscherm extends BorderPane{
     }
 
     private VBox getExamData() {
+        /**
+         * Dropdown menu's van de toets gegevens
+         */
         VBox vbox = new VBox();
 
         choiceBox7 = new ChoiceBox(); //module
