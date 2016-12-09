@@ -6,12 +6,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 
 /**
  * Created by Samuel on 5-12-2016.
  */
 public class Statistiek {
     VBox statisticsBox;
+    ScrollPane statisticsScrollPane;
     HBox statisticsGridBox;
     HBox graphMenuBox;
     HBox graphBox;
@@ -22,14 +24,19 @@ public class Statistiek {
     public Statistiek() {
         statisticsBox = new VBox();
         statisticsGridBox = new HBox();
+        statisticsScrollPane = new ScrollPane();
         graphMenuBox = new HBox();
         graphBox = new HBox();
+
+        //wordt later verwijderd
+        statisticsScrollPane.setPrefWidth(850);
+        statisticsScrollPane.setPrefHeight(125);
 
         graphButton = new ComboBox();
         saveButton = new Button("Afbeelding opslaan");
         graphMenuBox.getChildren().addAll(graphButton, saveButton);
-
-        statisticsBox.getChildren().addAll(statisticsGridBox, graphMenuBox, graphBox);
+        statisticsScrollPane.setContent(statisticsGridBox);
+        statisticsBox.getChildren().addAll(statisticsScrollPane, graphMenuBox, graphBox);
     }
 
     public void addStatistics(int[] values) {
