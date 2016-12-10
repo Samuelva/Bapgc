@@ -3,12 +3,6 @@ package sample;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-import javax.tools.Tool;
-import java.awt.*;
-import java.applet.*;
-import java.util.PrimitiveIterator;
-
-
 public class Vergelijken extends StackPane {
     TabPane tabPane;
     Tab testTab;
@@ -33,11 +27,7 @@ public class Vergelijken extends StackPane {
         createChoiceMenus();
         createStatistics();
 
-        BorderPane test1 = new BorderPane();
-        test1.setTop(testChoiceMenu.getTestMenu());
-        test1.setBottom(testChoiceMenu.getAnderMenu());
-
-        testTabBox.getChildren().addAll(test1, testStatistics.returnStatisticsBox());
+        testTabBox.getChildren().addAll(testChoiceMenu.getTestMenu(), testStatistics.returnStatisticsBox());
         moduleTabBox.getChildren().addAll(moduleChoiceMenu.getModuleMenu(), moduleStatistics.returnStatisticsBox());
         periodTabBox.getChildren().addAll(periodChoiceMenu.getPeriodMenu(), periodStatistics.returnStatisticsBox());
 
@@ -45,38 +35,38 @@ public class Vergelijken extends StackPane {
         moduleTab.setContent(moduleTabBox);
         periodTab.setContent(periodTabBox);
 
-//        VBox.setVgrow(test1, Priority.ALWAYS);
-//        VBox.setVgrow(testTabBox, Priority.ALWAYS);
-//        VBox.setVgrow(test2, Priority.ALWAYS);
-
-//        testje.getChildren().add(tabPane);
-//        HBox.setHgrow(testTabBox, Priority.ALWAYS);
-//        testTabBox.setMaxWidth(Double.MAX_VALUE);
-//        HBox.setHgrow(tabPane, Priority.ALWAYS);
-//        tabPane.setMaxWidth(Double.MAX_VALUE);
-//        HBox.setHgrow(testje, Priority.ALWAYS);
-//        testje.setMaxWidth(Double.MAX_VALUE);
 
         this.getChildren().add(tabPane);
 
-        testStatistics.addStatistics(new int[] {40, 50, 50, 30});
-        testStatistics.addStatistics(new int[] {30, 20, 60, 70});
-        testStatistics.addStatistics(new int[] {50, 80, 60, 40});
-//        testStatistics.addStatistics(new int[] {40, 50, 50, 30});
-//        testStatistics.addStatistics(new int[] {30, 20, 60, 70});
-//        testStatistics.addStatistics(new int[] {50, 80, 60, 40});
-//        testStatistics.addStatistics(new int[] {40, 50, 50, 30});
-//        testStatistics.addStatistics(new int[] {30, 20, 60, 70});
-//        testStatistics.addStatistics(new int[] {50, 80, 60, 40});
+        // Voeg zo inhoud toe aan de selectie menu's
+        testChoiceMenu.setYearContent("2016", "2017", "2018");
+        testChoiceMenu.setModuleContent("Bapgc", "Bacf");
+        moduleChoiceMenu.setYearContent("2016", "207");
+
+        // Voeg zo statistieken toe
+        testStatistics.addStatistics(new int[] {40, 50, 50, 30, 30});
+        testStatistics.addStatistics(new int[] {30, 20, 60, 70, 24});
+        testStatistics.addStatistics(new int[] {50, 80, 60, 40, 56});
+        testStatistics.addStatistics(new int[] {40, 50, 50, 30, 70});
+        testStatistics.addStatistics(new int[] {30, 20, 60, 70, 40});
+        testStatistics.addStatistics(new int[] {50, 80, 60, 40, 20});
+        testStatistics.addStatistics(new int[] {40, 50, 50, 30, 50});
+        testStatistics.addStatistics(new int[] {30, 20, 60, 70, 10});
+        testStatistics.addStatistics(new int[] {50, 80, 60, 40, 50});
 
         moduleStatistics.addStatistics(new int[] {11, 46, 23 ,77});
         moduleStatistics.addStatistics(new int[] {33, 6, 43, 6});
         moduleStatistics.addStatistics(new int[] {7, 23, 5, 77});
+        moduleStatistics.addStatistics(new int[] {11, 46, 23 ,77});
+        moduleStatistics.addStatistics(new int[] {33, 6, 43, 6});
+        moduleStatistics.addStatistics(new int[] {7, 23, 5, 77});
 
-        periodStatistics.addStatistics(new int[] {33, 5, 72, 45});
-        periodStatistics.addStatistics(new int[] {64, 45, 64, 44});
+        // Voeg zo een grafiek toe
+        testStatistics.setGraph("https://i.imgur.com/8Sqgh3M.png");
+
     }
 
+    // Maakt de tabs
     private void createTabs() {
         tabPane = new TabPane();
         testTab = new Tab();
@@ -92,7 +82,11 @@ public class Vergelijken extends StackPane {
         tabPane.getTabs().add(moduleTab);
         tabPane.getTabs().add(periodTab);
 
-        HBox.setHgrow(tabPane, Priority.ALWAYS);
+        // Goedkope fix
+        // Vergelijkscherm past zich niet aan aan de veticale hoogte van de applet voor
+        // een of andere reden.
+        tabPane.setPrefHeight(1080);
+        VBox.setVgrow(tabPane, Priority.ALWAYS);
     }
 
     private void createChoiceMenus() {
