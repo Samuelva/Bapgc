@@ -4,22 +4,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 public class Vergelijken extends StackPane {
-    TabPane tabPane;
-    Tab testTab;
-    Tab moduleTab;
-    Tab periodTab;
+    private TabPane tabPane;
+    private Tab testTab;
+    private Tab moduleTab;
+    private Tab periodTab;
 
-    HBox testTabBox = new HBox();
-    HBox moduleTabBox = new HBox();
-    HBox periodTabBox = new HBox();
+    private HBox testTabBox = new HBox();
+    private HBox moduleTabBox = new HBox();
+    private HBox periodTabBox = new HBox();
 
-    Keuzemenu testChoiceMenu;
-    Keuzemenu moduleChoiceMenu;
-    Keuzemenu periodChoiceMenu;
+    public Keuzemenu testChoiceMenu;
+    public Keuzemenu moduleChoiceMenu;
+    public Keuzemenu periodChoiceMenu;
 
-    Statistiek testStatistics;
-    Statistiek moduleStatistics;
-    Statistiek periodStatistics;
+    public Statistiek testStatistics;
+    public Statistiek moduleStatistics;
+    public Statistiek periodStatistics;
 
 
     public Vergelijken(){

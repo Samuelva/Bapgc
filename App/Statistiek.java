@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
@@ -7,22 +9,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+import javax.swing.*;
+
 
 /**
  * Created by Samuel on 5-12-2016.
  * Deze klasse maakt het statistiek gedeelte aan en kan deze uitbreiden/aanpassen
  */
 public class Statistiek {
-    VBox statisticsBox;
-    ScrollPane statisticsScrollPane;
-    HBox statisticsGridBox;
-    BorderPane graphButtonBox;
-    BorderPane graphPane;
+    private VBox statisticsBox;
+    private ScrollPane statisticsScrollPane;
+    private HBox statisticsGridBox;
+    private BorderPane graphButtonBox;
+    private BorderPane graphPane;
 
-    ComboBox graphButton;
-    Button saveButton;
-
-    ImageView graph;
+    private ComboBox graphButton;
+    private Button saveButton;
+    private ImageView graph;
 
     public Statistiek() {
         // Box met toets statistieken, grafiekopties en de grafiek
@@ -49,6 +52,25 @@ public class Statistiek {
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
         saveButton.setPrefHeight(30);
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (InstantiationException e1) {
+                    e1.printStackTrace();
+                } catch (IllegalAccessException e1) {
+                    e1.printStackTrace();
+                } catch (UnsupportedLookAndFeelException e1) {
+                    e1.printStackTrace();
+                }
+                JFrame parentFrame = new JFrame();
+                JFileChooser saveMenu = new JFileChooser();
+                saveMenu.setDialogTitle("Opslaan als");
+                saveMenu.showSaveDialog(parentFrame);
+            }
+        });
 
         graphButtonBox.setLeft(graphButton);
         graphButtonBox.setRight(saveButton);
