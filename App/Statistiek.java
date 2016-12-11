@@ -21,11 +21,13 @@ public class Statistiek {
     private ScrollPane statisticsScrollPane;
     private HBox statisticsGridBox;
     private BorderPane graphButtonBox;
-    private BorderPane graphPane;
+    private StackPane graphPane;
 
     private ComboBox graphButton;
     private Button saveButton;
     private ImageView graph;
+
+    Grafiek test = new Grafiek();
 
     public Statistiek() {
         // Box met toets statistieken, grafiekopties en de grafiek
@@ -37,12 +39,7 @@ public class Statistiek {
         // Box met grafiek optie knoppen
         graphButtonBox = new BorderPane();
         // Pane met de grafiek
-        graphPane = new BorderPane();
-        // Container met grafiek foto
-        graph = new ImageView();
-        // Grafiek dimensies
-        graph.setFitWidth(700);
-        graph.setFitHeight(300);
+        graphPane = new StackPane();
 
         graphButton = new ComboBox();
         graphButton.setPrefWidth(150);
@@ -76,10 +73,10 @@ public class Statistiek {
         graphButtonBox.setRight(saveButton);
         graphButtonBox.setPadding(new Insets(5, 5, 5, 5));
         graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
-        graphPane.setCenter(graph);
+//        graphPane.setCenter(graph);
 
         statisticsScrollPane.setContent(statisticsGridBox);
-        statisticsScrollPane.setPrefHeight(150);
+        statisticsScrollPane.setMinHeight(150);
         statisticsBox.getChildren().addAll(statisticsScrollPane, graphButtonBox, graphPane);
 
         HBox.setHgrow(statisticsBox, Priority.ALWAYS);
@@ -149,8 +146,7 @@ public class Statistiek {
     }
 
     // Input is een link/path naar de grafiek
-    public void setGraph(String graphFile) {
-        Image graphImage = new Image(graphFile);
-        graph.setImage(graphImage);
+    public void setGraph() {
+        graphPane.getChildren().add(test.returnGraph());
     }
 }

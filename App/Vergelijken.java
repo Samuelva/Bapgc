@@ -62,7 +62,8 @@ public class Vergelijken extends StackPane {
         moduleStatistics.addStatistics(new int[] {7, 23, 5, 77});
 
         // Voeg zo een grafiek toe
-        testStatistics.setGraph("https://i.imgur.com/8Sqgh3M.png");
+        testStatistics.setGraph();
+        moduleStatistics.setGraph();
 
     }
 
