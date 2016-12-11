@@ -3,6 +3,7 @@ package sample;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -37,12 +38,12 @@ public class toevoegscherm extends BorderPane{
     private BorderPane examPane;
     private BorderPane modulePane;
 
-    public ChoiceBox choiceBox1; //Jaartal
-    public ChoiceBox choiceBox2; //Schooljaar
-    public ChoiceBox choiceBox3; //Periode
-    public ChoiceBox choiceBox4; //Modules
-    public ChoiceBox choiceBox5; //Toetsvorm
-    public ChoiceBox choiceBox6; //Gelegenheid
+    public ChoiceBox yearChoiceBox; //Jaartal
+    public ChoiceBox schoolYearChoiceBox; //Schooljaar
+    public ChoiceBox blockChoiceBox; //Periode
+    public ChoiceBox courseChoiceBox; //Modules
+    public ChoiceBox typeChoiceBox; //Toetsvorm
+    public ChoiceBox attemptChoiceBox; //Gelegenheid
 
     public ChoiceBox choiceBox7; //Module
     public ChoiceBox choiceBox8; //Toetsvorm
@@ -66,13 +67,14 @@ public class toevoegscherm extends BorderPane{
     public ListView moduleOptionsList;
 
     public LinkedList<TextField> scoreDistributionArray; //puntenverdeling
+    private CheckBox questionCheckBox; //Aanwezige vragen
     private Slider slider; //Aantal vragen
     private FlowPane pointBox;
 
     public toevoegscherm() {
-    /**
-     * Verschillende methoden aanroepen die nodig zijn voor het juist initialiseren van elementen, panes en events.
-    */
+        /**
+         * Verschillende methoden aanroepen die nodig zijn voor het juist initialiseren van elementen, panes en events.
+         */
         initButtons();
         initCenterPane();
         createTopPane();
@@ -119,6 +121,7 @@ public class toevoegscherm extends BorderPane{
         });
 
     }
+
     private void addPointFields() {
         /**
          * Creeeren van een linkedlist waarin TextField elementen staan die nodig zijn voor de punten invoer.
@@ -132,27 +135,32 @@ public class toevoegscherm extends BorderPane{
         pointBox.setOrientation(Orientation.VERTICAL);
 
         for (int i = 1; i<=slider.getValue(); i++) {
+            Region fill = new Region();
             HBox questionInput = new HBox();
-            Label lbl = new Label(Integer.toString(i));
-            lbl.setPrefWidth(20);
+            Label lbl = new Label(Integer.toString(i)+ "->");
+            lbl.setMinWidth(20);
             TextField textfield = new TextField();
-            textfield.setPrefWidth(50);
+            textfield.setPrefWidth(25);
             scoreDistributionArray.add(i - 1, textfield);
-            questionInput.getChildren().addAll(lbl, scoreDistributionArray.get(i - 1));
+            questionInput.getChildren().addAll(lbl, scoreDistributionArray.get(i - 1), fill);
             pointBox.getChildren().add(questionInput);
         }
-
-
+        pointBox.setVgap(20);
     }
 
     private Label createLabel(String header) {
         /**
-         * Creeeren van label voor de verschillende headers.
+         * Creeeren van label voor de verschillende headers. Geeft extra styling als de header gelijk is aan
+         * Keuzemenu
          */
         Label label = new Label(header);
-        label.setFont(new Font("Arial", 20));
+        label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         setMaxWidth(Double.MAX_VALUE);
+        label.setPadding(new Insets(0, 0, 20, 0));
+        if (header == "Keuzemenu") {
+            label.setPrefWidth(150);
+        }
         return label;
     }
 
@@ -181,7 +189,6 @@ public class toevoegscherm extends BorderPane{
         moduleScreenBtn.setMaxWidth(Double.MAX_VALUE);
     }
 
-
     private void initCenterPane() {
         /**
          * Verschillende panes initialiseren die van belang zijn voor de centerpane van de borderpane.
@@ -209,11 +216,10 @@ public class toevoegscherm extends BorderPane{
         VBox vboxSelectionMenu = new VBox();
 
         VBox choiceBoxesInSelectionMenu = createChoiceBoxes();
-        choiceBoxesInSelectionMenu.getChildren().remove(choiceBox5);
-        choiceBoxesInSelectionMenu.getChildren().remove(choiceBox6);
+        choiceBoxesInSelectionMenu.getChildren().remove(typeChoiceBox);
+        choiceBoxesInSelectionMenu.getChildren().remove(attemptChoiceBox);
 
         vboxSelectionMenu.getChildren().addAll(createLabel("Keuzemenu"),choiceBoxesInSelectionMenu, createModuleSelectionList(), addModuleButtons());
-
         modulePane.setLeft(vboxSelectionMenu);
 
     }
@@ -246,35 +252,39 @@ public class toevoegscherm extends BorderPane{
          */
         VBox vbox = new VBox();
 
-        choiceBox1 = new ChoiceBox(); //Jaartal
-        choiceBox2 = new ChoiceBox(); //Schooljaar
-        choiceBox3 = new ChoiceBox(); //Periode
-        choiceBox4 = new ChoiceBox(); //Modules
-        choiceBox5 = new ChoiceBox(); //Toetsvorm
-        choiceBox6 = new ChoiceBox(); //Gelegenheid
+        yearChoiceBox = new ChoiceBox(); //Jaartal
+        schoolYearChoiceBox = new ChoiceBox(); //Schooljaar
+        blockChoiceBox = new ChoiceBox(); //Periode
+        courseChoiceBox = new ChoiceBox(); //Modules
+        typeChoiceBox = new ChoiceBox(); //Toetsvorm
+        attemptChoiceBox = new ChoiceBox(); //Gelegenheid
 
-        choiceBox1.getItems().addAll("Jaartal","1", "2", "3", "4");
-        choiceBox2.getItems().addAll("Schooljaar","1", "2", "3", "4");
-        choiceBox3.getItems().addAll("Periode","1", "2", "3", "4");
-        choiceBox4.getItems().addAll("Modules","?", "?", "?", "Via Database?");
-        choiceBox5.getItems().addAll("Toetsvorm","praktijk", "theorie", "aanwezigheid", "logboek");
-        choiceBox6.getItems().addAll("Gelegenheid","1", "2", "1 + 2");
+        yearChoiceBox.getItems().addAll("Jaar", new Separator(), "placeholder");
+        schoolYearChoiceBox.getItems().addAll("Leerjaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3",
+                "Jaar 4");
+        blockChoiceBox.getItems().addAll("Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3",
+                "Periode 4", "Periode 5");
+        courseChoiceBox.getItems().addAll("Module", new Separator(), "placeholder");
+        typeChoiceBox.getItems().addAll("Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets",
+                "Logboek", "Aanwezigheid", "Project");
+        attemptChoiceBox.getItems().addAll("Gelegenheid", new Separator(), "1e kans", "2e kans");
 
-        choiceBox1.setPrefWidth(150);
-        choiceBox2.setPrefWidth(150);
-        choiceBox3.setPrefWidth(150);
-        choiceBox4.setPrefWidth(150);
-        choiceBox5.setPrefWidth(150);
-        choiceBox6.setPrefWidth(150);
+        yearChoiceBox.setPrefSize(150, 30);
+        schoolYearChoiceBox.setPrefSize(150, 30);
+        blockChoiceBox.setPrefSize(150, 30);
+        courseChoiceBox.setPrefSize(150, 30);
+        typeChoiceBox.setPrefSize(150, 30);
+        attemptChoiceBox.setPrefSize(150, 30);
 
-        choiceBox1.setValue("Jaartal");
-        choiceBox2.setValue("Schooljaar");
-        choiceBox3.setValue("Periode");
-        choiceBox4.setValue("Modules");
-        choiceBox5.setValue("Toetsvorm");
-        choiceBox6.setValue("Gelegenheid");
 
-        vbox.getChildren().addAll(choiceBox1, choiceBox2, choiceBox3, choiceBox4, choiceBox5, choiceBox6);
+        yearChoiceBox.setValue("Jaar");
+        schoolYearChoiceBox.setValue("Leerjaar");
+        blockChoiceBox.setValue("Periode");
+        courseChoiceBox.setValue("Module");
+        typeChoiceBox.setValue("Toetsvorm");
+        attemptChoiceBox.setValue("Gelegenheid");
+
+        vbox.getChildren().addAll(yearChoiceBox, schoolYearChoiceBox, blockChoiceBox, courseChoiceBox, typeChoiceBox, attemptChoiceBox);
         vbox.setSpacing(20);
 
         return vbox;
@@ -288,6 +298,7 @@ public class toevoegscherm extends BorderPane{
         VBox vbox = new VBox();
         vbox.getChildren().addAll(getModuleInformation(), getSaveModuleButton());
         vbox.setVgrow(vbox.getChildren().get(0), Priority.ALWAYS);
+        vbox.setPadding(new Insets(0, 20, 0, 20));
         return vbox;
     }
 
@@ -420,6 +431,8 @@ public class toevoegscherm extends BorderPane{
         VBox vbox = new VBox();
         vbox.getChildren().addAll(getExamInformation(), getPointDistribution(), getSaveExamButton());
         vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
+        vbox.setPadding(new Insets(0, 20, 0, 20));
+
         return vbox;
     }
 
@@ -452,6 +465,7 @@ public class toevoegscherm extends BorderPane{
         VBox vbox = new VBox();
         pointBox = new FlowPane();
         vbox.getChildren().addAll(createLabel("Puntenverdeling:"), getAmountOfQuestions(), pointBox);
+        vbox.setPadding(new Insets(20, 0, 0, 0));
 
         return vbox;
     }
@@ -568,7 +582,7 @@ public class toevoegscherm extends BorderPane{
 
     private VBox createExamData() {
         /**
-         * Toets gegevens box
+         * Box met die data bevat over de toets
          */
         VBox vbox = new VBox();
         vbox.getChildren().addAll(createLabel("Toets Gegevens: "), getExamData());
@@ -578,7 +592,8 @@ public class toevoegscherm extends BorderPane{
 
     private VBox getExamData() {
         /**
-         * Dropdown menu's van de toets gegevens
+         * Dropdown menu's van de toets gegevens. Bevat de mogelijkheden die kunnnen worden ingevoerd voor het
+         * aanpassen van toetsgegevens en wijzigen van toetsgegevens, de styling aan de menu's wordt ook gedaan hier,
          */
         VBox vbox = new VBox();
 
@@ -589,11 +604,13 @@ public class toevoegscherm extends BorderPane{
         choiceBox11 = new ChoiceBox(); //Periode
         datePicker = new DatePicker(); //Datum
 
-        choiceBox7.getItems().addAll("Module","1", "2", "3", "4");
-        choiceBox8.getItems().addAll("Toetsvorm","1", "2", "3", "4");
-        choiceBox9.getItems().addAll("Gelegenheid","1", "2", "3", "4");
-        choiceBox10.getItems().addAll("Leerjaar","?", "?", "?", "Via Database?");
-        choiceBox11.getItems().addAll("Periode","praktijk", "theorie", "aanwezigheid", "logboek");
+        choiceBox7.getItems().addAll("Module", new Separator(), "placeholder");
+        choiceBox8.getItems().addAll("Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets",
+                "Logboek", "Aanwezigheid", "Project");
+        choiceBox9.getItems().addAll("Gelegenheid", new Separator(), "1e kans", "2e kans");
+        choiceBox10.getItems().addAll("Jaar", new Separator(), "placeholder");
+        choiceBox11.getItems().addAll("Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3",
+                "Periode 4", "Periode 5");
 
         choiceBox7.setPrefWidth(150);
         choiceBox8.setPrefWidth(150);
@@ -605,7 +622,7 @@ public class toevoegscherm extends BorderPane{
         choiceBox7.setValue("Module");
         choiceBox8.setValue("Toetsvorm");
         choiceBox9.setValue("Gelegenheid");
-        choiceBox10.setValue("Leerjaar");
+        choiceBox10.setValue("Jaar");
         choiceBox11.setValue("Periode");
 
         vbox.getChildren().addAll(choiceBox7, choiceBox8, choiceBox9, choiceBox10, choiceBox11, datePicker);
