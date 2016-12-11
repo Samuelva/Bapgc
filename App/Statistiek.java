@@ -11,49 +11,47 @@ import javafx.scene.paint.Color;
 
 import javax.swing.*;
 
-
 /**
  * Created by Samuel on 5-12-2016.
  * Deze klasse maakt het statistiek gedeelte aan en kan deze uitbreiden/aanpassen
  */
 public class Statistiek {
-    private VBox statisticsBox;
-    private ScrollPane statisticsScrollPane;
-    private HBox statisticsGridBox;
-    private BorderPane graphButtonBox;
-    private BorderPane graphPane;
+    private VBox statisticsBox; // Box met toets statistieken, grafiekopties en de grafiek
+    private HBox statisticsGridBox; // Box waarin gridboxen met statistieken in zitten
+    private ScrollPane statisticsScrollPane; // Scrollpane met de gridbox waarin de statistieken in zitten
+    private BorderPane graphButtonBox; // Box met grafiek optie knoppen
+    private BorderPane graphPane; // Pane met de grafiek
 
     private ComboBox graphButton;
     private Button saveButton;
-    private ImageView graph;
+    private ImageView graph;  // Container met grafiek foto
 
     public Statistiek() {
-        // Box met toets statistieken, grafiekopties en de grafiek
+        /**
+         * Maakt alle boxjes aan voor de layout van het statistiek gedeelte
+         */
         statisticsBox = new VBox();
-        // Box waarin gridboxen met statistieken in zitten
         statisticsGridBox = new HBox();
-        // Scrollpane met de gridbox waarin de statistieken in zitten
         statisticsScrollPane = new ScrollPane();
-        // Box met grafiek optie knoppen
         graphButtonBox = new BorderPane();
-        // Pane met de grafiek
         graphPane = new BorderPane();
-        // Container met grafiek foto
         graph = new ImageView();
-        // Grafiek dimensies
-        graph.setFitWidth(700);
+        graph.setFitWidth(700); // Grafiek dimensies
         graph.setFitHeight(300);
 
-        graphButton = new ComboBox();
+        graphButton = new ComboBox(); // ComboBox voor het instellen van de soort grafiek
         graphButton.setPrefWidth(150);
         graphButton.setPrefHeight(30);
         graphButton.setPromptText("Grafiek Soort");
-        graphButton.getItems().addAll("Boxplot", "Histogram");
+        graphButton.getItems().addAll("Boxplot", "Histogram"); // Inhoud comboBox
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
         saveButton.setPrefHeight(30);
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
+                /**
+                 * Functie voor het openen van een systeem menu om de grafiek op te slaan.
+                 */
                 try {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (ClassNotFoundException e1) {
@@ -86,12 +84,13 @@ public class Statistiek {
         VBox.setVgrow(graphPane, Priority.ALWAYS);
     }
 
-    /**
-     * Met deze functie kan er een boxje met statistieken toegevoegd worden aan de scrollbare pane.
-     * Gebruik: klasseInstantie.addStatistics(10, 30, 40, 30, 40); voor als gemiddelde cijfer
-     * erbij moet, anders klasseInstantie.addStatistics(30, 40, 50, 30);
-     */
+
     public void addStatistics(int[] values) {
+        /**
+         * Met deze functie kan er een boxje met statistieken toegevoegd worden aan de scrollbare pane.
+         * Gebruik: klasseInstantie.addStatistics(10, 30, 40, 30, 40); voor als gemiddelde cijfer
+         * erbij moet, anders klasseInstantie.addStatistics(30, 40, 50, 30);
+         */
         GridPane statisticsGrid = new GridPane();
 
         Label averageGradeLbl = new Label("Gemiddelde cijfer: ");
@@ -142,14 +141,18 @@ public class Statistiek {
         statisticsGridBox.getChildren().add(statisticsGrid);
     }
 
-    // Returned de box met toets statistieken, grafiekopties en de grafiek
     public VBox returnStatisticsBox() {
+        /**
+         * Returned de box met toets statistieken, grafiekopties en de grafiek
+         */
         statisticsBox.setPadding(new Insets(5, 5, 5, 10));
         return statisticsBox;
     }
 
-    // Input is een link/path naar de grafiek
     public void setGraph(String graphFile) {
+        /**
+         * Input is een link/path naar de grafiek
+         */
         Image graphImage = new Image(graphFile);
         graph.setImage(graphImage);
     }

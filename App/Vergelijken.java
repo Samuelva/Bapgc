@@ -3,38 +3,40 @@ package sample;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
+/**
+ * Klasse voor het vergelijkscherm.
+ */
 public class Vergelijken extends StackPane {
-    private TabPane tabPane;
-    private Tab testTab;
-    private Tab moduleTab;
-    private Tab periodTab;
 
-    private HBox testTabBox = new HBox();
-    private HBox moduleTabBox = new HBox();
-    private HBox periodTabBox = new HBox();
+    private TabPane tabPane; // paneel met de tabs
+    private Tab testTab; // Toets tab
+    private Tab moduleTab; // Module tab
+    private Tab periodTab; // PeriodeTab
 
+    private HBox testTabBox; // Box met inhoud voor de toetstab
+    private HBox moduleTabBox; // Box met inhoud voor de moduletab
+    private HBox periodTabBox; // Box met inhoud voor periodetab
+
+    // Instanties voor de keuzemenu's voor elke tab
     public Keuzemenu testChoiceMenu;
     public Keuzemenu moduleChoiceMenu;
     public Keuzemenu periodChoiceMenu;
 
+    // Instanties voor de statistieken voor elke tab
     public Statistiek testStatistics;
     public Statistiek moduleStatistics;
     public Statistiek periodStatistics;
 
 
     public Vergelijken(){
-        createTabs();
-        createChoiceMenus();
-        createStatistics();
-
-        testTabBox.getChildren().addAll(testChoiceMenu.getTestMenu(), testStatistics.returnStatisticsBox());
-        moduleTabBox.getChildren().addAll(moduleChoiceMenu.getModuleMenu(), moduleStatistics.returnStatisticsBox());
-        periodTabBox.getChildren().addAll(periodChoiceMenu.getPeriodMenu(), periodStatistics.returnStatisticsBox());
-
-        testTab.setContent(testTabBox);
-        moduleTab.setContent(moduleTabBox);
-        periodTab.setContent(periodTabBox);
-
+        /**
+         * Hoofdfunctie.
+         * Roept de functies aan om het tabmenu, keuzemenu en statistieken gedeelte aan te maken.
+         */
+        createTabs(); // Initieerd de tabs
+        createChoiceMenus(); // Maakt instanties voor keuzemenu
+        createStatistics(); // Maakt instanties voor statistieken
+        fillTabs(); // Maakt boxjes voor elke tab en stopt deze in de tabs
 
         this.getChildren().add(tabPane);
 
@@ -66,8 +68,10 @@ public class Vergelijken extends StackPane {
 
     }
 
-    // Maakt de tabs
     private void createTabs() {
+        /**
+         * Maakt het tabmenu met tabs aan
+         */
         tabPane = new TabPane();
         testTab = new Tab();
         moduleTab = new Tab();
@@ -90,15 +94,38 @@ public class Vergelijken extends StackPane {
     }
 
     private void createChoiceMenus() {
+        /**
+         * Initieerd instanties voor het keuzemenu
+         */
         testChoiceMenu = new Keuzemenu();
         moduleChoiceMenu = new Keuzemenu();
         periodChoiceMenu = new Keuzemenu();
     }
 
     private void createStatistics() {
+        /**
+         * Initieerd instanties voor het statistiek gedeelte
+         */
         testStatistics = new Statistiek();
         moduleStatistics = new Statistiek();
         periodStatistics = new Statistiek();
+    }
+
+    private void fillTabs() {
+        /**
+         * maakt boxjes voor de tabs aan, vult deze, en past het toe op de tabs
+         */
+        testTabBox = new HBox();
+        moduleTabBox = new HBox();
+        periodTabBox = new HBox();
+
+        testTabBox.getChildren().addAll(testChoiceMenu.getTestMenu(), testStatistics.returnStatisticsBox());
+        moduleTabBox.getChildren().addAll(moduleChoiceMenu.getModuleMenu(), moduleStatistics.returnStatisticsBox());
+        periodTabBox.getChildren().addAll(periodChoiceMenu.getPeriodMenu(), periodStatistics.returnStatisticsBox());
+
+        testTab.setContent(testTabBox);
+        moduleTab.setContent(moduleTabBox);
+        periodTab.setContent(periodTabBox);
     }
 
 }
