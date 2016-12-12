@@ -41,12 +41,12 @@ public class Statistiek {
 
         graphButton = new ComboBox(); // ComboBox voor het instellen van de soort grafiek
         graphButton.setPrefWidth(150);
-        graphButton.setPrefHeight(30);
+        graphButton.setMinHeight(30);
         graphButton.setPromptText("Grafiek Soort");
         graphButton.getItems().addAll("Boxplot", "Histogram"); // Inhoud comboBox
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
-        saveButton.setPrefHeight(30);
+        saveButton.setMinHeight(30);
         saveButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 /**
