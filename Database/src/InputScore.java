@@ -14,29 +14,25 @@ public class InputScore {
             " WHERE StudentID=%s AND VraagID=%s;";
     private Connection connection;
     private Statement statement;
-    private QueryString studentID = new QueryString();
-    private QueryString vraagID = new QueryString();
 
     public InputScore(Connection connection) {
         this.connection = connection;
     }
 
-    public boolean Insert(String studentIDString, String vraagIDString) {
+    public boolean Insert(Integer studentID, Integer vraagID) {
         try {
-            this.studentID.insert(studentIDString);
-            this.vraagID.insert(vraagIDString);
             this.statement = connection.createStatement();
             String query = String.format(
                     this.SCORESQL1,
-                    this.studentID.getString(),
-                    this.vraagID.getString()
+                    studentID,
+                    vraagID
             );
             System.out.println(query);
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
             if (e.getMessage().contains(
-                    "key value violates unique constraint \"module_pkey\""
+                    "key value violates unique constraint \"score_pkey\""
             )) {
                 System.out.println("Primary key exists");
             }
@@ -51,17 +47,15 @@ public class InputScore {
         }
     }
 
-    public boolean UpdateScore(String studentIDString, String vraagIDString,
+    public boolean UpdateScore(Integer studentID, Integer vraagID,
                                Integer score) {
         try {
-            this.studentID.insert(studentIDString);
-            this.vraagID.insert(vraagIDString);
             this.statement = connection.createStatement();
             String query = String.format(
                     this.SCORESQL2,
                     score,
-                    this.studentID.getString(),
-                    this.vraagID.getString()
+                    studentID,
+                    vraagID
             );
             System.out.println(query);
             statement.executeUpdate(query);

@@ -6,12 +6,14 @@ import java.sql.Statement;
  */
 class InputToets {
     private final String MODULESQL = "INSERT INTO TOETS" +
-            " (Jaar, Schooljaar, Periode, ModuleID, Toetsvorm, Gelegenheid, Cesuur)" +
+            " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
+            " Gelegenheid, Cesuur)" +
             " VALUES (%s, %s, %s, %s, %s, %s, %s);";
     private Connection connection;
     private QueryString jaar = new QueryString();
     private QueryString schooljaar = new QueryString();
     private QueryString periode = new QueryString();
+    private QueryString moduleCode = new QueryString();
     private QueryString toetsvorm = new QueryString();
     private QueryString gelegenheid = new QueryString();
     private QueryString cesuur = new QueryString();
@@ -21,13 +23,14 @@ class InputToets {
     }
 
     public boolean insert(String jaarString, String schooljaarString,
-                          String periodeString, Integer moduleID,
+                          String periodeString, String moduleCodeString,
                           String toetsvormString, String gelegenheidString,
                           String cesuurString) {
         try {
             this.jaar.insert(jaarString);
             this.schooljaar.insert(schooljaarString);
             this.periode.insert(periodeString);
+            this.moduleCode.insert(moduleCodeString);
             this.toetsvorm.insert(toetsvormString);
             this.gelegenheid.insert(gelegenheidString);
             this.cesuur.insert(cesuurString);
@@ -38,7 +41,7 @@ class InputToets {
                     this.jaar.getString(),
                     this.schooljaar.getString(),
                     this.periode.getString(),
-                    moduleID,
+                    this.moduleCode.getString(),
                     this.toetsvorm.getString(),
                     this.gelegenheid.getString(),
                     this.cesuur.getString()
@@ -47,11 +50,19 @@ class InputToets {
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            if (e.getMessage().contains(
+                    "key value violates unique constraint \"toets_pkey\""
+            )) {
+                System.out.println("Primary key exists");
+            }
+            else if (e.getMessage().contains("violates not-null constraint")) {
+                System.out.println("False input vars");
+            } else {
+                System.err.println(
+                        e.getClass().getName() + ": " + e.getMessage()
+                );
+            }
             return false;
         }
-    }
-
-    private void checkPresence(Statement statement) {
     }
 }

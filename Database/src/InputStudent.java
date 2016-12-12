@@ -10,35 +10,42 @@ class InputStudent {
             " VALUES (%s, %s, %s);";
     private Connection connection;
     private QueryString naam = new QueryString();
-    private QueryString klasID = new QueryString();
-    private QueryString studentID = new QueryString();
+    private QueryString klas = new QueryString();
 
     public InputStudent(Connection connection) {
         this.connection = connection;
     }
 
-    public boolean insert(String studentIDString, String naamString, String klasIDString) {
+    public boolean insert(Integer studentID, String naamString,
+                          String klasIDString) {
         try {
-            this.studentID.insert(studentIDString);
             this.naam.insert(naamString);
-            this.klasID.insert(klasIDString);
+            this.klas.insert(klasIDString);
 
             Statement statement = connection.createStatement();
             String query = String.format(
                     this.MODULESQL,
-                    this.studentID.getString(),
+                    studentID,
                     this.naam.getString(),
-                    this.klasID.getString()
+                    this.klas.getString()
             );
             System.out.println(query);
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            if (e.getMessage().contains(
+                    "key value violates unique constraint \"student_pkey\""
+            )) {
+                System.out.println("Primary key exists");
+            }
+            else if (e.getMessage().contains("violates not-null constraint")) {
+                System.out.println("False input vars");
+            } else {
+                System.err.println(
+                        e.getClass().getName() + ": " + e.getMessage()
+                );
+            }
             return false;
         }
-    }
-
-    private void checkPresence(Statement statement) {
     }
 }

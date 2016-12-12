@@ -16,7 +16,8 @@ class InputVraag {
         this.connection = connection;
     }
 
-    public boolean insert(String vraagnummerString, Integer max, Integer toetsID, String gokvraagString) {
+    public boolean insert(String vraagnummerString, Integer max,
+                          Integer toetsID, String gokvraagString) {
         try {
             this.vraagnummer.insert(vraagnummerString);
             this.gokvraag.insert(gokvraagString);
@@ -33,11 +34,19 @@ class InputVraag {
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            if (e.getMessage().contains(
+                    "key value violates unique constraint \"vraag_pkey\""
+            )) {
+                System.out.println("Primary key exists");
+            }
+            else if (e.getMessage().contains("violates not-null constraint")) {
+                System.out.println("False input vars");
+            } else {
+                System.err.println(
+                        e.getClass().getName() + ": " + e.getMessage()
+                );
+            }
             return false;
         }
-    }
-
-    private void checkPresence(Statement statement) {
     }
 }

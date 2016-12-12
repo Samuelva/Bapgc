@@ -22,12 +22,12 @@ public class DatabaseConn {
     );
     private final String STUDENTSQL = "CREATE TABLE IF NOT EXISTS" +
             " STUDENT " +
-            "(StudentID CHAR(8) PRIMARY KEY     NOT NULL," +
+            "(StudentID SERIAL  PRIMARY KEY     NOT NULL," +
             " Naam      TEXT                    NOT NULL," +
             " Klas      TEXT                    NOT NULL);";
     private final String SCORESQL = "CREATE TABLE IF NOT EXISTS" +
             " SCORE " +
-            "(StudentID CHAR(8)                 NOT NULL " +
+            "(StudentID SERIAL                  NOT NULL " +
             "references STUDENT(StudentID)," +
             " VraagID   SERIAL                  NOT NULL " +
             "references VRAAG(VraagID)," +
@@ -47,8 +47,8 @@ public class DatabaseConn {
             " Jaar          CHAR(4)                 NOT NULL," +
             " Schooljaar    CHAR(1)                 NOT NULL," +
             " Periode       CHAR(1)                 NOT NULL," +
-            " ModuleID      SERIAL                  NOT NULL " +
-            "references MODULE(ModuleID)," +
+            " ModuleCode    TEXT                    NOT NULL " +
+            "references MODULE(ModuleCode)," +
             " Toetsvorm     TEXT                    NOT NULL," +
             " Gelegenheid   CHAR(1)                 NOT NULL," +
             " Cesuur        TEXT                    NOT NULL);";
@@ -62,6 +62,7 @@ public class DatabaseConn {
     private InputToets inputToets;
     private InputVraag inputVraag;
     private InputStudent inputStudent;
+    private InputScore inputScore;
 
     public DatabaseConn() {
         /* This method is the constructor for the class.
@@ -94,6 +95,7 @@ public class DatabaseConn {
             inputToets = new InputToets(connection);
             inputVraag = new InputVraag(connection);
             inputStudent = new InputStudent(connection);
+            inputScore = new InputScore(connection);
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
@@ -136,34 +138,51 @@ public class DatabaseConn {
                 omschrijving
         );
     }
-    public void inputToets(String jaar, String schooljaar, String periode,
-                           Integer moduleID, String toetsvorm,
+    public void InputToets(String jaar, String schooljaar, String periode,
+                           String moduleCode, String toetsvorm,
                            String gelegenheid, String cesuur) {
         this.inputToets.insert(
                 jaar,
                 schooljaar,
                 periode,
-                moduleID,
+                moduleCode,
                 toetsvorm,
                 gelegenheid,
                 cesuur
         );
     }
 
-    public void inputVraag(String vraagnummer, Integer max, Integer toetsID, String gokvraag) {
+    public void InputVraag(String vraagnummer, Integer maxScore,
+                           Integer toetsID, String gokvraag) {
         this.inputVraag.insert(
                 vraagnummer,
-                max,
+                maxScore,
                 toetsID,
                 gokvraag
         );
     }
 
-    public void inputStudent(String studentID, String naam, String klasID) {
+    public void InputStudent(Integer studentID, String naam, String klasID) {
         this.inputStudent.insert(
                 studentID,
                 naam,
                 klasID
+        );
+    }
+
+    public void InputScore(Integer studentID, Integer vraagID) {
+        this.inputScore.Insert(
+                studentID,
+                vraagID
+        );
+    }
+
+    public void UpdateScore(Integer studentID, Integer vraagID,
+                            Integer score) {
+        this.inputScore.UpdateScore(
+                studentID,
+                vraagID,
+                score
         );
     }
 }
