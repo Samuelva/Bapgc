@@ -39,7 +39,8 @@ public class DatabaseConn {
             " Vraagnummer   VARCHAR                 NOT NULL," +
             " MaxScore      SMALLINT                NOT NULL," +
             " ToetsID       SERIAL                  NOT NULL " +
-            "references TOETS(ToetsID));";
+            "references TOETS(ToetsID)," +
+            " Gokvraag      VARCHAR                 NOT NULL);";
     private final String TOETSSQL = "CREATE TABLE IF NOT EXISTS" +
             " TOETS " +
             "(ToetsID       SERIAL  PRIMARY KEY     NOT NULL," +
@@ -50,8 +51,7 @@ public class DatabaseConn {
             "references MODULE(ModuleID)," +
             " Toetsvorm     TEXT                    NOT NULL," +
             " Gelegenheid   CHAR(1)                 NOT NULL," +
-            " Cesuur        TEXT                    NOT NULL," +
-            " PuntenDoorGokkans SMALLINT            NOT NULL);";
+            " Cesuur        TEXT                    NOT NULL);";
     private final String MODULESQL = "CREATE TABLE IF NOT EXISTS" +
             " MODULE " +
             "(ModuleID      SERIAL  PRIMARY KEY     NOT NULL," +
@@ -60,6 +60,9 @@ public class DatabaseConn {
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private InputModule inputModule;
+    private InputToets inputToets;
+    private InputVraag inputVraag;
+    private InputStudent inputStudent;
 
     public DatabaseConn() {
         /* This method is the constructor for the class.
@@ -89,6 +92,9 @@ public class DatabaseConn {
             }
             statement.close();
             inputModule = new InputModule(connection);
+            inputToets = new InputToets(connection);
+            inputVraag = new InputVraag(connection);
+            inputStudent = new InputStudent(connection);
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
@@ -126,9 +132,39 @@ public class DatabaseConn {
     }
 
     public void inputModule(String moduleCode, String omschrijving) {
-        inputModule.insert(
+        this.inputModule.insert(
                 moduleCode,
                 omschrijving
+        );
+    }
+    public void inputToets(String jaar, String schooljaar, String periode,
+                           Integer moduleID, String toetsvorm,
+                           String gelegenheid, String cesuur) {
+        this.inputToets.insert(
+                jaar,
+                schooljaar,
+                periode,
+                moduleID,
+                toetsvorm,
+                gelegenheid,
+                cesuur
+        );
+    }
+
+    public void inputVraag(String vraagnummer, Integer max, Integer toetsID, String gokvraag) {
+        this.inputVraag.insert(
+                vraagnummer,
+                max,
+                toetsID,
+                gokvraag
+        );
+    }
+
+    public void inputStudent(String studentID, String naam, String klasID) {
+        this.inputStudent.insert(
+                studentID,
+                naam,
+                klasID
         );
     }
 }
