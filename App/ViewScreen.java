@@ -1,10 +1,12 @@
 /* Changelog:
- * 1-12-2016    Davy Cats   Start basis script schrijven.
- * 4-12-2016    Davy Cats   Basis script af.
+ * 01-12-2016    Davy Cats   Start basis script schrijven.
+ * 04-12-2016    Davy Cats   Basis script af.
+ * 08-12-2016    Davy Cats   Layout aangepast.
+ * 09-12-2016    Davy Cats   ChoiceBox labels aangepast.
  *
  * Deze class maakt een StackPane dat het inzage scherm bevat.
  */
-package Test;
+package sample;
 
 import java.util.Arrays;
 import javafx.beans.property.SimpleStringProperty;
@@ -74,40 +76,48 @@ public class ViewScreen extends StackPane{
                 "Jaar", new Separator(), "placeholder"));
         this.yearChoiceBox.setValue("Jaar");
         this.yearChoiceBox.setPrefWidth(150);
+        this.yearChoiceBox.setPrefHeight(30);
         //Dropdown voor school jaar
         this.schoolYearChoiceBox = new ChoiceBox(
                 FXCollections.observableArrayList(
-                        "School Jaar", new Separator(), "1", "2", "3", "4"));
-        this.schoolYearChoiceBox.setValue("School Jaar");
+                        "Leerjaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3",
+                        "Jaar 4"));
+        this.schoolYearChoiceBox.setValue("Leerjaar");
         this.schoolYearChoiceBox.setPrefWidth(150);
+        this.schoolYearChoiceBox.setPrefHeight(30);
         //Dropdown voor periode
         this.blockChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Periode", new Separator(), "1", "2", "3", "4", "5"));
+                "Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3", 
+                "Periode 4", "Periode 5"));
         this.blockChoiceBox.setValue("Periode");
         this.blockChoiceBox.setPrefWidth(150);
+        this.blockChoiceBox.setPrefHeight(30);
         //Dropdown voor module
         this.courseChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "module", new Separator(), "placeholder"));
-        this.courseChoiceBox.setValue("module");
+                "Module", new Separator(), "placeholder"));
+        this.courseChoiceBox.setValue("Module");
         this.courseChoiceBox.setPrefWidth(150);
+        this.courseChoiceBox.setPrefHeight(30);
         //Dropdown voor toetsvorm
         this.typeChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "toetsvorm", new Separator(), "theorie", "praktijk", "logboek",
-                "aanwezigheid", "project"));
-        this.typeChoiceBox.setValue("toetsvorm");
+                "Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets", 
+                "Logboek", "Aanwezigheid", "Project"));
+        this.typeChoiceBox.setValue("Toetsvorm");
         this.typeChoiceBox.setPrefWidth(150);
+        this.typeChoiceBox.setPrefHeight(30);
         //Dropdown voor gelegenheid
         this.attemptChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "gelegenheid", new Separator(), "placeholder"));
-        this.attemptChoiceBox.setValue("gelegenheid");
+                "Gelegenheid", new Separator(), "1e kans", "2e kans"));
+        this.attemptChoiceBox.setValue("Gelegenheid");
         this.attemptChoiceBox.setPrefWidth(150);
+        this.attemptChoiceBox.setPrefHeight(30);
         //leege ruimte
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);
         //laad knop
         this.loadBtn = new Button("Laad toets");
         this.loadBtn.setPrefWidth(150);
-        this.loadBtn.setMinHeight(50);
+        this.loadBtn.setPrefHeight(30);
         return new VBox(label, this.yearChoiceBox, 
                 this.schoolYearChoiceBox,this.blockChoiceBox, 
                 this.courseChoiceBox, this.typeChoiceBox, this.attemptChoiceBox,
@@ -158,6 +168,7 @@ public class ViewScreen extends StackPane{
                 + "percentiel:\nCohen-Schotanus censuur:\n");
         HBox percentileBox = makePercentileBox();
         this.calculateBtn = new Button("Bereken");
+        this.calculateBtn.setPrefHeight(30);
         return new VBox(firstLabel, this.qualityText, secondLabel, 
                 this.cohenText, percentileBox, this.calculateBtn);
     }
@@ -196,12 +207,15 @@ public class ViewScreen extends StackPane{
                         "Boxplot", "Histogram"));
         this.plotChoiceBox.setValue("Boxplot");
         this.plotChoiceBox.setPrefWidth(133);
+        this.plotChoiceBox.setPrefHeight(30);
         this.questionChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Cijfer", "Totaal", new Separator(), "placeholder"));
         this.questionChoiceBox.setValue("Cijfer");
         this.questionChoiceBox.setPrefWidth(133);
+        this.questionChoiceBox.setPrefHeight(30);
         this.savePlotBtn = new Button("Afbeelding opslaan");
         this.savePlotBtn.setPrefWidth(133);
+        this.savePlotBtn.setPrefHeight(30);
         HBox hBox = new HBox(this.questionChoiceBox, this.plotChoiceBox,
                 this.savePlotBtn);
         return new VBox(this.plotImage, hBox);
@@ -228,7 +242,8 @@ public class ViewScreen extends StackPane{
      */
     private HBox makeMiddleBox(){
         this.exportBtn = new Button("Exporteer CSV");
-        this.exportBtn.setPrefWidth(235);
+        this.exportBtn.setPrefWidth(240);
+        this.exportBtn.setPrefHeight(30);
         Region leftFill = new Region();
         HBox.setHgrow(leftFill, Priority.ALWAYS);
         Label questionLabel = new Label("Vragen");
@@ -301,9 +316,8 @@ public class ViewScreen extends StackPane{
      */
     private VBox makeRightBox(){
         HBox topBox = makeTopBox();
-        topBox.setPrefHeight(300);
+        topBox.setPrefHeight(280);
         HBox middleBox = makeMiddleBox();
-        middleBox.setSpacing(5);
         makeTable();
         return new VBox(topBox, middleBox, this.pointsTable);
     }
