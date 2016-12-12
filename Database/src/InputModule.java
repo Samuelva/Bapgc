@@ -1,7 +1,4 @@
-import org.postgresql.util.PSQLException;
-
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 /**
@@ -12,6 +9,7 @@ class InputModule {
             " (ModuleCode, Omschrijving)" +
             " VALUES (%s, %s);";
     private Connection connection;
+    private Statement statement;
     private QueryString moduleCode = new QueryString();
     private QueryString omschrijving = new QueryString();
 
@@ -19,12 +17,11 @@ class InputModule {
         this.connection = connection;
     }
 
-    public boolean insert(String moduleCodeString, String omschrijvingString) {
+    public boolean Insert(String moduleCodeString, String omschrijvingString) {
         try {
             this.moduleCode.insert(moduleCodeString);
             this.omschrijving.insert(omschrijvingString);
-
-            Statement statement = connection.createStatement();
+            this.statement = connection.createStatement();
             String query = String.format(
                     this.MODULESQL,
                     this.moduleCode.getString(),
@@ -34,11 +31,19 @@ class InputModule {
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            //System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            if (e.getMessage().contains(
+                    "key value violates unique constraint \"module_pkey\""
+            )) {
+                System.out.println("Primary key exists");
+            }
+            else if (e.getMessage().contains("violates not-null constraint")) {
+                System.out.println("False input vars");
+            } else {
+                System.err.println(
+                        e.getClass().getName() + ": " + e.getMessage()
+                );
+            }
             return false;
         }
-    }
-
-    private void checkPresence(Statement statement) {
     }
 }

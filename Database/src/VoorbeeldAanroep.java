@@ -4,7 +4,7 @@
 public class VoorbeeldAanroep {
     public static void main(String[] args) {
         DatabaseConn d = new DatabaseConn();
-        d.inputModule("Bapgc", "grid computing");
-        d.closeConnection();
+        d.InputModule("Bapgc", "grid computing");
+        d.CloseConnection();
     }
 }

@@ -1,5 +1,3 @@
-import java.util.regex.Pattern;
-
 /**
  * Created by Timothy.
  */

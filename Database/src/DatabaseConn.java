@@ -39,7 +39,8 @@ public class DatabaseConn {
             " Vraagnummer   VARCHAR                 NOT NULL," +
             " MaxScore      SMALLINT                NOT NULL," +
             " ToetsID       SERIAL                  NOT NULL " +
-            "references TOETS(ToetsID));";
+            "references TOETS(ToetsID)," +
+            " Gokvraag      VARCHAR                 NOT NULL);";
     private final String TOETSSQL = "CREATE TABLE IF NOT EXISTS" +
             " TOETS " +
             "(ToetsID       SERIAL  PRIMARY KEY     NOT NULL," +
@@ -50,12 +51,10 @@ public class DatabaseConn {
             "references MODULE(ModuleID)," +
             " Toetsvorm     TEXT                    NOT NULL," +
             " Gelegenheid   CHAR(1)                 NOT NULL," +
-            " Cesuur        TEXT                    NOT NULL," +
-            " PuntenDoorGokkans SMALLINT            NOT NULL);";
+            " Cesuur        TEXT                    NOT NULL);";
     private final String MODULESQL = "CREATE TABLE IF NOT EXISTS" +
             " MODULE " +
-            "(ModuleID      SERIAL  PRIMARY KEY     NOT NULL," +
-            " ModuleCode    TEXT                    NOT NULL, " +
+            "(ModuleCode    TEXT    PRIMARY KEY     NOT NULL, " +
             " Omschrijving  TEXT);";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
@@ -84,7 +83,7 @@ public class DatabaseConn {
             }
             for (String table : TABLES) {
                 if (!this.tablesPresent.contains(table)) {
-                    makeTable(statement, table);
+                    MakeTable(statement, table);
                 }
             }
             statement.close();
@@ -95,7 +94,7 @@ public class DatabaseConn {
         }
     }
 
-    private void makeTable(Statement statement, String table) {
+    private void MakeTable(Statement statement, String table) {
         try {
             switch (table) {
                 case "student": statement.executeUpdate(STUDENTSQL); break;
@@ -116,7 +115,7 @@ public class DatabaseConn {
         return this.connection;
     }
 
-    public void closeConnection() {
+    public void CloseConnection() {
         try {
             this.connection.close();
         } catch (Exception e) {
@@ -125,8 +124,8 @@ public class DatabaseConn {
         }
     }
 
-    public void inputModule(String moduleCode, String omschrijving) {
-        inputModule.insert(
+    public void InputModule(String moduleCode, String omschrijving) {
+        inputModule.Insert(
                 moduleCode,
                 omschrijving
         );
