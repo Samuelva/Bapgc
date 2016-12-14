@@ -13,7 +13,7 @@ public class Main extends Application {
     private static Scene scene;
     private static VBox frame;
     private static ViewScreen view;
-    private static toevoegscherm toevoeg;
+    private static Toevoegscherm toevoeg;
     private static Invoeren invoer;
     private static Vergelijken vergelijk;
     private static TabPane tabPane;
@@ -59,7 +59,7 @@ public class Main extends Application {
     }
 
     private static void initTabs(){
-        toevoeg = new toevoegscherm();
+        toevoeg = new Toevoegscherm();
         toevoegen.setContent(toevoeg);
 
         invoer = new Invoeren();

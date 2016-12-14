@@ -21,7 +21,7 @@ import java.util.LinkedList;
  * Diego: 07-12-2016,  Toevgoegscherm is af
  * Diego: 09-12-2016, Documenteren van het script
  */
-public class toevoegscherm extends BorderPane{
+public class Toevoegscherm extends BorderPane{
 
     public Button showExamBtn;
     private Button newExamBtn;
@@ -71,7 +71,7 @@ public class toevoegscherm extends BorderPane{
     private Slider slider; //Aantal vragen
     private FlowPane pointBox;
 
-    public toevoegscherm() {
+    public Toevoegscherm() {
         /**
          * Verschillende methoden aanroepen die nodig zijn voor het juist initialiseren van elementen, panes en events.
          */
