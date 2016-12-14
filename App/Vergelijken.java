@@ -89,7 +89,7 @@ public class Vergelijken extends StackPane {
         // Goedkope fix
         // Vergelijkscherm past zich niet aan aan de veticale hoogte van de applet voor
         // een of andere reden.
-        tabPane.setPrefHeight(1080);
+        tabPane.setPrefHeight(500);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
     }
 
