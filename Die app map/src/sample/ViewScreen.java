@@ -3,27 +3,33 @@
  * 04-12-2016    Davy Cats   Basis script af.
  * 08-12-2016    Davy Cats   Layout aangepast.
  * 09-12-2016    Davy Cats   ChoiceBox labels aangepast.
+ * 17-12-2016    Davy Cats   Update funties toegevoegd.
  *
  * Deze class maakt een StackPane dat het inzage scherm bevat.
  */
 package sample;
 
 import java.util.Arrays;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -34,10 +40,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
-/**
- *
- * @author davy
- */
 public class ViewScreen extends StackPane{
     protected ChoiceBox schoolYearChoiceBox;
     protected ChoiceBox yearChoiceBox;
@@ -59,8 +61,27 @@ public class ViewScreen extends StackPane{
     protected Slider percentileSlider;
     protected Label percentileLabel;
     protected ImageView plotImage;
-    
-    
+
+    /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
+     * met een margin van 5 en een breedte van 150. Daarnaast wordt het
+     * rechter gedeelte gezet dat de rest van het scherm opvult.
+     */
+    protected ViewScreen(){
+        VBox selectionBox = makeSelectionBox();
+        selectionBox.setMinWidth(150);
+        selectionBox.setSpacing(20);
+        HBox.setMargin(selectionBox, new Insets(5));
+
+        VBox rightBox = makeRightBox();
+        rightBox.setSpacing(10);
+        HBox.setHgrow(rightBox, Priority.ALWAYS);
+        HBox.setMargin(rightBox, new Insets(5));
+
+        HBox mainBox = new HBox(selectionBox, rightBox);
+        mainBox.setSpacing(20);
+        this.getChildren().add(mainBox);
+    }
+
     /* Deze functie maakt een de dropdown menu's aan die gebruikt kunnen
      * worden voor het selecteren van een toets. Ook wordt er een knop
      * aangemaakt die gebruikt wordt voor het laden van een toets.
@@ -68,7 +89,7 @@ public class ViewScreen extends StackPane{
     private VBox makeSelectionBox(){
         //label
         Label label = new Label("Keuzemenu");
-        label.setFont(new Font("Arial", 20));
+        label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(150);
         //Dropdown voor jaar
@@ -116,13 +137,33 @@ public class ViewScreen extends StackPane{
         VBox.setVgrow(fill, Priority.ALWAYS);
         //laad knop
         this.loadBtn = new Button("Laad toets");
+
+        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
+        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                //ENKEL VOOR TETSEN
+                updateCohen("hello", "oho", "oh oh");
+                updateQualityStats("test", "1", "2");
+                updateStats("hey", "how", "are", "you", "doing",
+                        "?", "Oh", "fine", "I", "guess",
+                        "...");
+                String[] testArray = {"1.1", "1.2", "1.3"};
+                setupTable(testArray);
+                String[][] testArray2 = {{"s000000", "1", "0", "0", "0", "0"},
+                                         {"s000001", "2", "1", "1", "1", "1"}};
+                fillTable(testArray2);
+            }
+        });
+
         this.loadBtn.setPrefWidth(150);
         this.loadBtn.setPrefHeight(30);
         return new VBox(label, this.yearChoiceBox, 
                 this.schoolYearChoiceBox,this.blockChoiceBox, 
                 this.courseChoiceBox, this.typeChoiceBox, this.attemptChoiceBox,
                 fill, this.loadBtn);
-    };
+    }
     
     /* Deze functie maakt de HBox waarin het percentiel gekozen kan worden.
      * Eerst wordt er een label "percentiel" neergezet, vervolgens een
@@ -160,7 +201,7 @@ public class ViewScreen extends StackPane{
     private VBox makeTopLeftBox(){
         Label firstLabel = new Label("Betrouwbaarheid Toets");
         firstLabel.setFont(new Font("Arial", 18));
-        this.qualityText = new Text("Variantie vragen:\nVariantie Toets\n"
+        this.qualityText = new Text("Variantie vragen:\nVariantie Toets:\n"
                 + "Cronbach alfa:\n");
         Label secondLabel = new Label("Cohen-Schotanus");
         secondLabel.setFont(new Font("Arial", 18));
@@ -268,45 +309,29 @@ public class ViewScreen extends StackPane{
         this.pointsTable = new TableView<>(); 
         this.pointsTable.setEditable(false);
         VBox.setVgrow(this.pointsTable, Priority.ALWAYS);
-        
-        //test
-        String[][] staffArray = {{"Student nr.", "Cijfer", "Totaal", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"},
-            {"s0000000", "1", "2","1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}};
-        ObservableList<String[]> data = FXCollections.observableArrayList();
-        data.addAll(Arrays.asList(staffArray));
-        data.remove(0);//remove titles from data
-        for (int i = 0; i < staffArray[0].length; i++) {
-            TableColumn tc = new TableColumn(staffArray[0][i]);
-            final int colNo = i;
-            tc.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(CellDataFeatures<String[], String> p) {
-                    return new SimpleStringProperty((p.getValue()[colNo]));
+        this.pointsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        this.pointsTable.getSelectionModel().setCellSelectionEnabled(true);
+        this.pointsTable.getFocusModel().focusedCellProperty().addListener(new ChangeListener<TablePosition>() {
+
+            //HIER MOET DE CODE VOOR ALS ER EEN VRAAG GESELECTEERD WORDT!!
+            @Override
+            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue, TablePosition newValue) {
+                if (newValue.getTableColumn() != null) {
+                    pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
+                            pointsTable.getItems().size(), newValue.getTableColumn());
+                    if ( newValue.getColumn() < 3){
+                        //ENKEL VOOR TESTEN!!
+                        updateStats("hey", "how", "are", "you", "doing",
+                                "?", "Oh", "fine", "I", "guess",
+                                "...");
+                    } else {
+                        //ENKEL VOOR TESTEN!!
+                        updateStats("hello", "darkness", "my", "old", "friend",
+                                "...", "I've", "come", "to");
+                    }
                 }
-            });
-            if (i < 3){
-                tc.setMinWidth(80);
-                tc.setMaxWidth(80);
-            } else {
-                tc.setMinWidth(25);
-                tc.setMaxWidth(25);
             }
-            tc.setSortable(false);
-            this.pointsTable.getColumns().add(tc);
-        }
-        this.pointsTable.setItems(data);
-        //end test
+        });
     }
 
     /* Deze functie zet het rechter gedeelte van het scherm in elkaar.
@@ -321,26 +346,81 @@ public class ViewScreen extends StackPane{
         makeTable();
         return new VBox(topBox, middleBox, this.pointsTable);
     }
-    
-    
-   /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
-    * met een margin van 5 en een breedte van 150. Daarnaast wordt het
-    * rechter gedeelte gezet dat de rest van het scherm opvult.
-    */
-    protected ViewScreen(){
-        VBox selectionBox = makeSelectionBox();
-        selectionBox.setMinWidth(150);
-        selectionBox.setSpacing(20);
-        HBox.setMargin(selectionBox, new Insets(5));
-        
-        VBox rightBox = makeRightBox();
-        rightBox.setSpacing(10);
-        HBox.setHgrow(rightBox, Priority.ALWAYS);
-        HBox.setMargin(rightBox, new Insets(5));
-        
-        HBox mainBox = new HBox(selectionBox, rightBox);
-        mainBox.setSpacing(20);
-        this.getChildren().add(mainBox);
+
+    /* Deze functie update de statistieken voor de weergegeven toets.
+     */
+    protected void updateStats(String questions, String maxPoints, String guessPoints, String earnablePoints,
+                               String degree, String threshold, String participants, String passes, String fails,
+                               String performance, String average) {
+        this.statisticsText.setText("Aantal vragen: " + questions + "\nMaximum punten: " + maxPoints +
+                "\nPunten door gokkans: " + guessPoints + "\nTotaal te verdienen: " + earnablePoints + "" +
+                "\nBeheersgraad: " + degree + "\nCensuur: " + threshold + "\n");
+        this.resultsText.setText("Aantal deelnemers: " + participants + "\nAantal voldoendes: " + passes +
+                "\nAantal onvoldoendes: " + fails + "\nRendement: " + performance + "\nGemiddelde cijfer: " +
+                average + "\n");
     }
 
+    /* Deze functie update de statistieken voor de geselecteerde vraag.
+     */
+    protected void updateStats(String maxPoints, String highGiven, String lowGiven, String maxGiven, String noneGiven,
+                               String average, String varPoints, String r, String p){
+        this.statisticsText.setText("Maximum punten: " + maxPoints + "\n");
+        this.resultsText.setText("Hoogste behaald: " + highGiven +
+                "\nLaagste behaald: " + lowGiven + "\nAantal met maximum punten: " + maxGiven +
+                "\nAantal met nul punten: " + noneGiven + "\nGemiddelde punten behaald: " + average +
+                "\nVariantie gehaalde punten: "+ varPoints + "\nR(item-rest): " + r + "\np-waarde: " + p + "\n");
+    }
+    /* Deze functie update het kwaliteits gedeelte van de statistieken.
+     */
+    protected void updateQualityStats(String varQuestions, String varTest, String cronbach) {
+        this.qualityText.setText("Variantie vragen: " + varQuestions + "\nVariantie Toets: " + varTest +
+                "\nCronbach alfa: " + cronbach + "\n");
+    }
+
+    /* Deze functie update het Cohen-Schotanus gedeelte van de statistieken
+     */
+    protected void updateCohen(String percentilePoints, String average, String cohen) {
+        this.cohenText.setText("Punten percentiel: " + percentilePoints + "\nGemiddelde punten percentiel: " +
+                average + "\nCohen-Schotanus censuur: " + cohen + "\n");
+    }
+
+    /* Deze functie maakt de tabel leeg en de kolommen aan.
+     */
+    protected void setupTable(String[] columns) {
+        this.pointsTable.getItems().clear();
+        this.pointsTable.getColumns().clear();
+        String[] columnsTotal = new String[columns.length + 3];
+        columnsTotal[0] = "Student nr.";
+        columnsTotal[1] = "Cijfer";
+        columnsTotal[2] = "Totaal";
+        for (int i = 0; i < columns.length; i++){
+            columnsTotal[i+3] = columns[i];
+        }
+        for (int i = 0; i < columnsTotal.length; i++) {
+            TableColumn column = new TableColumn(columnsTotal[i]);
+            final int index = i;
+            column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
+                @Override
+                public ObservableValue<String> call(CellDataFeatures<String[], String> values) {
+                    return new SimpleStringProperty((values.getValue()[index]));
+                }
+            });
+            if (i < 3){
+                column.setMinWidth(80);
+                column.setMaxWidth(80);
+            } else {
+                column.setMinWidth(40);
+                column.setMaxWidth(40);
+            }
+            this.pointsTable.getColumns().add(column);
+        }
+    }
+
+    /* Deze functie vult de tabel in.
+     */
+    protected void fillTable(String[][] values){
+        ObservableList<String[]> data = FXCollections.observableArrayList();
+        data.addAll(Arrays.asList(values));
+        this.pointsTable.setItems(data);
+    }
 }
