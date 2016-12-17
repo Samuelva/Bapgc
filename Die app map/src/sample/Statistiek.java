@@ -28,11 +28,28 @@ public class Statistiek {
 
     public Statistiek() {
         /**
-         * Maakt alle boxjes aan voor de layout van het statistiek gedeelte
+         * Roept functies aan welke de boxjes aanmaken en vullen met de jusite inhoud (statistiek en grafiek)
+         */
+        createStatisticsScrollPane();
+        createGraphPane();
+    }
+
+    public void createStatisticsScrollPane() {
+        /**
+         * Maakt het scrollbare paneel aan waar de statistiek in weergegeven zal worden.
          */
         statisticsBox = new VBox();
         statisticsGridBox = new HBox();
         statisticsScrollPane = new ScrollPane();
+
+        statisticsScrollPane.setContent(statisticsGridBox);
+        statisticsScrollPane.setPrefHeight(150);
+    }
+
+    public void createGraphPane() {
+        /**
+         * Maakt het grafiek gedeelte aan met de box voor de grafiek knoppen en de grafiek zelf.
+         */
         graphButtonBox = new BorderPane();
         graphPane = new BorderPane();
         graph = new ImageView();
@@ -75,15 +92,9 @@ public class Statistiek {
         graphButtonBox.setPadding(new Insets(5, 5, 5, 5));
         graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
         graphPane.setCenter(graph);
-
-        statisticsScrollPane.setContent(statisticsGridBox);
-        statisticsScrollPane.setPrefHeight(150);
-        statisticsBox.getChildren().addAll(statisticsScrollPane, graphButtonBox, graphPane);
-
-        HBox.setHgrow(statisticsBox, Priority.ALWAYS);
         VBox.setVgrow(graphPane, Priority.ALWAYS);
-    }
 
+    }
 
     public void addStatistics(int[] values) {
         /**
@@ -145,7 +156,9 @@ public class Statistiek {
         /**
          * Returned de box met toets statistieken, grafiekopties en de grafiek
          */
-        statisticsBox.setPadding(new Insets(5, 5, 5, 10));
+        statisticsBox.setPadding(new Insets(0, 0, 0, 5));
+        statisticsBox.getChildren().addAll(statisticsScrollPane, graphButtonBox, graphPane);
+        HBox.setHgrow(statisticsBox, Priority.ALWAYS);
         return statisticsBox;
     }
 

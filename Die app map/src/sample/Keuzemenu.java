@@ -72,7 +72,6 @@ public class Keuzemenu {
          * Creërt het keuzemenu gedeelte met de "Alles" en "Reset" knoppen.
          */
         choiceMenuButtonBox = new HBox();
-        choiceMenuButtonBox.setMinWidth(150);
 
         allButton = new Button("Alles");
         resetButton = new Button("Reset");
@@ -80,6 +79,7 @@ public class Keuzemenu {
         allButton.setPrefHeight(30);
         resetButton.setPrefWidth(75);
         resetButton.setPrefHeight(30);
+        choiceMenuButtonBox.setSpacing(5);
         choiceMenuButtonBox.getChildren().addAll(allButton, resetButton);
     }
 
@@ -123,7 +123,8 @@ public class Keuzemenu {
         choiceMenu = new BorderPane();
         choiceMenu.setTop(choiceMenuSelectionBox);
         choiceMenu.setBottom(choiceMenuButtonBox);
-        choiceMenu.setPadding(new Insets(5, 10, 5, 5));
+        choiceMenu.setMaxWidth(150);
+        choiceMenu.setPadding(new Insets(5, 5, 5, 5));
         choiceMenu.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
     }
 

@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
@@ -122,6 +123,10 @@ public class Vergelijken extends StackPane {
         testTabBox.getChildren().addAll(testChoiceMenu.getTestMenu(), testStatistics.returnStatisticsBox());
         moduleTabBox.getChildren().addAll(moduleChoiceMenu.getModuleMenu(), moduleStatistics.returnStatisticsBox());
         periodTabBox.getChildren().addAll(periodChoiceMenu.getPeriodMenu(), periodStatistics.returnStatisticsBox());
+
+        testTabBox.setPadding(new Insets(5, 5, 5, 5));
+        moduleTabBox.setPadding(new Insets(5, 5, 5, 5));
+        periodTabBox.setPadding(new Insets(5, 5, 5, 5));
 
         testTab.setContent(testTabBox);
         moduleTab.setContent(moduleTabBox);
