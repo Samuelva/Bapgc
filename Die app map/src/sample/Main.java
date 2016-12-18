@@ -7,13 +7,15 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
+
 public class Main extends Application {
 
     private static Stage window;
     private static Scene scene;
     private static VBox frame;
     private static ViewScreen view;
-    private static Toevoegscherm toevoeg;
+    private static Toevoegen toevoeg;
     private static Invoeren invoer;
     private static Vergelijken vergelijk;
     private static TabPane tabPane;
@@ -56,10 +58,43 @@ public class Main extends Application {
         tabPane.getTabs().add(invoeren);
         tabPane.getTabs().add(inzien);
         tabPane.getTabs().add(vergelijken);
+
+        events();
+    }
+
+    private static void events() {
+        toevoegen.saveExamBtn.setOnAction(e -> {
+            System.out.println("Toets gegevens voor opslaan");
+            LinkedList examProperties = toevoegen.getExamProperties();
+            for (int i = 0; i<examProperties.size();i++){
+                System.out.println(examProperties.get(i));
+            }
+        });
+        toevoegen.showExamBtn.setOnAction(e -> {
+            System.out.println("Toets weergave lijst");
+            LinkedList searchExams = toevoegen.getAvailableExams();
+            for (int i = 0; i<searchExams.size();i++){
+                System.out.println(searchExams.get(i));
+            }
+        });
+        toevoegen.saveModuleBtn.setOnAction(e -> {
+            System.out.println("Module gegevens voor opslaan");
+            LinkedList moduleProperties = toevoegen.getModuleProperties();
+            for (int i = 0; i<moduleProperties.size();i++){
+                System.out.println(moduleProperties.get(i));
+            }
+        });
+        toevoegen.showModuleBtn.setOnAction(e -> {
+            System.out.println("Module weergave liijst");
+            LinkedList moduleProperties = toevoegen.getAvailableModules();
+            for (int i = 0; i<moduleProperties.size();i++){
+                System.out.println(moduleProperties.get(i));
+            }
+        });
     }
 
     private static void initTabs(){
-        toevoeg = new Toevoegscherm();
+        toevoeg = new Toevoegen();
         toevoegen.setContent(toevoeg);
 
         invoer = new Invoeren();
