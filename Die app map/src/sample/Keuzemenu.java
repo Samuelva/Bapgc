@@ -1,10 +1,15 @@
 package sample;
 
+import com.sun.org.apache.bcel.internal.generic.Select;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 /**
  * Created by Samuel on 4-12-2016.
@@ -12,16 +17,19 @@ import javafx.scene.paint.Color;
  * aanpassen.
  */
 public class Keuzemenu {
-    private BorderPane choiceMenu;
+    private VBox choiceMenu;
     private VBox choiceMenuSelectionBox;
     private HBox choiceMenuButtonBox;
 
+    private Label choiceMenuLbl;
     private ComboBox year;
     private ComboBox studyYear;
     private ComboBox period;
     private ComboBox module;
     private ComboBox type;
     private ComboBox chance;
+    private ListView<String> selectionMenu;
+    private ObservableList<String> selectionMenuItems;
 
     private Button allButton;
     private Button resetButton;
@@ -63,7 +71,7 @@ public class Keuzemenu {
         ComboBox comboBox = new ComboBox();
         comboBox.setPromptText(promptText);
         comboBox.setPrefWidth(150);
-        comboBox.setPrefHeight(30);
+        comboBox.setMinHeight(30);
         return comboBox;
     }
 
@@ -76,14 +84,14 @@ public class Keuzemenu {
         allButton = new Button("Alles");
         resetButton = new Button("Reset");
         allButton.setPrefWidth(75);
-        allButton.setPrefHeight(30);
+        allButton.setMinHeight(30);
         resetButton.setPrefWidth(75);
-        resetButton.setPrefHeight(30);
+        resetButton.setMinHeight(30);
         choiceMenuButtonBox.setSpacing(5);
         choiceMenuButtonBox.getChildren().addAll(allButton, resetButton);
     }
 
-    public BorderPane getTestMenu() {
+    public VBox getTestMenu() {
         /**
          * Returned het volledge keuzemenu met de opgegeven comboBoxen.
          * Wordt gebruikt voor de toetstab.
@@ -94,7 +102,7 @@ public class Keuzemenu {
         return choiceMenu;
     }
 
-    public BorderPane getModuleMenu() {
+    public VBox getModuleMenu() {
         /**
          * Returned het volledge keuzemenu met de opgegeven comboBoxen.
          * Wordt gebruikt voor de moduletab.
@@ -105,7 +113,7 @@ public class Keuzemenu {
         return choiceMenu;
     }
 
-    public BorderPane getPeriodMenu() {
+    public VBox getPeriodMenu() {
         /**
          * Returned het volledge keuzemenu met de opgegeven comboBoxen.
          * Wordt gebruikt voor de periodeTab.
@@ -120,12 +128,36 @@ public class Keuzemenu {
         /**
          * Stopt het comboBox gedeelte en knoppen gedeelte samen in één box
          */
-        choiceMenu = new BorderPane();
-        choiceMenu.setTop(choiceMenuSelectionBox);
-        choiceMenu.setBottom(choiceMenuButtonBox);
+        choiceMenuLbl = new Label("Keuzemenu");
+        choiceMenuLbl.setFont(new Font("Arial", 18));
+
+        selectionMenu = new ListView<String>();
+        selectionMenu.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        selectionMenu.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                // Event handler voor het selecteren van items in het menu.
+                ObservableList<String> selection = selectionMenu.getSelectionModel().getSelectedItems();
+
+                for (String s : selection) {
+                    System.out.println(s);
+                }
+                System.out.println("\n");
+            }
+        });
+        VBox.setVgrow(selectionMenu, Priority.ALWAYS);
+
+        choiceMenu = new VBox();
+        choiceMenu.getChildren().add(choiceMenuLbl);
+        choiceMenu.getChildren().add(choiceMenuSelectionBox);
+        choiceMenu.getChildren().add(selectionMenu);
+        choiceMenu.getChildren().add(choiceMenuButtonBox);
         choiceMenu.setMaxWidth(150);
-        choiceMenu.setPadding(new Insets(5, 5, 5, 5));
-        choiceMenu.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
+        choiceMenu.setSpacing(20);
+        choiceMenu.setAlignment(Pos.TOP_CENTER);
+
+        choiceMenu.setPadding(new Insets(0, 20, 0, 0));
+//        choiceMenu.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
     }
 
     public void setYearContent(String... values) {
@@ -156,6 +188,15 @@ public class Keuzemenu {
         for (String value : values) {
             chance.getItems().add(value);
         }
+    }
+
+    public void setSelectionMenuItems(String... selection) {
+        /**
+         * Stel inhoud van het paneel in het keuzemenu in.
+         * Gebruik: Instantie.setSelectionMenuItems("Toets1", "Toets2", "Toets3", ...);
+         */
+        selectionMenuItems = FXCollections.observableArrayList(selection);
+        selectionMenu.setItems(selectionMenuItems);
     }
 
 }

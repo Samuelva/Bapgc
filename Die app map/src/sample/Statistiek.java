@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-
 import javax.swing.*;
 
 /**
@@ -43,7 +42,6 @@ public class Statistiek {
         statisticsScrollPane = new ScrollPane();
 
         statisticsScrollPane.setContent(statisticsGridBox);
-        statisticsScrollPane.setPrefHeight(150);
     }
 
     public void createGraphPane() {
@@ -53,14 +51,15 @@ public class Statistiek {
         graphButtonBox = new BorderPane();
         graphPane = new BorderPane();
         graph = new ImageView();
-        graph.setFitWidth(700); // Grafiek dimensies
         graph.setFitHeight(300);
+        graph.setPreserveRatio(true);
 
         graphButton = new ComboBox(); // ComboBox voor het instellen van de soort grafiek
         graphButton.setPrefWidth(150);
         graphButton.setMinHeight(30);
         graphButton.setPromptText("Grafiek Soort");
         graphButton.getItems().addAll("Boxplot", "Histogram"); // Inhoud comboBox
+
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
         saveButton.setMinHeight(30);
@@ -96,7 +95,7 @@ public class Statistiek {
 
     }
 
-    public void addStatistics(int[] values) {
+    public void addStatistics(String[] values) {
         /**
          * Met deze functie kan er een boxje met statistieken toegevoegd worden aan de scrollbare pane.
          * Gebruik: klasseInstantie.addStatistics(10, 30, 40, 30, 40); voor als gemiddelde cijfer
@@ -104,51 +103,41 @@ public class Statistiek {
          */
         GridPane statisticsGrid = new GridPane();
 
-        Label averageGradeLbl = new Label("Gemiddelde cijfer: ");
-        Label participantsLbl = new Label("Aantal Deelnemers: ");
-        Label failedLbl = new Label("Aantal onvoldoendes: ");
-        Label passedLbl = new Label("Aantal voldoendes: ");
-        Label passRateLbl = new Label("Rendement: ");
+        Label titleLbl = new Label(values[0]);
 
         // Als er 5 getallen meegegeven worden, wordt er een grid met het gemiddelde cijfer gemaakt
-        if (values.length == 5) {
-            Label averageGrade = new Label(Integer.toString(values[0]));
-            Label participants = new Label(Integer.toString(values[1]));
-            Label failed = new Label(Integer.toString(values[2]));
-            Label passed = new Label(Integer.toString(values[3]));
-            Label passRate = new Label(Integer.toString(values[4]));
+        if (values.length == 6) {
+            Label averageGrade = new Label(values[1]);
+            Label participants = new Label(values[2]);
+            Label failed = new Label(values[3]);
+            Label passed = new Label(values[4]);
+            Label passRate = new Label(values[5]);
 
-            statisticsGrid.add(averageGradeLbl, 1, 1);
-            statisticsGrid.add(participantsLbl, 1, 2);
-            statisticsGrid.add(failedLbl, 1, 3);
-            statisticsGrid.add(passedLbl, 1, 4);
-            statisticsGrid.add(passRateLbl, 1, 5);
-            statisticsGrid.add(averageGrade, 2, 1);
-            statisticsGrid.add(participants, 2, 2);
-            statisticsGrid.add(failed, 2, 3);
-            statisticsGrid.add(passed, 2, 4);
-            statisticsGrid.add(passRate, 2, 5);
+            statisticsGrid.add(titleLbl, 1, 1);
+            statisticsGrid.add(averageGrade, 1, 2);
+            statisticsGrid.add(participants, 1, 3);
+            statisticsGrid.add(failed, 1, 4);
+            statisticsGrid.add(passed, 1, 5);
+            statisticsGrid.add(passRate, 1, 6);
+            statisticsScrollPane.setMinHeight(160);
         }
 
-        else if (values.length == 4) {
-            Label participants = new Label(Integer.toString(values[0]));
-            Label failed = new Label(Integer.toString(values[1]));
-            Label passed = new Label(Integer.toString(values[2]));
-            Label passRate = new Label(Integer.toString(values[3]));
+        else if (values.length == 5) {
+            Label participants = new Label(values[1]);
+            Label failed = new Label(values[2]);
+            Label passed = new Label(values[3]);
+            Label passRate = new Label(values[4]);
 
-            statisticsGrid.add(participantsLbl, 1, 1);
-            statisticsGrid.add(failedLbl, 1, 2);
-            statisticsGrid.add(passedLbl, 1, 3);
-            statisticsGrid.add(passRateLbl, 1, 4);
-            statisticsGrid.add(participants, 2, 1);
-            statisticsGrid.add(failed, 2, 2);
-            statisticsGrid.add(passed, 2, 3);
-            statisticsGrid.add(passRate, 2, 4);
+            statisticsGrid.add(titleLbl, 1, 1);
+            statisticsGrid.add(participants, 1, 2);
+            statisticsGrid.add(failed, 1, 3);
+            statisticsGrid.add(passed, 1, 4);
+            statisticsGrid.add(passRate, 1, 5);
         }
 
         statisticsGrid.setVgap(5);
         statisticsGrid.setHgap(5);
-        statisticsGrid.setPadding(new Insets(15, 15, 15, 15));
+        statisticsGrid.setPadding(new Insets(10, 10, 10, 10));
         statisticsGridBox.getChildren().add(statisticsGrid);
     }
 

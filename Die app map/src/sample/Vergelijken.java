@@ -41,28 +41,38 @@ public class Vergelijken extends StackPane {
 
         this.getChildren().add(tabPane);
 
-        // Voeg zo inhoud toe aan de selectie menu's
+        // Voeg zo inhoud toe aan de dropdown menu's
         testChoiceMenu.setYearContent("2016", "2017", "2018");
         testChoiceMenu.setModuleContent("Bapgc", "Bacf");
         moduleChoiceMenu.setYearContent("2016", "207");
 
-        // Voeg zo statistieken toe
-        testStatistics.addStatistics(new int[] {40, 50, 50, 30, 30});
-        testStatistics.addStatistics(new int[] {30, 20, 60, 70, 24});
-        testStatistics.addStatistics(new int[] {50, 80, 60, 40, 56});
-        testStatistics.addStatistics(new int[] {40, 50, 50, 30, 70});
-        testStatistics.addStatistics(new int[] {30, 20, 60, 70, 40});
-        testStatistics.addStatistics(new int[] {50, 80, 60, 40, 20});
-        testStatistics.addStatistics(new int[] {40, 50, 50, 30, 50});
-        testStatistics.addStatistics(new int[] {30, 20, 60, 70, 10});
-        testStatistics.addStatistics(new int[] {50, 80, 60, 40, 50});
+        // Voeg zo items toe aan het menu in het keuzemenu
+        testChoiceMenu.setSelectionMenuItems("Binp 2016 opdracht 1", "Binp 2016 opdracht 2", "Binp 2015 opdracht 1", "Binp 2015 odpracht 2", "Binp 2014 opdracht 1", "Binp 2014 opdracht 2");
+        moduleChoiceMenu.setSelectionMenuItems("Binp 2016", "Binp 2015", "Binp 2014", "Binp 2013", "Binp 2012");
+        periodChoiceMenu.setSelectionMenuItems("1", "2", "3", "4");
 
-        moduleStatistics.addStatistics(new int[] {11, 46, 23 ,77});
-        moduleStatistics.addStatistics(new int[] {33, 6, 43, 6});
-        moduleStatistics.addStatistics(new int[] {7, 23, 5, 77});
-        moduleStatistics.addStatistics(new int[] {11, 46, 23 ,77});
-        moduleStatistics.addStatistics(new int[] {33, 6, 43, 6});
-        moduleStatistics.addStatistics(new int[] {7, 23, 5, 77});
+        // Voeg zo statistieken toe
+        testStatistics.addStatistics(new String[] {"Toets:", "Gemiddelde cijfer:", "Aantal Deelnemers:", "Aantal onvoldoendes:", "Aantal voldoendes:", "Rendement:"});
+        testStatistics.addStatistics(new String[] {"Binp 2016 opdracht 1", "4.0", "5.0", "5.0", "3.0", "3.0"});
+        testStatistics.addStatistics(new String[] {"Binp 2016 opdracht 2", "3.0", "2.0", "6.0", "7.0", "2.4"});
+        testStatistics.addStatistics(new String[] {"Binp 2015 opdracht 1", "5.0", "8.0", "6.0", "4.0", "5.6"});
+        testStatistics.addStatistics(new String[] {"Binp 2015 opdracht 2", "4.0", "5.0", "5.0", "3.0", "7.0"});
+        testStatistics.addStatistics(new String[] {"Binp 2014 opdracht 1", "3.0", "2.0", "6.0", "7.0", "4.0"});
+        testStatistics.addStatistics(new String[] {"Binp 2014 opdracht 2", "5.0", "8.0", "6.0", "4.0", "2.0"});
+        testStatistics.addStatistics(new String[] {"Binp 2013 opdracht 1", "4.0", "5.0", "5.0", "3.0", "5.0"});
+        testStatistics.addStatistics(new String[] {"Binp 2013 opdracht 2", "3.0", "2.0", "6.0", "7.0", "1.0"});
+        testStatistics.addStatistics(new String[] {"Binp 2012 opdracht 1", "5.0", "8.0", "6.0", "4.0", "5.0"});
+
+        moduleStatistics.addStatistics(new String[] {"Module:", "Gemiddelde cijfer:", "Aantal Deelnemers:", "Aantal onvoldoendes:", "Rendement:"});
+        moduleStatistics.addStatistics(new String[] {"Binp 2016", "1.1", "4.6", "2.3", "7.7"});
+        moduleStatistics.addStatistics(new String[] {"Binp 2015", "3.3", "6.8", "4.3", "6.0"});
+        moduleStatistics.addStatistics(new String[] {"Binp 2014", "7.7", "2.3", "5.5", "7.7"});
+        moduleStatistics.addStatistics(new String[] {"Binp 2013", "1.1", "4.6", "2.3", "7.7"});
+        moduleStatistics.addStatistics(new String[] {"Binp 2012", "3.3", "6.7", "4.3", "6.0"});
+        moduleStatistics.addStatistics(new String[] {"Binp 2011", "7.8", "2.3", "5.4", "7.7"});
+
+        periodStatistics.addStatistics(new String[] {"Periode:", "Gemiddelde cijfer:", "Aantal Deelnemers:", "Aantal onvoldoendes:", "Rendement:"});
+        periodStatistics.addStatistics(new String[] {"1", "5.4", "6.7", "5.6", "4.6"});
 
         // Voeg zo een grafiek toe
         testStatistics.setGraph("https://i.imgur.com/8Sqgh3M.png");
@@ -90,7 +100,7 @@ public class Vergelijken extends StackPane {
         // Goedkope fix
         // Vergelijkscherm past zich niet aan aan de veticale hoogte van de applet voor
         // een of andere reden.
-        tabPane.setPrefHeight(500);
+        tabPane.setPrefHeight(1080);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
     }
 
