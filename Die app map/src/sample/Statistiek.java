@@ -19,11 +19,13 @@ public class Statistiek {
     private HBox statisticsGridBox; // Box waarin gridboxen met statistieken in zitten
     private ScrollPane statisticsScrollPane; // Scrollpane met de gridbox waarin de statistieken in zitten
     private BorderPane graphButtonBox; // Box met grafiek optie knoppen
-    private BorderPane graphPane; // Pane met de grafiek
+    private StackPane graphPane; // Pane met de grafiek
 
     private ComboBox graphButton;
     private Button saveButton;
     private ImageView graph;  // Container met grafiek foto
+
+    Grafiek test = new Grafiek();
 
     public Statistiek() {
         /**
@@ -49,10 +51,7 @@ public class Statistiek {
          * Maakt het grafiek gedeelte aan met de box voor de grafiek knoppen en de grafiek zelf.
          */
         graphButtonBox = new BorderPane();
-        graphPane = new BorderPane();
-        graph = new ImageView();
-        graph.setFitHeight(300);
-        graph.setPreserveRatio(true);
+        graphPane = new StackPane();
 
         graphButton = new ComboBox(); // ComboBox voor het instellen van de soort grafiek
         graphButton.setPrefWidth(150);
@@ -89,8 +88,8 @@ public class Statistiek {
         graphButtonBox.setLeft(graphButton);
         graphButtonBox.setRight(saveButton);
         graphButtonBox.setPadding(new Insets(5, 5, 5, 5));
+        graphPane.setPadding(new Insets(10, 10, 10, 10));
         graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
-        graphPane.setCenter(graph);
         VBox.setVgrow(graphPane, Priority.ALWAYS);
 
     }
@@ -151,11 +150,11 @@ public class Statistiek {
         return statisticsBox;
     }
 
-    public void setGraph(String graphFile) {
+    public void setGraph(VBox graphBox) {
         /**
          * Input is een link/path naar de grafiek
          */
-        Image graphImage = new Image(graphFile);
-        graph.setImage(graphImage);
+
+        graphPane.getChildren().add(graphBox);
     }
 }
