@@ -63,30 +63,30 @@ public class Main extends Application {
     }
 
     private static void events() {
-        toevoegen.saveExamBtn.setOnAction(e -> {
+        toevoeg.saveExamBtn.setOnAction(e -> {
             System.out.println("Toets gegevens voor opslaan");
-            LinkedList examProperties = toevoegen.getExamProperties();
+            LinkedList examProperties = toevoeg.getExamProperties();
             for (int i = 0; i<examProperties.size();i++){
                 System.out.println(examProperties.get(i));
             }
         });
-        toevoegen.showExamBtn.setOnAction(e -> {
+        toevoeg.showExamBtn.setOnAction(e -> {
             System.out.println("Toets weergave lijst");
-            LinkedList searchExams = toevoegen.getAvailableExams();
+            LinkedList searchExams = toevoeg.getAvailableExams();
             for (int i = 0; i<searchExams.size();i++){
                 System.out.println(searchExams.get(i));
             }
         });
-        toevoegen.saveModuleBtn.setOnAction(e -> {
+        toevoeg.saveModuleBtn.setOnAction(e -> {
             System.out.println("Module gegevens voor opslaan");
-            LinkedList moduleProperties = toevoegen.getModuleProperties();
+            LinkedList moduleProperties = toevoeg.getModuleProperties();
             for (int i = 0; i<moduleProperties.size();i++){
                 System.out.println(moduleProperties.get(i));
             }
         });
-        toevoegen.showModuleBtn.setOnAction(e -> {
+        toevoeg.showModuleBtn.setOnAction(e -> {
             System.out.println("Module weergave liijst");
-            LinkedList moduleProperties = toevoegen.getAvailableModules();
+            LinkedList moduleProperties = toevoeg.getAvailableModules();
             for (int i = 0; i<moduleProperties.size();i++){
                 System.out.println(moduleProperties.get(i));
             }

@@ -55,7 +55,8 @@ public class DatabaseConn {
     private final String MODULESQL = "CREATE TABLE IF NOT EXISTS" +
             " MODULE " +
             "(ModuleCode    TEXT    PRIMARY KEY     NOT NULL, " +
-            " Omschrijving  TEXT);";
+            " Omschrijving  TEXT, " +
+            " EC            SMALLINT                NOT NULL);";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private InputModule inputModule;
@@ -132,16 +133,19 @@ public class DatabaseConn {
         }
     }
 
-    public void InputModule(String moduleCode, String omschrijving) {
+    public void InputModule(String moduleCode, String omschrijving,
+                            Integer ec) {
         inputModule.Insert(
                 moduleCode,
-                omschrijving
+                omschrijving,
+                ec
         );
     }
-    public void InputToets(String jaar, String schooljaar, String periode,
-                           String moduleCode, String toetsvorm,
+    public void InputToets(Integer id, String jaar, String schooljaar,
+                           String periode, String moduleCode, String toetsvorm,
                            String gelegenheid, String cesuur) {
         this.inputToets.insert(
+                id,
                 jaar,
                 schooljaar,
                 periode,
@@ -152,9 +156,10 @@ public class DatabaseConn {
         );
     }
 
-    public void InputVraag(String vraagnummer, Integer maxScore,
+    public void InputVraag(Integer id, String vraagnummer, Integer maxScore,
                            Integer toetsID, String gokvraag) {
         this.inputVraag.insert(
+                id,
                 vraagnummer,
                 maxScore,
                 toetsID,
