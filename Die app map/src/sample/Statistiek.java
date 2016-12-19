@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -57,7 +58,26 @@ public class Statistiek {
         graphButton.setPrefWidth(150);
         graphButton.setMinHeight(30);
         graphButton.setPromptText("Grafiek Soort");
-        graphButton.getItems().addAll("Boxplot", "Histogram"); // Inhoud comboBox
+        graphButton.getItems().addAll("Histogram", "Lijngrafiek", "Taartgrafiek", "Boxplot"); // Inhoud comboBox
+        graphButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                graphPane.getChildren().clear();
+//                 graphButton.getSelectionModel().getSelectedItem();
+                if (graphButton.getValue() == "Histogram") {
+                    setGraph(test.barChart());
+                }
+                else if (graphButton.getValue() == "Lijngrafiek") {
+                    setGraph(test.lineChart());
+                }
+                else if (graphButton.getValue() == "Taartgrafiek") {
+                    setGraph(test.pieChart());
+                }
+                else if (graphButton.getValue() == "Boxplot") {
+                    setGraph(test.Boxplot());
+                }
+            }
+        });
 
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);

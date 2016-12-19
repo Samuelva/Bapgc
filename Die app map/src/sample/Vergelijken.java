@@ -75,8 +75,9 @@ public class Vergelijken extends StackPane {
         periodStatistics.addStatistics(new String[] {"1", "5.4", "6.7", "5.6", "4.6"});
 
         // Voeg zo een grafiek toe
-        testStatistics.setGraph(new Grafiek().barChart());
-        moduleStatistics.setGraph(new Grafiek().lineChart());
+//        testStatistics.setGraph(new Grafiek().barChart());
+//        moduleStatistics.setGraph(new Grafiek().lineChart());
+//        periodStatistics.setGraph(new Grafiek().pieChart());
 
     }
 
