@@ -59,6 +59,7 @@ public class DatabaseConn {
             " EC            SMALLINT                NOT NULL);";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
+    private Statement statement;
     private InputModule inputModule;
     private InputToets inputToets;
     private InputVraag inputVraag;
@@ -76,7 +77,7 @@ public class DatabaseConn {
             this.connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/postgres",
                     "postgres", "1234");
-            Statement statement = this.connection.createStatement();
+            this.statement = this.connection.createStatement();
             System.out.println("Opened database successfully");
 
             DatabaseMetaData metaData = this.connection.getMetaData();
@@ -91,7 +92,7 @@ public class DatabaseConn {
                     MakeTable(statement, table);
                 }
             }
-            statement.close();
+            this.statement.close();
             inputModule = new InputModule(connection);
             inputToets = new InputToets(connection);
             inputVraag = new InputVraag(connection);
@@ -189,5 +190,19 @@ public class DatabaseConn {
                 vraagID,
                 score
         );
+    }
+
+    public void GetToetsen() {
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery("SELECT * FROM TOETS;");
+            while (resultSet.next()) {
+                //opslaan
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.exit(0);
+        }
     }
 }
