@@ -59,7 +59,6 @@ public class Main extends Application {
         tabPane.getTabs().add(inzien);
         tabPane.getTabs().add(vergelijken);
 
-        events();
     }
 
     private static void events() {
@@ -77,25 +76,12 @@ public class Main extends Application {
                 System.out.println(searchExams.get(i));
             }
         });
-        toevoeg.saveModuleBtn.setOnAction(e -> {
-            System.out.println("Module gegevens voor opslaan");
-            LinkedList moduleProperties = toevoeg.getModuleProperties();
-            for (int i = 0; i<moduleProperties.size();i++){
-                System.out.println(moduleProperties.get(i));
-            }
-        });
-        toevoeg.showModuleBtn.setOnAction(e -> {
-            System.out.println("Module weergave liijst");
-            LinkedList moduleProperties = toevoeg.getAvailableModules();
-            for (int i = 0; i<moduleProperties.size();i++){
-                System.out.println(moduleProperties.get(i));
-            }
-        });
     }
 
     private static void initTabs(){
         toevoeg = new Toevoegen();
         toevoegen.setContent(toevoeg);
+
 
         invoer = new Invoeren();
         invoeren.setContent(invoer);
@@ -107,6 +93,8 @@ public class Main extends Application {
         vergelijken.setContent(vergelijk);
 
         frame.getChildren().addAll(tabPane);
+
+        events();
     }
 
     private void showScreen(){

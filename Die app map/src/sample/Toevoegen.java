@@ -30,16 +30,16 @@ import java.util.Scanner;
  * 9-12-2016: Documenteren van script
  * 11-12-2016: Layout aangepast
  * 12-12-2016: Script aangepast, constructor aangemaakt.
+ * 15-12-2016: Vragen aanwezig functionaliteit toegevoegd
+ * 17-12-2016: Importeren van punten toegevoegd
+ * 19-12-2016: Module tab verwijderd, Modulen toevoegen tab toegevoegd.
+ * 20-12-2016: Module variabelen verwijderd
  */
 public class Toevoegen extends TabPane {
     //SELECTION MENU
-    public ChoiceBox yearModuleChoiceBox; //Jaartal
     public ChoiceBox yearExamChoiceBox; //Jaartal
-    public ChoiceBox schoolYearModuleChoiceBox; //Schooljaar
     public ChoiceBox schoolYearExamChoiceBox; //Schooljaar
-    public ChoiceBox blockModuleChoiceBox; //Periode
     public ChoiceBox blockExamChoiceBox; //Periode
-    public ChoiceBox courseModuleChoiceBox; //Modules
     public ChoiceBox courseExamChoiceBox; //Modules
     public ChoiceBox typeExamChoiceBox; //Toetsvorm
     public ChoiceBox attemptExamChoiceBox; //Gelegenheid
@@ -54,17 +54,11 @@ public class Toevoegen extends TabPane {
     public DatePicker datePropertyDatePicker;
     public CheckBox questionPropertyCheckBox;
     public LinkedList<TextField> scoreDistributionArray = new LinkedList(); //puntenverdeling
-    public TextField courseNameTextField; //Module
-    public TextField courseDescriptionTextField; //Omschrijving
 
     public ListView examOptionsList;
-    public ListView moduleOptionsList;
 
     public Button showExamBtn;
     public Button saveExamBtn;
-
-    public Button showModuleBtn;
-    public Button saveModuleBtn;
 
     public TextField beheersGradTextfield;
 
@@ -73,22 +67,17 @@ public class Toevoegen extends TabPane {
 
 
     public Toevoegen(ObservableList yearElements, ObservableList schoolYearElements, ObservableList blockElements, ObservableList courseElements, ObservableList typeElements, ObservableList attemptElements, ListView examOptionsList, ListView moduleOptionsList) {
-        this.yearModuleChoiceBox = new ChoiceBox(yearElements);
         this.yearExamChoiceBox = new ChoiceBox(yearElements);
 
-        this.schoolYearModuleChoiceBox = new ChoiceBox(schoolYearElements);
         this.schoolYearExamChoiceBox = new ChoiceBox(schoolYearElements);
 
-        this.blockModuleChoiceBox = new ChoiceBox(blockElements);
         this.blockExamChoiceBox = new ChoiceBox(blockElements);
 
-        this.courseModuleChoiceBox = new ChoiceBox(courseElements);
         this.courseExamChoiceBox = new ChoiceBox(courseElements);
 
         this.typeExamChoiceBox = new ChoiceBox(typeElements);
         this.attemptExamChoiceBox = new ChoiceBox(attemptElements);
         this.examOptionsList = examOptionsList;
-        this.moduleOptionsList = moduleOptionsList;
         setAppendingScreen();
     }
 
@@ -104,7 +93,8 @@ public class Toevoegen extends TabPane {
     private void setUpChangeListeners() {
 
         widthProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> value, Number oldWidth, Number newWidth) {
+            @Override
+            public void changed(ObservableValue<? extends Number> value, Number oldWidth, Number newWidth) {
                 Side side = getSide();
                 int numTabs = getTabs().size();
                 if ((side == Side.BOTTOM || side == Side.TOP) && numTabs != 0) {
@@ -115,7 +105,8 @@ public class Toevoegen extends TabPane {
         });
 
         heightProperty().addListener(new ChangeListener<Number>() {
-            @Override public void changed(ObservableValue<? extends Number> value, Number oldHeight, Number newHeight) {
+            @Override
+            public void changed(ObservableValue<? extends Number> value, Number oldHeight, Number newHeight) {
                 Side side = getSide();
                 int numTabs = getTabs().size();
                 if ((side == Side.LEFT || side == Side.RIGHT) && numTabs != 0) {
@@ -126,11 +117,11 @@ public class Toevoegen extends TabPane {
         });
 
         getTabs().addListener(new ListChangeListener<Tab>() {
-            public void onChanged(ListChangeListener.Change<? extends Tab> change){
+            public void onChanged(ListChangeListener.Change<? extends Tab> change) {
                 Side side = getSide();
                 int numTabs = getTabs().size();
                 if (numTabs != 0) {
-                    if (side == Side.LEFT|| side == Side.RIGHT) {
+                    if (side == Side.LEFT || side == Side.RIGHT) {
                         setTabMinWidth(heightProperty().intValue() / numTabs - (20));
                         setTabMaxWidth(heightProperty().intValue() / numTabs - (20));
                     }
@@ -145,68 +136,46 @@ public class Toevoegen extends TabPane {
 
     private void createAvailableOptions() {
         examOptionsList = new ListView();
-        moduleOptionsList = new ListView();
 
         examOptionsList.setMaxWidth(150);
-        moduleOptionsList.setMaxWidth(150);
     }
 
     private void createButtons() {
         showExamBtn = new Button("Toets weergeven");
         saveExamBtn = new Button("Toets opslaan");
-        showModuleBtn = new Button("Module weergeven");
-        saveModuleBtn = new Button("Module opslaan");
 
         showExamBtn.setMinWidth(150);
         saveExamBtn.setMinWidth(150);
-        showModuleBtn.setMinWidth(150);
-        saveModuleBtn.setMinWidth(150);
     }
 
     private void createSelectionMenu() {
         /**
          * Aanmaken van de verschillende dropdown menu's waarin de gebruiker de juistte module of toets kan kiezen.
          */
-        yearModuleChoiceBox = new ChoiceBox(); //Jaartal
         yearExamChoiceBox = new ChoiceBox(); //Jaartal
-        schoolYearModuleChoiceBox = new ChoiceBox(); //Schooljaar
         schoolYearExamChoiceBox = new ChoiceBox(); //Schooljaar
-        blockModuleChoiceBox = new ChoiceBox(); //Periode
         blockExamChoiceBox = new ChoiceBox(); //Periode
-        courseModuleChoiceBox = new ChoiceBox(); //Modules
         courseExamChoiceBox = new ChoiceBox(); //Modules
         typeExamChoiceBox = new ChoiceBox(); //Toetsvorm
         attemptExamChoiceBox = new ChoiceBox(); //Gelegenheid
 
-        yearModuleChoiceBox.getItems().addAll("Jaar", new Separator(), "placeholder");
         yearExamChoiceBox.getItems().addAll("Jaar", new Separator(), "placeholder");
-        schoolYearModuleChoiceBox.getItems().addAll("Leerjaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4");
         schoolYearExamChoiceBox.getItems().addAll("Leerjaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4");
-        blockModuleChoiceBox.getItems().addAll("Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5");
         blockExamChoiceBox.getItems().addAll("Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5");
-        courseModuleChoiceBox.getItems().addAll("Module", new Separator(), "placeholder");
         courseExamChoiceBox.getItems().addAll("Module", new Separator(), "placeholder");
         typeExamChoiceBox.getItems().addAll("Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project");
         attemptExamChoiceBox.getItems().addAll("Gelegenheid", new Separator(), "1e kans", "2e kans");
 
-        yearModuleChoiceBox.setPrefSize(150, 30);
         yearExamChoiceBox.setPrefSize(150, 30);
-        schoolYearModuleChoiceBox.setPrefSize(150, 30);
         schoolYearExamChoiceBox.setPrefSize(150, 30);
-        blockModuleChoiceBox.setPrefSize(150, 30);
         blockExamChoiceBox.setPrefSize(150, 30);
-        courseModuleChoiceBox.setPrefSize(150, 30);
         courseExamChoiceBox.setPrefSize(150, 30);
         typeExamChoiceBox.setPrefSize(150, 30);
         attemptExamChoiceBox.setPrefSize(150, 30);
 
-        yearModuleChoiceBox.setValue("Jaar");
         yearExamChoiceBox.setValue("Jaar");
-        schoolYearModuleChoiceBox.setValue("Leerjaar");
         schoolYearExamChoiceBox.setValue("Leerjaar");
-        blockModuleChoiceBox.setValue("Periode");
         blockExamChoiceBox.setValue("Periode");
-        courseModuleChoiceBox.setValue("Module");
         courseExamChoiceBox.setValue("Module");
         typeExamChoiceBox.setValue("Toetsvorm");
         attemptExamChoiceBox.setValue("Gelegenheid");
@@ -232,7 +201,7 @@ public class Toevoegen extends TabPane {
     private void setAppendingScreen() {
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
         this.setTabMinWidth(477);
-        this.getTabs().addAll(new allModulesTab(), new ModuleTab(), new ExamTab());
+        this.getTabs().addAll(new ModuleTab(), new ExamTab());
     }
 
     public LinkedList getExamProperties() {
@@ -248,7 +217,7 @@ public class Toevoegen extends TabPane {
         }
         examProperties.add(beheersGradTextfield.getText());
         if (!(scoreDistributionArray.isEmpty()) && questionPropertyCheckBox.isSelected()) {
-            for (int i = 0; i<scoreDistributionArray.size();i++){
+            for (int i = 0; i < scoreDistributionArray.size(); i++) {
                 examProperties.add(scoreDistributionArray.get(i).getText());
             }
         }
@@ -266,23 +235,6 @@ public class Toevoegen extends TabPane {
         return searchExamWithProperties;
     }
 
-    public LinkedList getModuleProperties() {
-        LinkedList moduleProperties = new LinkedList();
-        moduleProperties.add(courseNameTextField.getText());
-        moduleProperties.add(courseDescriptionTextField.getText());
-        return moduleProperties;
-
-    }
-
-    public LinkedList getAvailableModules() {
-        LinkedList searchModuleWithProperties = new LinkedList();
-        searchModuleWithProperties.add(yearModuleChoiceBox.getValue());
-        searchModuleWithProperties.add(schoolYearModuleChoiceBox.getValue());
-        searchModuleWithProperties.add(blockModuleChoiceBox.getValue());
-        searchModuleWithProperties.add(courseModuleChoiceBox.getValue());
-        return searchModuleWithProperties;
-
-    }
 
 
     private class ExamTab extends Tab {
@@ -320,7 +272,7 @@ public class Toevoegen extends TabPane {
             String[] result = points.split(";");
             Integer index = 1;
             Integer total = 0;
-            for(String question : result) {
+            for (String question : result) {
                 try {
                     Integer point = Integer.parseInt(question);
                     if (total != point) {
@@ -334,8 +286,7 @@ public class Toevoegen extends TabPane {
                         questionInput.getChildren().addAll(lbl, scoreDistributionArray.get(index - 1));
                         pointBox.getChildren().add(questionInput);
                         index++;
-                    }
-                    else {
+                    } else {
                         break;
                     }
                 } catch (NumberFormatException e) {
@@ -357,10 +308,10 @@ public class Toevoegen extends TabPane {
             scoreDistributionArray = new LinkedList<TextField>();
             pointBox.setOrientation(Orientation.VERTICAL);
 
-            for (int i = 1; i<=slider.getValue(); i++) {
+            for (int i = 1; i <= slider.getValue(); i++) {
                 Region fill = new Region();
                 HBox questionInput = new HBox();
-                Label lbl = new Label(Integer.toString(i)+ "->");
+                Label lbl = new Label(Integer.toString(i) + "->");
                 lbl.setMinWidth(30);
                 TextField textfield = new TextField();
                 textfield.setPrefWidth(38);
@@ -376,7 +327,7 @@ public class Toevoegen extends TabPane {
             createExamButtons();
 
             selectionBox.getChildren().addAll(createLabel("Keuzemenu"),
-                    getExamChoiceBoxes(),examOptionsList ,showExamBtn,
+                    getExamChoiceBoxes(), examOptionsList, showExamBtn,
                     newExamBtn);
             selectionBox.setVgrow(examOptionsList, Priority.ALWAYS);
             selectionBox.setPadding(new Insets(0, 0, 0, 5));
@@ -433,14 +384,14 @@ public class Toevoegen extends TabPane {
         private void importPointsFromCsv(File file) {
             try {
                 Scanner scanner = new Scanner(file);
-                while(scanner.hasNext()){
+                while (scanner.hasNext()) {
                     String data = scanner.next();
                     if (data.contains("Punten")) {
                         addPointFields(data);
                         break;
                     }
                 }
-            } catch (FileNotFoundException e){
+            } catch (FileNotFoundException e) {
                 System.out.println("hey");
 
             }
@@ -499,7 +450,7 @@ public class Toevoegen extends TabPane {
 
                 }
             });
-            hbox.getChildren().addAll(lbl1, slider, lbl2,new Region(), new HBox(resetPointDistributionButton, pointDistributionButton, importCsvButton));
+            hbox.getChildren().addAll(lbl1, slider, lbl2, new Region(), new HBox(resetPointDistributionButton, pointDistributionButton, importCsvButton));
             hbox.setHgrow(hbox.getChildren().get(3), Priority.ALWAYS);
             return hbox;
         }
@@ -558,7 +509,7 @@ public class Toevoegen extends TabPane {
             attemptExamPropertyChoiceBox.setValue("Gelegenheid");
             typePropertyChoiceBox.setValue("Toetsvorm");
 
-            examDataVbox.getChildren().addAll(yearPropertyChoiceBox, schoolYearPropertyChoiceBox, blockPropertyChoiceBox,coursePropertyChoiceBox,typePropertyChoiceBox,attemptExamPropertyChoiceBox, datePropertyDatePicker);
+            examDataVbox.getChildren().addAll(yearPropertyChoiceBox, schoolYearPropertyChoiceBox, blockPropertyChoiceBox, coursePropertyChoiceBox, typePropertyChoiceBox, attemptExamPropertyChoiceBox, datePropertyDatePicker);
             examDataVbox.setSpacing(12);
 
             return examDataVbox;
@@ -619,7 +570,6 @@ public class Toevoegen extends TabPane {
             vbox2.setSpacing(20);
 
 
-
             return hbox;
         }
 
@@ -628,131 +578,12 @@ public class Toevoegen extends TabPane {
 
     private class ModuleTab extends Tab {
         private BorderPane modulePane;
-        private Button newModuleBtn;
-        
+
 
         public ModuleTab() {
-            this.setText("Modulen");
-            modulePane = new BorderPane();
-            modulePane.setLeft(getSelectionMenu());
-            this.setContent(modulePane);
-
+            this.setText("Modulen inladen");
         }
-
-        private VBox getSelectionMenu() {
-            VBox selectionBox = new VBox();
-            createModuleButtons();
-            selectionBox.getChildren().addAll(createLabel("Keuzemenu"),
-                    getModuleChoiceBoxes(), moduleOptionsList,
-                    showModuleBtn, newModuleBtn);
-            selectionBox.setVgrow(moduleOptionsList, Priority.ALWAYS);
-            selectionBox.setPadding(new Insets(0, 0, 0, 5));
-            return selectionBox;
-        }
-
-        private Node getModuleChoiceBoxes() {
-            VBox choiceBoxes = new VBox();
-            choiceBoxes.getChildren().addAll(yearModuleChoiceBox, schoolYearModuleChoiceBox, blockModuleChoiceBox, courseModuleChoiceBox);
-            choiceBoxes.setSpacing(20);
-            return choiceBoxes;
-        }
-
-        private void createModuleButtons() {
-            newModuleBtn = new Button("Module aanmaken");
-
-            newModuleBtn.setMinWidth(150);
-
-            setButtonEvents();
-        }
-
-        private void setButtonEvents() {
-            newModuleBtn.setOnAction(e -> {
-                modulePane.setCenter(createModulePropertiesScreen());
-            });
-        }
-
-        private Node createModulePropertiesScreen() {
-            /**
-             * Scherm waar de eigenschappen van de modulen op staan, waaronder de module informatie en een knop
-             * om gemaakte aanpassingen aan de info op te slaan.
-             */
-            VBox vbox = new VBox();
-            vbox.getChildren().addAll(getModuleInformation(), getSaveModuleButton());
-            vbox.setVgrow(vbox.getChildren().get(0), Priority.ALWAYS);
-            vbox.setPadding(new Insets(0, 20, 0, 20));
-            return vbox;
-        }
-
-        private HBox getSaveModuleButton() {
-            /**
-             * Box die de knop voor het opslaan bevat en waarmee sstyling aan de knop wordt gegeven
-             */
-            HBox hbox = new HBox();
-            hbox.getChildren().add(saveModuleBtn);
-            saveExamBtn.setPrefWidth(350);
-            hbox.setAlignment(Pos.BOTTOM_CENTER);
-            return hbox;
-        }
-
-        private HBox getModuleInformation() {
-            /**
-             * Module informatie en de mogelijkheid om te zien welke toetsen er aanwezig zijn in de module.
-             */
-            HBox hbox = new HBox();
-            hbox.getChildren().addAll(createModuleDataBox());
-            hbox.setHgrow(hbox.getChildren().get(0), Priority.ALWAYS);
-            return hbox;
-        }
-
-        private VBox createModuleDataBox() {
-            /**
-             * Box die de module gegevens/eigenschappen bevat.
-             */
-            VBox vbox = new VBox();
-            vbox.getChildren().addAll(createLabel("Module Gegevens:"), getModuleData());
-            vbox.setAlignment(Pos.CENTER);
-            vbox.setPrefHeight(200);
-            return vbox;
-        }
-
-        private Node getModuleData() {
-            /**
-             * Box met Labels en textfields die de waarden bevatten die behoren tot de module en omscrhijving.
-             */
-            HBox hbox = new HBox();
-
-            VBox vbox1 = new VBox();
-            VBox vbox2 = new VBox();
-
-            Label lbl1 = new Label("Module");
-            Label lbl2 = new Label("Omschrijving");
-
-            lbl1.setPrefSize(100, 25);
-            lbl2.setPrefSize(100, 25);
-
-            courseNameTextField = new TextField();
-            courseDescriptionTextField = new TextField();
-
-
-            vbox1.getChildren().addAll(lbl1, lbl2);
-            vbox2.getChildren().addAll(courseNameTextField, courseDescriptionTextField);
-            hbox.getChildren().addAll(vbox1, vbox2);
-
-            hbox.setAlignment(Pos.CENTER);
-
-
-            return hbox;
-        }
-
-
-    }
-
-
-    private class allModulesTab extends Tab {
-        public allModulesTab() {
-            this.setText("OER inladen?");
-        }
-
     }
 }
+
 
