@@ -29,7 +29,7 @@ Datum laatste aanpassing: 08-12-2016 (door Davy Cats, layout aangepast)
 Beschrijving: In dit script wordt de eerste layout van het invoerscherm getoond.
 */
 
-public final class Invoeren extends StackPane {
+final class Invoeren extends StackPane {
     /*
     De volgende globale variabelen worden gemaakt:
     btn1, btn2, btn3 en btn4, deze worden later gebruikt voor de knoppen
