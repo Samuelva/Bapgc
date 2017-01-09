@@ -38,6 +38,8 @@ public class Main extends Application {
         initTabs();
 
         showScreen();
+
+        Statistics.test();
     }
 
     private static void initLayout(){
