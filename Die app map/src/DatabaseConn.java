@@ -3,10 +3,7 @@
  */
 
 import java.sql.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DatabaseConn {
     /* This class makes connection with the database.
@@ -57,6 +54,24 @@ public class DatabaseConn {
             "(ModuleCode    TEXT    PRIMARY KEY     NOT NULL, " +
             " Omschrijving  TEXT, " +
             " EC            SMALLINT                NOT NULL);";
+    private final String GETSQL = "SELECT * FROM %s%s;";
+    private final String ALLJOINSQL = "SELECT P.StudentID, Naam, Klas, V.VraagID," +
+            " Vraagnummer, Score, MaxScore, Gokvraag, T.ToetsID, ModuleCode," +
+            " Jaar, Schooljaar, Periode, ToetsVorm, Gelegenheid, Cesuur" +
+            " FROM TOETS T" +
+            " FULL OUTER JOIN VRAAG V ON T.ToetsID=V.ToetsID" +
+            " FULL OUTER JOIN SCORE S ON V.VraagID=S.VraagID" +
+            " FULL OUTER JOIN STUDENT P ON P.StudentID=S.StudentID;" +
+            " %s";
+    private final String STUDENTSCORESQL = "SELECT P.StudentID," +
+            " array_agg(Score ORDER BY Vraagnummer)" +
+            " FROM TOETS T" +
+            " FULL OUTER JOIN VRAAG V ON T.ToetsID=V.ToetsID" +
+            " FULL OUTER JOIN SCORE S ON V.VraagID=S.VraagID" +
+            " FULL OUTER JOIN STUDENT P ON P.StudentID=S.StudentID" +
+            " WHERE ModuleCode='%s' AND Jaar='%s' AND Schooljaar='%s' AND" +
+            " Periode='%s' AND gelegenheid='%s'" +
+            " GROUP BY P.StudentID;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -192,17 +207,99 @@ public class DatabaseConn {
         );
     }
 
-    public void GetToetsen() {
+    public ArrayList<ArrayList<String>> GetTable(String tableName) {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery("SELECT * FROM TOETS;");
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.GETSQL, tableName, ""
+            ));
             while (resultSet.next()) {
+                ArrayList<String> row = new ArrayList<String>();
                 //opslaan
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
+                    row.add(resultSet.getString(i));
+                }
+                table.add(row);
             }
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
         }
+        return table;
+    }
+
+    public ArrayList<ArrayList<String>> GetTable(String tableName, String whereClause) {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.GETSQL, tableName, " WHERE " + whereClause
+            ));
+            while (resultSet.next()) {
+                ArrayList<String> row = new ArrayList<String>();
+                //opslaan
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
+                    row.add(resultSet.getString(i));
+                }
+                table.add(row);
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.exit(0);
+        }
+        return table;
+    }
+
+    public ArrayList<ArrayList<String>> GetAllJoined() {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.ALLJOINSQL, ""
+            ));
+            while (resultSet.next()) {
+                ArrayList<String> row = new ArrayList<String>();
+                //opslaan
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
+                    row.add(resultSet.getString(i));
+                }
+                table.add(row);
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.exit(0);
+        }
+        return table;
+    }
+
+    public ArrayList<ArrayList<String>> GetStudentScores(
+            String moduleCode, String jaar, String schoolJaar, String periode,
+            String gelegenheid) {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.STUDENTSCORESQL, moduleCode, jaar,
+                    schoolJaar, periode, gelegenheid
+            ));
+            while (resultSet.next()) {
+                ArrayList<String> row = new ArrayList<String>();
+                row.add(resultSet.getString(1));
+                Integer[] scores = (Integer[])resultSet.getArray(2).getArray();
+                for (Integer score : scores) {
+                    row.add(String.valueOf(score));
+                }
+                table.add(row);
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.exit(0);
+        }
+        return table;
     }
 }
