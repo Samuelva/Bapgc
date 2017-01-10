@@ -2,6 +2,8 @@
 package sample;
 
 
+import java.io.File;
+
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +23,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 
 /*
@@ -29,7 +33,7 @@ Datum laatste aanpassing: 08-12-2016 (door Davy Cats, layout aangepast)
 Beschrijving: In dit script wordt de eerste layout van het invoerscherm getoond.
 */
 
-public final class Invoeren extends StackPane {
+final class Invoeren extends StackPane {
     /*
     De volgende globale variabelen worden gemaakt:
     btn1, btn2, btn3 en btn4, deze worden later gebruikt voor de knoppen
@@ -63,6 +67,16 @@ public final class Invoeren extends StackPane {
         HBox hbox = menuUnder();
         VBox vbox2 = MenuMaken();
         BoxenVullen(vbox2, hbox); 
+        
+
+        btn4.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Toets Bestand");
+            File file = fileChooser.showOpenDialog(new Stage());
+            if (file != null) {;
+                btn4.setDisable(true);
+            }
+        });
 
         
     }
@@ -122,7 +136,8 @@ public final class Invoeren extends StackPane {
     }
     
     
-    public VBox MenuMaken(){
+    @SuppressWarnings("unchecked")
+	public VBox MenuMaken(){
         /*
         In deze functie wordt het menu aan de linkerkant gemaakt.
         lbl1 krijgt de tekst Keuzemnu, de breedte wordt op 150 gezet.
