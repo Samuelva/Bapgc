@@ -40,6 +40,9 @@
     -fx-stroke: #106ece;
     -fx-stroke-width: 2px;
 }
+/*.candlestick-candle {
+    -fx-effect: dropshadow( two-pass-box , rgba(0,0,0,0.4) , 10, 0.0 , 2 , 4 );
+}*/
 .candlestick-line {
     -fx-stroke: #666666;
     -fx-stroke-width: 3px;
