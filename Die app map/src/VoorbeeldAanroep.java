@@ -6,20 +6,15 @@ import java.util.ArrayList;
 public class VoorbeeldAanroep {
     public static void main(String[] args) {
         DatabaseConn d = new DatabaseConn();
-
         //d.InputModule("Bapgc", "jemama", 8);
-        //d.InputToets(1,"2016","3","2","Bapgc","Opdracht","1","70");
-        //d.InputVraag(5,"3a", 10, 1, "ja");
+        //d.InputToets(2,"2016","3","2","Bapgc","Toets","1","70");
+        //d.InputVraag(3,"2a", 10, 1, true, true);
         //d.InputStudent(1088948,"Tim", "Bin3b");
-        //d.InputScore(1088948, 2);
-        //d.UpdateScore(1088948, 2, 7);
-        ArrayList<ArrayList<String>> table = d.GetStudentScores(
-                "Bapgc", "2016", "3", "2", "1");
-        for (ArrayList<String> x : table){
-            for (String y : x) {
-                System.out.print(y + " " );
-            }
-            System.out.println();
+        //d.InputScore(1088948, 3, 10);
+        //String[][] table = d.GetStudentScores(d.GetToetsID("Bapgc", "2016", "3", "2", "1"));
+        String[] table = d.GetCesuurMax(d.GetToetsID("Bapgc", "2016", "3", "2", "1"));
+        for (String y : table) {
+            System.out.println(y + " " );
         }
         d.CloseConnection();
     }
