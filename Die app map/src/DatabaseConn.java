@@ -302,4 +302,8 @@ public class DatabaseConn {
         }
         return table;
     }
+
+//    private String[][] ConvertArraylist(ArrayList<ArrayList<String>> table){
+//        String[][] tableArray = new String[][];
+//    }
 }
