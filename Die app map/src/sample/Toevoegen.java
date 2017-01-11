@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -266,26 +267,46 @@ public class Toevoegen extends TabPane {
 
         }
 
-        private void addPointFields(String points) {
+        private void addPointFields(String header, String questions, String subQuestions, String points) {
             scoreDistributionArray = new LinkedList<TextField>();
             pointBox.setOrientation(Orientation.VERTICAL);
-            String[] result = points.split(";");
-            Integer index = 1;
-            Integer total = 0;
-            for (String question : result) {
+
+            String[] columnHeader = header.split(";");
+            String[] columnQuestions = questions.split(";");
+            String[] columnSubQuestions = subQuestions.split(";");
+            String[] columnPoints = points.split(";");
+
+            int total = 1;
+
+            Integer questionNumber = 1;
+            int index = 1;
+            while (!columnHeader[index].contains("Tot")){
+                try {
+                    if (!columnQuestions[questionNumber].isEmpty() && false) {
+                        System.out.println(columnQuestions[questionNumber] + "." + columnSubQuestions[index]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Hey");
+                }
+                index++;
+            }
+
+
+            questionNumber = 1;
+            for (String question : columnPoints) {
                 try {
                     Integer point = Integer.parseInt(question);
                     if (total != point) {
                         total += point;
-                        Label lbl = new Label(Integer.toString(index) + "->");
+                        Label lbl = new Label(Integer.toString(questionNumber) + "->");
                         HBox questionInput = new HBox();
                         lbl.setMinWidth(30);
                         TextField textField = new TextField(question);
                         textField.setPrefWidth(38);
-                        scoreDistributionArray.add(index - 1, textField);
-                        questionInput.getChildren().addAll(lbl, scoreDistributionArray.get(index - 1));
+                        scoreDistributionArray.add(questionNumber - 1, textField);
+                        questionInput.getChildren().addAll(lbl, scoreDistributionArray.get(questionNumber - 1));
                         pointBox.getChildren().add(questionInput);
-                        index++;
+                        questionNumber++;
                     } else {
                         break;
                     }
@@ -307,6 +328,7 @@ public class Toevoegen extends TabPane {
 
             scoreDistributionArray = new LinkedList<TextField>();
             pointBox.setOrientation(Orientation.VERTICAL);
+
 
             for (int i = 1; i <= slider.getValue(); i++) {
                 Region fill = new Region();
@@ -385,9 +407,12 @@ public class Toevoegen extends TabPane {
             try {
                 Scanner scanner = new Scanner(file);
                 while (scanner.hasNext()) {
-                    String data = scanner.next();
-                    if (data.contains("Punten")) {
-                        addPointFields(data);
+                    String header = scanner.next();
+                    String questions = scanner.next();
+                    String subQuestions = scanner.next();
+                    String points = scanner.next();
+                    if (points.contains("Punten")) {
+                        addPointFields(header,questions,subQuestions,points);
                         break;
                     }
                 }
@@ -420,7 +445,10 @@ public class Toevoegen extends TabPane {
         private VBox getPointDistribution() {
             pointDistributionBox = new VBox();
             pointBox = new FlowPane();
-            pointDistributionBox.getChildren().addAll(createLabel("Puntenverdeling:"), getAmountOfQuestions(), pointBox);
+            ScrollPane scrollpane = new ScrollPane(pointBox);
+            scrollpane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+            pointDistributionBox.getChildren().addAll(createLabel("Puntenverdeling:"), getAmountOfQuestions(), scrollpane);
             return pointDistributionBox;
         }
 
@@ -436,7 +464,7 @@ public class Toevoegen extends TabPane {
             Label lbl2 = new Label("20");
 
             slider.setMin(0);
-            slider.setMax(50);
+            slider.setMax(100);
             slider.setValue(20);
             slider.setShowTickLabels(true);
             slider.setPrefHeight(20);
