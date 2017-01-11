@@ -4,6 +4,7 @@
  * 08-12-2016    Davy Cats   Layout aangepast.
  * 09-12-2016    Davy Cats   ChoiceBox labels aangepast.
  * 17-12-2016    Davy Cats   Update funties toegevoegd.
+ * 11-01-2017    Aaricia     Knop voor het plotten toegevoegd.
  *
  * Deze class maakt een StackPane dat het inzage scherm bevat.
  */
@@ -51,6 +52,7 @@ public class ViewScreen extends StackPane{
     protected ChoiceBox questionChoiceBox;
     protected Button loadBtn;
     protected Button calculateBtn;
+    protected Button plotBtn;
     protected Button savePlotBtn;
     protected Button exportBtn;
     protected Text qualityText;
@@ -247,18 +249,21 @@ public class ViewScreen extends StackPane{
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Boxplot", "Histogram"));
         this.plotChoiceBox.setValue("Boxplot");
-        this.plotChoiceBox.setPrefWidth(133);
+        this.plotChoiceBox.setPrefWidth(100);
         this.plotChoiceBox.setPrefHeight(30);
         this.questionChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Cijfer", "Totaal", new Separator(), "placeholder"));
         this.questionChoiceBox.setValue("Cijfer");
-        this.questionChoiceBox.setPrefWidth(133);
+        this.questionChoiceBox.setPrefWidth(100);
         this.questionChoiceBox.setPrefHeight(30);
+        this.plotBtn = new Button("Plotten");
+        this.plotBtn.setPrefWidth(67);
+        this.plotBtn.setPrefHeight(30);
         this.savePlotBtn = new Button("Afbeelding opslaan");
         this.savePlotBtn.setPrefWidth(133);
         this.savePlotBtn.setPrefHeight(30);
         HBox hBox = new HBox(this.questionChoiceBox, this.plotChoiceBox,
-                this.savePlotBtn);
+                this.plotBtn, this.savePlotBtn);
         return new VBox(this.plotImage, hBox);
     }
     
