@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package sample;
 
 import javafx.beans.value.ChangeListener;
@@ -42,7 +43,6 @@ public class Vergelijken extends StackPane {
         createChoiceMenus(); // Maakt instanties voor keuzemenu
         createStatistics(); // Maakt instanties voor statistieken
         fillTabs(); // Maakt boxjes voor elke tab en stopt deze in de tabs
-        setUpChangeListeners();
 
         this.getChildren().add(tabPane);
 
@@ -103,6 +103,7 @@ public class Vergelijken extends StackPane {
         tabPane.getTabs().add(testTab);
         tabPane.getTabs().add(moduleTab);
         tabPane.getTabs().add(periodTab);
+        tabPane.setTabMinWidth(100);
 
         // Goedkope fix
         // Vergelijkscherm past zich niet aan aan de veticale hoogte van de applet voor
@@ -149,48 +150,4 @@ public class Vergelijken extends StackPane {
         moduleTab.setContent(moduleTabBox);
         periodTab.setContent(periodTabBox);
     }
-
-    private void setUpChangeListeners() {
-        widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> value, Number oldWidth, Number newWidth) {
-                Side side = tabPane.getSide();
-                int numTabs = tabPane.getTabs().size();
-                if ((side == Side.BOTTOM || side == Side.TOP) && numTabs != 0) {
-                    tabPane.setTabMinWidth(newWidth.intValue() / numTabs - (20));
-                    tabPane.setTabMaxWidth(newWidth.intValue() / numTabs - (20));
-                }
-            }
-        });
-
-        heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> value, Number oldHeight, Number newHeight) {
-                Side side = tabPane.getSide();
-                int numTabs = tabPane.getTabs().size();
-                if ((side == Side.LEFT || side == Side.RIGHT) && numTabs != 0) {
-                    tabPane.setTabMinWidth(newHeight.intValue() / numTabs - (20));
-                    tabPane.setTabMaxWidth(newHeight.intValue() / numTabs - (20));
-                }
-            }
-        });
-
-        tabPane.getTabs().addListener(new ListChangeListener<Tab>() {
-            public void onChanged(ListChangeListener.Change<? extends Tab> change) {
-                Side side = tabPane.getSide();
-                int numTabs = tabPane.getTabs().size();
-                if (numTabs != 0) {
-                    if (side == Side.LEFT || side == Side.RIGHT) {
-                        tabPane.setTabMinWidth(heightProperty().intValue() / numTabs - (20));
-                        tabPane.setTabMaxWidth(heightProperty().intValue() / numTabs - (20));
-                    }
-                    if (side == Side.BOTTOM || side == Side.TOP) {
-                        tabPane.setTabMinWidth(widthProperty().intValue() / numTabs - (20));
-                        tabPane.setTabMaxWidth(widthProperty().intValue() / numTabs - (20));
-                    }
-                }
-            }
-        });
-    }
-
 }

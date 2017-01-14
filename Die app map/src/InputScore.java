@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 public class InputScore {
     private final String SCORESQL1 = "INSERT INTO SCORE" +
-            " (StudentID, VraagID)" +
-            " VALUES (%s, %s);";
+            " (StudentID, VraagID, Score)" +
+            " VALUES (%s, %s, %s);";
     private final String SCORESQL2 = "UPDATE SCORE" +
             " set Score = %s" +
             " WHERE StudentID=%s AND VraagID=%s;";
@@ -19,13 +19,14 @@ public class InputScore {
         this.connection = connection;
     }
 
-    public boolean Insert(Integer studentID, Integer vraagID) {
+    public boolean Insert(Integer studentID, Integer vraagID, Integer score) {
         try {
             this.statement = connection.createStatement();
             String query = String.format(
                     this.SCORESQL1,
                     studentID,
-                    vraagID
+                    vraagID,
+                    score
             );
             System.out.println(query);
             statement.executeUpdate(query);
