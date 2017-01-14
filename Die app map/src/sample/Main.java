@@ -39,8 +39,6 @@ public class Main extends Application {
 
         initLayout();
 
-        setUpChangeListeners();
-
         initTabs();
 
         showScreen();
@@ -54,6 +52,7 @@ public class Main extends Application {
 
         tabPane = new TabPane();
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabMinWidth(100);
         toevoegen = new Tab();
         invoeren = new Tab();
         inzien = new Tab();
@@ -67,7 +66,6 @@ public class Main extends Application {
         tabPane.getTabs().add(invoeren);
         tabPane.getTabs().add(inzien);
         tabPane.getTabs().add(vergelijken);
-
     }
 
     private static void events() {
@@ -111,51 +109,6 @@ public class Main extends Application {
         window.setScene(scene);
         window.setTitle("Bapgc");
         window.show();
-    }
-
-    private void setUpChangeListeners() {
-        System.out.println("JA");
-        System.out.println(frame.getWidth());
-         frame.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> value, Number oldWidth, Number newWidth) {
-                Side side = tabPane.getSide();
-                int numTabs = tabPane.getTabs().size();
-                if ((side == Side.BOTTOM || side == Side.TOP) && numTabs != 0) {
-                    tabPane.setTabMinWidth(newWidth.intValue() / numTabs - (20));
-                    tabPane.setTabMaxWidth(newWidth.intValue() / numTabs - (20));
-                }
-            }
-        });
-
-        frame.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> value, Number oldHeight, Number newHeight) {
-                Side side = tabPane.getSide();
-                int numTabs = tabPane.getTabs().size();
-                if ((side == Side.LEFT || side == Side.RIGHT) && numTabs != 0) {
-                    tabPane.setTabMinWidth(newHeight.intValue() / numTabs - (20));
-                    tabPane.setTabMaxWidth(newHeight.intValue() / numTabs - (20));
-                }
-            }
-        });
-
-        tabPane.getTabs().addListener(new ListChangeListener<Tab>() {
-            public void onChanged(ListChangeListener.Change<? extends Tab> change) {
-                Side side = tabPane.getSide();
-                int numTabs = tabPane.getTabs().size();
-                if (numTabs != 0) {
-                    if (side == Side.LEFT || side == Side.RIGHT) {
-                        tabPane.setTabMinWidth(frame.heightProperty().intValue() / numTabs - (20));
-                        tabPane.setTabMaxWidth(frame.heightProperty().intValue() / numTabs - (20));
-                    }
-                    if (side == Side.BOTTOM || side == Side.TOP) {
-                        tabPane.setTabMinWidth(frame.widthProperty().intValue() / numTabs - (20));
-                        tabPane.setTabMaxWidth(frame.widthProperty().intValue() / numTabs - (20));
-                    }
-                }
-            }
-        });
     }
 
 }
