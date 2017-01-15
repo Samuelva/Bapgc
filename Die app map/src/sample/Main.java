@@ -45,8 +45,6 @@ public class Main extends Application {
 
         showScreen();
 
-        Statistics.test();
-
     }
 
     private static void initLayout(){
