@@ -20,13 +20,11 @@ public class Statistiek {
     private HBox statisticsGridBox; // Box waarin gridboxen met statistieken in zitten
     private ScrollPane statisticsScrollPane; // Scrollpane met de gridbox waarin de statistieken in zitten
     private BorderPane graphButtonBox; // Box met grafiek optie knoppen
-    public StackPane graphPane; // Pane met de grafiek
+    private StackPane graphPane; // Pane met de grafiek
 
-    public ComboBox graphButton;
+    private ComboBox graphButton;
     private Button saveButton;
     private ImageView graph;  // Container met grafiek foto
-
-    private Lijngrafiek lineChart;
 
     Grafiek test = new Grafiek();
 
@@ -61,29 +59,50 @@ public class Statistiek {
         graphButton.setMinHeight(30);
         graphButton.setPromptText("Grafiek Soort");
         graphButton.getItems().addAll("Histogram", "Lijngrafiek", "Taartgrafiek", "Boxplot"); // Inhoud comboBox
+        graphButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                graphPane.getChildren().clear();
+//                 graphButton.getSelectionModel().getSelectedItem();
+                if (graphButton.getValue() == "Histogram") {
+                    setGraph(test.barChart());
+                }
+                else if (graphButton.getValue() == "Lijngrafiek") {
+                    setGraph(test.lineChart());
+                }
+                else if (graphButton.getValue() == "Taartgrafiek") {
+                    setGraph(test.pieChart());
+                }
+                else if (graphButton.getValue() == "Boxplot") {
+                    setGraph(test.Boxplot());
+                }
+            }
+        });
 
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
         saveButton.setMinHeight(30);
-        saveButton.setOnAction(e -> {
-            /**
-             * Functie voor het openen van een systeem menu om de grafiek op te slaan.
-             */
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (InstantiationException e1) {
-                e1.printStackTrace();
-            } catch (IllegalAccessException e1) {
-                e1.printStackTrace();
-            } catch (UnsupportedLookAndFeelException e1) {
-                e1.printStackTrace();
+        saveButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                /**
+                 * Functie voor het openen van een systeem menu om de grafiek op te slaan.
+                 */
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException e1) {
+                    e1.printStackTrace();
+                } catch (InstantiationException e1) {
+                    e1.printStackTrace();
+                } catch (IllegalAccessException e1) {
+                    e1.printStackTrace();
+                } catch (UnsupportedLookAndFeelException e1) {
+                    e1.printStackTrace();
+                }
+                JFrame parentFrame = new JFrame();
+                JFileChooser saveMenu = new JFileChooser();
+                saveMenu.setDialogTitle("Opslaan als");
+                saveMenu.showSaveDialog(parentFrame);
             }
-            JFrame parentFrame = new JFrame();
-            JFileChooser saveMenu = new JFileChooser();
-            saveMenu.setDialogTitle("Opslaan als");
-            saveMenu.showSaveDialog(parentFrame);
         });
 
         graphButtonBox.setLeft(graphButton);
@@ -157,20 +176,5 @@ public class Statistiek {
          */
 
         graphPane.getChildren().add(graphBox);
-    }
-
-    public void setLineChart() {
-        lineChart = new Lijngrafiek("test x-as", "test y-as", "test titel");
-        graphPane.getChildren().add(lineChart.getLineChart());
-        String[] xValues = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        int[] yValues = new int[] {6, 5, 4, 6, 7, 5, 4, 6, 7};
-        String[] xValues2 = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        int[] yValues2 = new int[] {4, 5, 8, 3, 2, 6, 8, 9, 5};
-        addLineChartLine(xValues, yValues, "testlijn");
-        addLineChartLine(xValues2, yValues2, "testlijn2");
-    }
-
-    public void addLineChartLine(String[] xValues, int[] yValues, String title) {
-        lineChart.addLine(xValues, yValues, "testLijn 1");
     }
 }

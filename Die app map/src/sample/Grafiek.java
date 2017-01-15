@@ -1,9 +1,5 @@
 package sample;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 
 import javafx.collections.FXCollections;
@@ -26,11 +22,7 @@ public class Grafiek {
     int data[] = new int[DATA_SIZE];
     int group[] = new int[10];
 
-    VBox graphBox;
     VBox vBox;
-    String xLabel;
-    String yLabel;
-    String title;
 
     public Grafiek() {
 
@@ -50,41 +42,30 @@ public class Grafiek {
     }
 
     public VBox lineChart() {
-        final CategoryAxis xAxis = new CategoryAxis();
+        final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
-        final LineChart<String, Number> lineChart =
-                new LineChart<String, Number>(xAxis, yAxis);
+        final LineChart<Number,Number> lineChart =
+                new LineChart<Number,Number>(xAxis,yAxis);
 
-        xAxis.setLabel(xLabel);
-        yAxis.setLabel(yLabel);
+        xAxis.setLabel("test x-as");
+        yAxis.setLabel("test y-as");
         XYChart.Series series = new XYChart.Series();
-        XYChart.Series series2 = new XYChart.Series();
-        series.setName(title);
+        series.setName("Lijngrafiek");
 
-        String[] xValues = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        int[] yValues = new int[] {6, 5, 4, 6, 7, 5, 4, 6, 7};
-
-        for (int i=0; i<xValues.length; i++) {
-            series.getData().add(new XYChart.Data(xValues[i], yValues[i]));
-        }
-        for (int i=0; i<xValues.length; i++) {
-            series2.getData().add(new XYChart.Data(xValues[i], yValues[i]+2));
-        }
-//        series.getData().add(new XYChart.Data(1, 23));
-//        series.getData().add(new XYChart.Data(2, 14));
-//        series.getData().add(new XYChart.Data(3, 15));
-//        series.getData().add(new XYChart.Data(4, 24));
-//        series.getData().add(new XYChart.Data(5, 34));
-//        series.getData().add(new XYChart.Data(6, 36));
-//        series.getData().add(new XYChart.Data(7, 22));
-//        series.getData().add(new XYChart.Data(8, 45));
-//        series.getData().add(new XYChart.Data(9, 43));
-//        series.getData().add(new XYChart.Data(10, 17));
-//        series.getData().add(new XYChart.Data(11, 29));
-//        series.getData().add(new XYChart.Data(12, 25));
+        series.getData().add(new XYChart.Data(1, 23));
+        series.getData().add(new XYChart.Data(2, 14));
+        series.getData().add(new XYChart.Data(3, 15));
+        series.getData().add(new XYChart.Data(4, 24));
+        series.getData().add(new XYChart.Data(5, 34));
+        series.getData().add(new XYChart.Data(6, 36));
+        series.getData().add(new XYChart.Data(7, 22));
+        series.getData().add(new XYChart.Data(8, 45));
+        series.getData().add(new XYChart.Data(9, 43));
+        series.getData().add(new XYChart.Data(10, 17));
+        series.getData().add(new XYChart.Data(11, 29));
+        series.getData().add(new XYChart.Data(12, 25));
 
         lineChart.getData().add(series);
-        lineChart.getData().add(series2);
         vBox = new VBox();
         vBox.getChildren().addAll(lineChart);
         vBox.setVgrow(lineChart, Priority.ALWAYS);
