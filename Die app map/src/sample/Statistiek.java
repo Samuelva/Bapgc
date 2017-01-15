@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,11 +20,13 @@ public class Statistiek {
     private HBox statisticsGridBox; // Box waarin gridboxen met statistieken in zitten
     private ScrollPane statisticsScrollPane; // Scrollpane met de gridbox waarin de statistieken in zitten
     private BorderPane graphButtonBox; // Box met grafiek optie knoppen
-    private BorderPane graphPane; // Pane met de grafiek
+    public StackPane graphPane; // Pane met de grafiek
 
-    private ComboBox graphButton;
+    public ComboBox graphButton;
     private Button saveButton;
     private ImageView graph;  // Container met grafiek foto
+
+    private Lijngrafiek lineChart;
 
     public Statistiek() {
         /**
@@ -49,48 +52,43 @@ public class Statistiek {
          * Maakt het grafiek gedeelte aan met de box voor de grafiek knoppen en de grafiek zelf.
          */
         graphButtonBox = new BorderPane();
-        graphPane = new BorderPane();
-        graph = new ImageView();
-        graph.setFitHeight(300);
-        graph.setPreserveRatio(true);
+        graphPane = new StackPane();
 
         graphButton = new ComboBox(); // ComboBox voor het instellen van de soort grafiek
         graphButton.setPrefWidth(150);
         graphButton.setMinHeight(30);
         graphButton.setPromptText("Grafiek Soort");
-        graphButton.getItems().addAll("Boxplot", "Histogram"); // Inhoud comboBox
+        graphButton.getItems().addAll("Histogram", "Lijngrafiek", "Taartgrafiek", "Boxplot"); // Inhoud comboBox
 
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
         saveButton.setMinHeight(30);
-        saveButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                /**
-                 * Functie voor het openen van een systeem menu om de grafiek op te slaan.
-                 */
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException e1) {
-                    e1.printStackTrace();
-                } catch (InstantiationException e1) {
-                    e1.printStackTrace();
-                } catch (IllegalAccessException e1) {
-                    e1.printStackTrace();
-                } catch (UnsupportedLookAndFeelException e1) {
-                    e1.printStackTrace();
-                }
-                JFrame parentFrame = new JFrame();
-                JFileChooser saveMenu = new JFileChooser();
-                saveMenu.setDialogTitle("Opslaan als");
-                saveMenu.showSaveDialog(parentFrame);
+        saveButton.setOnAction(e -> {
+            /**
+             * Functie voor het openen van een systeem menu om de grafiek op te slaan.
+             */
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException e1) {
+                e1.printStackTrace();
+            } catch (InstantiationException e1) {
+                e1.printStackTrace();
+            } catch (IllegalAccessException e1) {
+                e1.printStackTrace();
+            } catch (UnsupportedLookAndFeelException e1) {
+                e1.printStackTrace();
             }
+            JFrame parentFrame = new JFrame();
+            JFileChooser saveMenu = new JFileChooser();
+            saveMenu.setDialogTitle("Opslaan als");
+            saveMenu.showSaveDialog(parentFrame);
         });
 
         graphButtonBox.setLeft(graphButton);
         graphButtonBox.setRight(saveButton);
         graphButtonBox.setPadding(new Insets(5, 5, 5, 5));
+        graphPane.setPadding(new Insets(10, 10, 10, 10));
         graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
-        graphPane.setCenter(graph);
         VBox.setVgrow(graphPane, Priority.ALWAYS);
 
     }
@@ -151,11 +149,26 @@ public class Statistiek {
         return statisticsBox;
     }
 
-    public void setGraph(String graphFile) {
+    public void setGraph(VBox graphBox) {
         /**
          * Input is een link/path naar de grafiek
          */
-        Image graphImage = new Image(graphFile);
-        graph.setImage(graphImage);
+
+        graphPane.getChildren().add(graphBox);
+    }
+
+    public void setLineChart() {
+        lineChart = new Lijngrafiek("test x-as", "test y-as", "test titel");
+        graphPane.getChildren().add(lineChart.getLineChart());
+        String[] xValues = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        int[] yValues = new int[] {6, 5, 4, 6, 7, 5, 4, 6, 7};
+        String[] xValues2 = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        int[] yValues2 = new int[] {4, 5, 8, 3, 2, 6, 8, 9, 5};
+        addLineChartLine(xValues, yValues, "testlijn");
+        addLineChartLine(xValues2, yValues2, "testlijn2");
+    }
+
+    public void addLineChartLine(String[] xValues, int[] yValues, String title) {
+        lineChart.addLine(xValues, yValues, "testLijn 1");
     }
 }

@@ -79,7 +79,9 @@ public class Vergelijken extends StackPane {
         periodStatistics.addStatistics(new String[] {"1", "5.4", "6.7", "5.6", "4.6"});
 
         // Voeg zo een grafiek toe
-        testStatistics.setGraph("https://i.imgur.com/8Sqgh3M.png");
+        testGraphButtonEvent();
+        moduleGraphButtonEvent();
+        periodGraphButtonEvent();
 
     }
 
@@ -146,5 +148,50 @@ public class Vergelijken extends StackPane {
         testTab.setContent(testTabBox);
         moduleTab.setContent(moduleTabBox);
         periodTab.setContent(periodTabBox);
+    }
+
+    public void testGraphButtonEvent() {
+        testStatistics.graphButton.setOnAction(event -> {
+            testStatistics.graphPane.getChildren().clear();
+            if (testStatistics.graphButton.getValue() == "Histogram") {
+                System.out.println("Histogram");
+            } else if (testStatistics.graphButton.getValue() == "Lijngrafiek") {
+                testStatistics.setLineChart();
+            } else if (testStatistics.graphButton.getValue() == "Taartgrafiek") {
+                System.out.println("PieChart");
+            } else if (testStatistics.graphButton.getValue() == "Boxplot") {
+                System.out.println("Boxplot");
+            }
+        });
+    }
+
+    public void moduleGraphButtonEvent() {
+        moduleStatistics.graphButton.setOnAction(event -> {
+            moduleStatistics.graphPane.getChildren().clear();
+            if (moduleStatistics.graphButton.getValue() == "Histogram") {
+                System.out.println("Histogram");
+            } else if (moduleStatistics.graphButton.getValue() == "Lijngrafiek") {
+                moduleStatistics.setLineChart();
+            } else if (moduleStatistics.graphButton.getValue() == "Taartgrafiek") {
+                System.out.println("PieChart");
+            } else if (moduleStatistics.graphButton.getValue() == "Boxplot") {
+                System.out.println("Boxplot");
+            }
+        });
+    }
+
+    public void periodGraphButtonEvent() {
+        periodStatistics.graphButton.setOnAction(event -> {
+            periodStatistics.graphPane.getChildren().clear();
+            if (periodStatistics.graphButton.getValue() == "Histogram") {
+                System.out.println("Histogram");
+            } else if (periodStatistics.graphButton.getValue() == "Lijngrafiek") {
+                periodStatistics.setLineChart();
+            } else if (periodStatistics.graphButton.getValue() == "Taartgrafiek") {
+                System.out.println("PieChart");
+            } else if (periodStatistics.graphButton.getValue() == "Boxplot") {
+                System.out.println("Boxplot");
+            }
+        });
     }
 }
