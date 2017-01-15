@@ -27,6 +27,7 @@ public class Statistiek {
     private ImageView graph;  // Container met grafiek foto
 
     private Lijngrafiek lineChart;
+    private Histogram barChart;
 
     public Statistiek() {
         /**
@@ -159,6 +160,7 @@ public class Statistiek {
 
     public void setLineChart() {
         lineChart = new Lijngrafiek("test x-as", "test y-as", "test titel");
+        graphPane.getChildren().clear();
         graphPane.getChildren().add(lineChart.getLineChart());
         String[] xValues = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
         int[] yValues = new int[] {6, 5, 4, 6, 7, 5, 4, 6, 7};
@@ -170,5 +172,14 @@ public class Statistiek {
 
     public void addLineChartLine(String[] xValues, int[] yValues, String title) {
         lineChart.addLine(xValues, yValues, "testLijn 1");
+    }
+
+    public void setBarChart() {
+        barChart = new Histogram("test x-as", "test y-as", "test title", "test naam");
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(barChart.getBarChart());
+        barChart.addBar("1", 8);
+        barChart.addBar("2", 9);
+        barChart.addBar("3", 5);
     }
 }
