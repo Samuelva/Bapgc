@@ -28,6 +28,7 @@ public class Statistiek {
 
     private Lijngrafiek lineChart;
     private Histogram barChart;
+    private Cirkeldiagram pieChart;
 
     public Statistiek() {
         /**
@@ -167,7 +168,7 @@ public class Statistiek {
         String[] xValues2 = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
         int[] yValues2 = new int[] {4, 5, 8, 3, 2, 6, 8, 9, 5};
         addLineChartLine(xValues, yValues, "testlijn");
-        addLineChartLine(xValues2, yValues2, "testlijn2");
+        addLineChartLine(xValues2, yValues2, "testlijn");
     }
 
     public void addLineChartLine(String[] xValues, int[] yValues, String title) {
@@ -181,5 +182,15 @@ public class Statistiek {
         barChart.addBar("1", 8);
         barChart.addBar("2", 9);
         barChart.addBar("3", 5);
+    }
+
+    public void setPieChart() {
+        String[] names = new String[] {"Voldoendes", "Onvoldoendes"};
+        int[] values = new int[] {30, 59};
+
+        pieChart = new Cirkeldiagram("test titel");
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(pieChart.makePieChart());
+        pieChart.addData(names, values);
     }
 }

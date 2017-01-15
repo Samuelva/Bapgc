@@ -158,7 +158,7 @@ public class Vergelijken extends StackPane {
             } else if (testStatistics.graphButton.getValue() == "Lijngrafiek") {
                 testStatistics.setLineChart();
             } else if (testStatistics.graphButton.getValue() == "Taartgrafiek") {
-                System.out.println("PieChart");
+                testStatistics.setPieChart();
             } else if (testStatistics.graphButton.getValue() == "Boxplot") {
                 System.out.println("Boxplot");
             }
@@ -169,11 +169,11 @@ public class Vergelijken extends StackPane {
         moduleStatistics.graphButton.setOnAction(event -> {
             moduleStatistics.graphPane.getChildren().clear();
             if (moduleStatistics.graphButton.getValue() == "Histogram") {
-                testStatistics.setLineChart();
+                moduleStatistics.setBarChart();
             } else if (moduleStatistics.graphButton.getValue() == "Lijngrafiek") {
                 moduleStatistics.setLineChart();
             } else if (moduleStatistics.graphButton.getValue() == "Taartgrafiek") {
-                System.out.println("PieChart");
+                moduleStatistics.setPieChart();
             } else if (moduleStatistics.graphButton.getValue() == "Boxplot") {
                 System.out.println("Boxplot");
             }
@@ -184,11 +184,11 @@ public class Vergelijken extends StackPane {
         periodStatistics.graphButton.setOnAction(event -> {
             periodStatistics.graphPane.getChildren().clear();
             if (periodStatistics.graphButton.getValue() == "Histogram") {
-                testStatistics.setLineChart();
+                periodStatistics.setBarChart();
             } else if (periodStatistics.graphButton.getValue() == "Lijngrafiek") {
                 periodStatistics.setLineChart();
             } else if (periodStatistics.graphButton.getValue() == "Taartgrafiek") {
-                System.out.println("PieChart");
+                periodStatistics.setPieChart();
             } else if (periodStatistics.graphButton.getValue() == "Boxplot") {
                 System.out.println("Boxplot");
             }
