@@ -1,17 +1,11 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
-import java.util.LinkedList;
 
 public class Main extends Application {
 
@@ -43,8 +37,6 @@ public class Main extends Application {
 
         showScreen();
 
-        Statistics.test();
-
     }
 
     private static void initLayout(){
@@ -68,22 +60,7 @@ public class Main extends Application {
         tabPane.getTabs().add(vergelijken);
     }
 
-    private static void events() {
-        toevoeg.saveExamBtn.setOnAction(e -> {
-            System.out.println("Toets gegevens voor opslaan");
-            LinkedList examProperties = toevoeg.getExamProperties();
-            for (int i = 0; i<examProperties.size();i++){
-                System.out.println(examProperties.get(i));
-            }
-        });
-        toevoeg.showExamBtn.setOnAction(e -> {
-            System.out.println("Toets weergave lijst");
-            LinkedList searchExams = toevoeg.getAvailableExams();
-            for (int i = 0; i<searchExams.size();i++){
-                System.out.println(searchExams.get(i));
-            }
-        });
-    }
+
 
     private static void initTabs(){
         toevoeg = new Toevoegen();
@@ -101,7 +78,6 @@ public class Main extends Application {
 
         frame.getChildren().addAll(tabPane);
 
-        events();
     }
 
     private void showScreen(){

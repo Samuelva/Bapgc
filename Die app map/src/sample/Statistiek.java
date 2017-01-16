@@ -9,7 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 import javax.swing.*;
+import java.io.File;
 
 /**
  * Created by Samuel on 5-12-2016.
@@ -27,8 +31,8 @@ public class Statistiek {
     private ImageView graph;  // Container met grafiek foto
 
     private Lijngrafiek lineChart;
-
-    Grafiek test = new Grafiek();
+    private Histogram barChart;
+    private Cirkeldiagram pieChart;
 
     public Statistiek() {
         /**
@@ -66,24 +70,13 @@ public class Statistiek {
         saveButton.setPrefWidth(150);
         saveButton.setMinHeight(30);
         saveButton.setOnAction(e -> {
-            /**
-             * Functie voor het openen van een systeem menu om de grafiek op te slaan.
-             */
-            try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (InstantiationException e1) {
-                e1.printStackTrace();
-            } catch (IllegalAccessException e1) {
-                e1.printStackTrace();
-            } catch (UnsupportedLookAndFeelException e1) {
-                e1.printStackTrace();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG (*.png)", "*.png"));
+            fileChooser.setTitle("Opslaan Als");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                System.out.println(file);
             }
-            JFrame parentFrame = new JFrame();
-            JFileChooser saveMenu = new JFileChooser();
-            saveMenu.setDialogTitle("Opslaan als");
-            saveMenu.showSaveDialog(parentFrame);
         });
 
         graphButtonBox.setLeft(graphButton);
@@ -161,6 +154,7 @@ public class Statistiek {
 
     public void setLineChart() {
         lineChart = new Lijngrafiek("test x-as", "test y-as", "test titel");
+        graphPane.getChildren().clear();
         graphPane.getChildren().add(lineChart.getLineChart());
         String[] xValues = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
         int[] yValues = new int[] {6, 5, 4, 6, 7, 5, 4, 6, 7};
@@ -172,5 +166,24 @@ public class Statistiek {
 
     public void addLineChartLine(String[] xValues, int[] yValues, String title) {
         lineChart.addLine(xValues, yValues, "testLijn 1");
+    }
+
+    public void setBarChart() {
+        barChart = new Histogram("test x-as", "test y-as", "test title", "test naam");
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(barChart.getBarChart());
+        barChart.addBar("1", 8);
+        barChart.addBar("2", 9);
+        barChart.addBar("3", 5);
+    }
+
+    public void setPieChart() {
+        String[] names = new String[] {"Voldoendes", "Onvoldoendes"};
+        int[] values = new int[] {30, 59};
+
+        pieChart = new Cirkeldiagram("test titel");
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(pieChart.makePieChart());
+        pieChart.addData(names, values);
     }
 }

@@ -46,6 +46,19 @@ bpsys;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
 bpsys,bspr;bpsys;8;Project, Logboek;3;3,4;Minor
 bpsys, bspr;bspec;6;Opdracht;3;3,4;Minor
 bspr;blit;4;Opdracht;3;4;Minor
-bspr;bmep;;Theorietoets, Aanwezigheid;3;4;Minor
+bspr;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
+bmsta;bmsta;30;Stage;3;1,2,3,4;Minor
+bmnrxx;bmnrxx;30;WO;3;1,2,3,4;Minor
+bmsbm;brna;5;Theorietoets,Opdracht;3;3;Minor
+bmsbm;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
+bmsbm;bpsys;8;Project, Logboek;3;3,4;Minor
+bmsbm;bdata;4;Theorietoets, Opdracht;3;4;Minor
+bmsbm;blit;4;Opdracht;3;4;Minor
+bmsbm;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
+bmngs;blab;3;Opdracht, Aanwezigheid;3;3;Minor
+bmngs;blin;2;Praktijktoets;3;3;Minor
+bmngs;btsa;4;Theorietoets, Opdracht;3;3;Minor
+bmngs;bngsa;6;Theorietoets, Opdracht, Aanwezigheid;3;3;Minor
+bmngs;bpp;15;Project;3;4;Minor
 bafstu;bafstu$;59;Afstuderen;4;1,2,3,4;Verplicht
 bafstu;bslb04;1;Opdracht, Aanwezigheid;4;1,2,3,4;Verplicht
