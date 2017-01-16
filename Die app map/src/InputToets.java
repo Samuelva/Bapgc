@@ -6,9 +6,9 @@ import java.sql.Statement;
  */
 class InputToets {
     private final String MODULESQL = "INSERT INTO TOETS" +
-            " (ToetsID, Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
+            " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
             " Gelegenheid, Cesuur)" +
-            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s);";
+            " VALUES (%s, %s, %s, %s, %s, %s, %s);";
     private Connection connection;
     private QueryString jaar = new QueryString();
     private QueryString schooljaar = new QueryString();
@@ -22,7 +22,7 @@ class InputToets {
         this.connection = connection;
     }
 
-    public boolean insert(Integer id, String  jaarString,
+    public boolean insert(String  jaarString,
                           String schooljaarString, String periodeString,
                           String moduleCodeString, String toetsvormString,
                           String gelegenheidString, String cesuurString) {
@@ -38,7 +38,6 @@ class InputToets {
             Statement statement = connection.createStatement();
             String query = String.format(
                     this.MODULESQL,
-                    id,
                     this.jaar.getString(),
                     this.schooljaar.getString(),
                     this.periode.getString(),

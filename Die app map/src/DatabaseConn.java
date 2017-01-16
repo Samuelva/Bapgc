@@ -62,6 +62,9 @@ public class DatabaseConn {
             " FROM TOETS" +
             " WHERE ModuleCode='%s' AND Jaar='%s' AND Schooljaar='%s' AND" +
             " Periode='%s' AND gelegenheid='%s';";
+    private final String GETVRAAGIDSQL = "SELECT VraagID" +
+            " FROM VRAAG" +
+            " WHERE Vraagnummer='%s' AND ToetsID=%s;";
     private final String ALLJOINSQL = "SELECT P.StudentID, Naam, Klas, V.VraagID," +
             " Vraagnummer, Score, MaxScore, Gokvraag, T.ToetsID, ModuleCode," +
             " Jaar, Schooljaar, Periode, ToetsVorm, Gelegenheid, Cesuur" +
@@ -195,7 +198,7 @@ public class DatabaseConn {
                 ec
         );
     }
-    public void InputToets(Integer id, String jaar, String schooljaar,
+    public void InputToets(String jaar, String schooljaar,
                            String periode, String moduleCode, String toetsvorm,
                            String gelegenheid, String cesuur) {
         /* Deze methode zorgt voor het invoegen van data in de toets
@@ -205,7 +208,6 @@ public class DatabaseConn {
          * module code, toetsvorm, gelegenheid en cesuur opgeslagen.
          */
         this.inputToets.insert(
-                id,
                 jaar,
                 schooljaar,
                 periode,
@@ -216,7 +218,7 @@ public class DatabaseConn {
         );
     }
 
-    public void InputVraag(Integer id, String vraagnummer, Integer maxScore,
+    public void InputVraag(String vraagnummer, Integer maxScore,
                            Integer toetsID, boolean gokvraag,
                            boolean meerekenen) {
         /* Deze methode zorgt voor het invoegen van data in de vragen
@@ -226,7 +228,6 @@ public class DatabaseConn {
          * gokvraag en meerekenen opgeslagen.
          */
         this.inputVraag.insert(
-                id,
                 vraagnummer,
                 maxScore,
                 toetsID,
@@ -314,6 +315,37 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.GETTOETSIDSQL, moduleCode, jaar,
                     schoolJaar, periode, gelegenheid
+            ));
+            resultSet.next();
+            id = resultSet.getInt(1);
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.exit(0);
+        }
+        return id;
+    }
+
+    public Integer GetVraagID(
+            String vraagnummer, int toetsID){
+        /* Deze methode geeft een id van een vraag terug als de
+         * gegevens van die vraag worden meegegeven.
+         * Eerst opent het de connectie met de database. Dan maakt
+         * het een resultset op basis van de GETVRAAGIDSQL query.
+         * Het wordt geformat met de meegegeven vraag kenmerken.
+         * Vervolgens wordt het eerste resultaat in de eerste kolom
+         * eruit gehaald (aangezien dit het enige is in de output
+         * van de query). Dit is Het ID
+         * De statement wordt dan gesloten en tot slot wordt het ID
+         * gereturned.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
+        Integer id = 0;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.GETVRAAGIDSQL, vraagnummer, toetsID
             ));
             resultSet.next();
             id = resultSet.getInt(1);

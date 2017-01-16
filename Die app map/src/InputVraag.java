@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 class InputVraag {
     private final String MODULESQL = "INSERT INTO VRAAG" +
-            " (VraagID, Vraagnummer, MaxScore, ToetsID, Gokvraag, Meerekenen)" +
-            " VALUES (%s, %s, %s, %s, %s, %s);";
+            " (Vraagnummer, MaxScore, ToetsID, Gokvraag, Meerekenen)" +
+            " VALUES (%s, %s, %s, %s, %s);";
     private Connection connection;
     private QueryString vraagnummer = new QueryString();
 
@@ -16,7 +16,7 @@ class InputVraag {
         this.connection = connection;
     }
 
-    public boolean insert(Integer id, String vraagnummerString, Integer max,
+    public boolean insert(String vraagnummerString, Integer max,
                           Integer toetsID, boolean gokvraag,
                           boolean meerekenen) {
         try {
@@ -25,7 +25,6 @@ class InputVraag {
             Statement statement = connection.createStatement();
             String query = String.format(
                     this.MODULESQL,
-                    id,
                     this.vraagnummer.getString(),
                     max,
                     toetsID,
