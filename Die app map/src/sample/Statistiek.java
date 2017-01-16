@@ -33,6 +33,7 @@ public class Statistiek {
     private Lijngrafiek lineChart;
     private Histogram barChart;
     private Cirkeldiagram pieChart;
+    private Boxplot boxplot;
 
     public Statistiek() {
         /**
@@ -185,5 +186,12 @@ public class Statistiek {
         graphPane.getChildren().clear();
         graphPane.getChildren().add(pieChart.makePieChart());
         pieChart.addData(names, values);
+    }
+
+    public void setBoxPlot() {
+        boxplot = new Boxplot();
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(boxplot.makeBoxPlot());
+        boxplot.addData();
     }
 }

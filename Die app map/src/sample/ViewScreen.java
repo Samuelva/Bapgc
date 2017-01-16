@@ -64,6 +64,7 @@ public class ViewScreen extends StackPane{
     protected Label percentileLabel;
     protected StackPane graphPane;
     protected Histogram barChart;
+    protected Boxplot boxplot;
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -252,9 +253,9 @@ public class ViewScreen extends StackPane{
                         "Boxplot", "Histogram"));
         this.plotChoiceBox.setOnAction(event -> {
             if (plotChoiceBox.getValue() == "Boxplot") {
-                System.out.println("Boxplot");
+                makeBoxplot();
             } else if (plotChoiceBox.getValue() == "Histogram") {
-                makeGraph();
+                makeHistogram();
             }
         });
         this.plotChoiceBox.setValue("Boxplot");
@@ -447,7 +448,7 @@ public class ViewScreen extends StackPane{
         this.pointsTable.setItems(data);
     }
 
-    protected void makeGraph() {
+    protected void makeHistogram() {
         barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
         barChart.makeBarChart();
         graphPane.getChildren().clear();
@@ -457,5 +458,12 @@ public class ViewScreen extends StackPane{
         barChart.addBar("bar 3", 5);
         barChart.addBar("bar 4", 6);
         barChart.addBar("bar 5", 8);
+    }
+
+    protected void makeBoxplot() {
+        boxplot = new Boxplot();
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(boxplot.makeBoxPlot());
+        boxplot.addData();
     }
 }

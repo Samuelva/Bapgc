@@ -159,7 +159,7 @@ public class Vergelijken extends StackPane {
             } else if (testStatistics.graphButton.getValue() == "Taartgrafiek") {
                 testStatistics.setPieChart();
             } else if (testStatistics.graphButton.getValue() == "Boxplot") {
-                System.out.println("Boxplot");
+                testStatistics.setBoxPlot();
             }
         });
     }
@@ -173,7 +173,7 @@ public class Vergelijken extends StackPane {
             } else if (moduleStatistics.graphButton.getValue() == "Taartgrafiek") {
                 moduleStatistics.setPieChart();
             } else if (moduleStatistics.graphButton.getValue() == "Boxplot") {
-                System.out.println("Boxplot");
+                moduleStatistics.setBoxPlot();
             }
         });
     }
@@ -187,7 +187,7 @@ public class Vergelijken extends StackPane {
             } else if (periodStatistics.graphButton.getValue() == "Taartgrafiek") {
                 periodStatistics.setPieChart();
             } else if (periodStatistics.graphButton.getValue() == "Boxplot") {
-                System.out.println("Boxplot");
+                periodStatistics.setBoxPlot();
             }
         });
     }
