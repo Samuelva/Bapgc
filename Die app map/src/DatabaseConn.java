@@ -39,7 +39,6 @@ public class DatabaseConn {
             " MaxScore      SMALLINT                NOT NULL," +
             " ToetsID       SERIAL                  NOT NULL " +
             "references TOETS(ToetsID)," +
-            " Gokvraag      VARCHAR                 NOT NULL," +
             " Meerekenen    VARCHAR                 NOT NULL);";
     private final String TOETSSQL = "CREATE TABLE IF NOT EXISTS" +
             " TOETS " +
@@ -51,7 +50,8 @@ public class DatabaseConn {
             "references MODULE(ModuleCode)," +
             " Toetsvorm     TEXT                    NOT NULL," +
             " Gelegenheid   CHAR(1)                 NOT NULL," +
-            " Cesuur        TEXT                    NOT NULL);";
+            " Cesuur        SMALLINT                NOT NULL," +
+            " PuntenDoorGokKans SMALLINT            NOT NULL);";
     private final String MODULESQL = "CREATE TABLE IF NOT EXISTS" +
             " MODULE " +
             "(ModuleCode    TEXT    PRIMARY KEY     NOT NULL, " +
@@ -81,10 +81,10 @@ public class DatabaseConn {
             " FULL OUTER JOIN STUDENT P ON P.StudentID=S.StudentID" +
             " WHERE T.ToetsID=%s" +
             " GROUP BY P.StudentID;";
-    private final String CESUURMAXSQL = "SELECT Cesuur, sum(MaxScore)" +
+    private final String CESUURMAXGOKSQL = "SELECT Cesuur, sum(MaxScore), PuntenDoorGokKans" +
             " FROM TOETS T" +
             " FULL OUTER JOIN VRAAG V ON T.ToetsID=V.ToetsID" +
-            " WHERE T.ToetsID=%s" +
+            " WHERE T.ToetsID=%s AND V.Meerekenen='true'" +
             " GROUP BY T.ToetsID;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
@@ -200,7 +200,8 @@ public class DatabaseConn {
     }
     public void InputToets(String jaar, String schooljaar,
                            String periode, String moduleCode, String toetsvorm,
-                           String gelegenheid, String cesuur) {
+                           String gelegenheid, Integer cesuur,
+                           Integer puntenDoorGokKans) {
         /* Deze methode zorgt voor het invoegen van data in de toets
          * tabel. Dit gebeurt via het object inputToets dat eerder
          * aangemaakt is.
@@ -214,13 +215,13 @@ public class DatabaseConn {
                 moduleCode,
                 toetsvorm,
                 gelegenheid,
-                cesuur
+                cesuur,
+                puntenDoorGokKans
         );
     }
 
     public void InputVraag(String vraagnummer, Integer maxScore,
-                           Integer toetsID, boolean gokvraag,
-                           boolean meerekenen) {
+                           Integer toetsID, boolean meerekenen) {
         /* Deze methode zorgt voor het invoegen van data in de vragen
          * tabel. Dit gebeurt door middel van het object inputVraag dat
          * eerder is aangemaakt.
@@ -231,7 +232,6 @@ public class DatabaseConn {
                 vraagnummer,
                 maxScore,
                 toetsID,
-                gokvraag,
                 meerekenen
         );
     }
@@ -452,16 +452,17 @@ public class DatabaseConn {
         return ConvertArrayListTable(table);
     }
 
-    public String[] GetCesuurMax(Integer toetsID) {
-        String[] array = new String[2];
+    public String[] GetCesuurMaxGok(Integer toetsID) {
+        String[] array = new String[3];
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
-                    this.CESUURMAXSQL, toetsID
+                    this.CESUURMAXGOKSQL, toetsID
             ));
             resultSet.next();
             array[0] = resultSet.getString(1);
             array[1] = resultSet.getString(2);
+            array[2] = resultSet.getString(3);
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());

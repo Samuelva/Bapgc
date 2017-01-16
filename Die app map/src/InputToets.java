@@ -7,8 +7,8 @@ import java.sql.Statement;
 class InputToets {
     private final String MODULESQL = "INSERT INTO TOETS" +
             " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
-            " Gelegenheid, Cesuur)" +
-            " VALUES (%s, %s, %s, %s, %s, %s, %s);";
+            " Gelegenheid, Cesuur, PuntenDoorGokKans)" +
+            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s);";
     private Connection connection;
     private QueryString jaar = new QueryString();
     private QueryString schooljaar = new QueryString();
@@ -16,7 +16,6 @@ class InputToets {
     private QueryString moduleCode = new QueryString();
     private QueryString toetsvorm = new QueryString();
     private QueryString gelegenheid = new QueryString();
-    private QueryString cesuur = new QueryString();
 
     public InputToets(Connection connection) {
         this.connection = connection;
@@ -25,7 +24,8 @@ class InputToets {
     public boolean insert(String  jaarString,
                           String schooljaarString, String periodeString,
                           String moduleCodeString, String toetsvormString,
-                          String gelegenheidString, String cesuurString) {
+                          String gelegenheidString, Integer cesuur,
+                          Integer puntenDoorGokKans) {
         try {
             this.jaar.insert(jaarString);
             this.schooljaar.insert(schooljaarString);
@@ -33,7 +33,6 @@ class InputToets {
             this.moduleCode.insert(moduleCodeString);
             this.toetsvorm.insert(toetsvormString);
             this.gelegenheid.insert(gelegenheidString);
-            this.cesuur.insert(cesuurString);
 
             Statement statement = connection.createStatement();
             String query = String.format(
@@ -44,7 +43,8 @@ class InputToets {
                     this.moduleCode.getString(),
                     this.toetsvorm.getString(),
                     this.gelegenheid.getString(),
-                    this.cesuur.getString()
+                    cesuur,
+                    puntenDoorGokKans
             );
             System.out.println(query);
             statement.executeUpdate(query);
