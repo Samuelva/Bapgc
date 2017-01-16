@@ -67,9 +67,6 @@ public class CandleStickChart extends XYChart<Number, Number> {
         super(xAxis, yAxis);
         getStylesheets().add(
                 CandleStickChart.class.getResource("CandleStickChart.css").toExternalForm());
-        setAnimated(false);
-        xAxis.setAnimated(false);
-        yAxis.setAnimated(false);
     }
 
     /**
