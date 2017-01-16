@@ -152,7 +152,6 @@ public class Vergelijken extends StackPane {
 
     public void testGraphButtonEvent() {
         testStatistics.graphButton.setOnAction(event -> {
-            testStatistics.graphPane.getChildren().clear();
             if (testStatistics.graphButton.getValue() == "Histogram") {
                 testStatistics.setBarChart();
             } else if (testStatistics.graphButton.getValue() == "Lijngrafiek") {
@@ -167,7 +166,6 @@ public class Vergelijken extends StackPane {
 
     public void moduleGraphButtonEvent() {
         moduleStatistics.graphButton.setOnAction(event -> {
-            moduleStatistics.graphPane.getChildren().clear();
             if (moduleStatistics.graphButton.getValue() == "Histogram") {
                 moduleStatistics.setBarChart();
             } else if (moduleStatistics.graphButton.getValue() == "Lijngrafiek") {
@@ -182,7 +180,6 @@ public class Vergelijken extends StackPane {
 
     public void periodGraphButtonEvent() {
         periodStatistics.graphButton.setOnAction(event -> {
-            periodStatistics.graphPane.getChildren().clear();
             if (periodStatistics.graphButton.getValue() == "Histogram") {
                 periodStatistics.setBarChart();
             } else if (periodStatistics.graphButton.getValue() == "Lijngrafiek") {

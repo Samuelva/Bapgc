@@ -51,17 +51,4 @@ public class Histogram {
         chartBox.setVgrow(barChart, Priority.ALWAYS);
         return chartBox;
     }
-
-    public void addLine(String[] xValues, int[] yValues, String lineName) {
-        XYChart.Series series = new XYChart.Series();
-        series.setName(lineName);
-
-        for (int i=0; i<xValues.length; i++) {
-            series.getData().add(new XYChart.Data(xValues[i], yValues[i]));
-        }
-
-        barChart.getData().add(series);
-    }
-
-
 }

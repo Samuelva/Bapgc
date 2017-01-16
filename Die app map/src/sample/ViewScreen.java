@@ -10,6 +10,7 @@
  */
 package sample;
 
+import java.io.File;
 import java.util.Arrays;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -32,13 +33,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 public class ViewScreen extends StackPane{
@@ -62,7 +62,8 @@ public class ViewScreen extends StackPane{
     protected TableView<String[]> pointsTable;
     protected Slider percentileSlider;
     protected Label percentileLabel;
-    protected ImageView plotImage;
+    protected StackPane graphPane;
+    protected Histogram barChart;
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -243,11 +244,19 @@ public class ViewScreen extends StackPane{
      * Naast de dropdowns staat een knop om de afbeelding op te slaan.
      */
     private VBox makeTopRightBox(){
-        this.plotImage = new ImageView("/placeholder.jpg");
-        this.plotImage.setFitWidth(400);
-        this.plotImage.setFitHeight(250);
+        this.graphPane = new StackPane();
+        this.graphPane.setPrefWidth(400);
+        this.graphPane.setPrefHeight(250);
+        this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Boxplot", "Histogram"));
+        this.plotChoiceBox.setOnAction(event -> {
+            if (plotChoiceBox.getValue() == "Boxplot") {
+                System.out.println("Boxplot");
+            } else if (plotChoiceBox.getValue() == "Histogram") {
+                makeGraph();
+            }
+        });
         this.plotChoiceBox.setValue("Boxplot");
         this.plotChoiceBox.setPrefWidth(100);
         this.plotChoiceBox.setPrefHeight(30);
@@ -262,9 +271,18 @@ public class ViewScreen extends StackPane{
         this.savePlotBtn = new Button("Afbeelding opslaan");
         this.savePlotBtn.setPrefWidth(133);
         this.savePlotBtn.setPrefHeight(30);
+        this.savePlotBtn.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG (*.png)", "*.png"));
+            fileChooser.setTitle("Opslaan Als");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                System.out.println(file);
+            }
+        });
         HBox hBox = new HBox(this.questionChoiceBox, this.plotChoiceBox,
                 this.plotBtn, this.savePlotBtn);
-        return new VBox(this.plotImage, hBox);
+        return new VBox(this.graphPane, hBox);
     }
     
     /* Deze functie zet het bovenste gedeelte van het scherm in elkaar
@@ -427,5 +445,17 @@ public class ViewScreen extends StackPane{
         ObservableList<String[]> data = FXCollections.observableArrayList();
         data.addAll(Arrays.asList(values));
         this.pointsTable.setItems(data);
+    }
+
+    protected void makeGraph() {
+        barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
+        barChart.makeBarChart();
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(barChart.getBarChart());
+        barChart.addBar("bar 1", 8);
+        barChart.addBar("bar 2", 9);
+        barChart.addBar("bar 3", 5);
+        barChart.addBar("bar 4", 6);
+        barChart.addBar("bar 5", 8);
     }
 }
