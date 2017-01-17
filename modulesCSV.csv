@@ -2,7 +2,7 @@ ModuleID;vakID;EC;Toetsvorm;Jaar;Periode;Extra
 bpab;bato;2;Theorietoets;1;1;Verplicht
 bpab;bdna;3;Theorietoets;1;1;Verplicht
 bpab;bpab;4;Project;1;1;Verplicht
-bpab,bptb;binp;6;Praktijktoets, Opdracht;1;1,2;Verplicht
+bpab;binp;6;Praktijktoets, Opdracht;1;1;Verplicht
 bptb;bcpp;4;Opdracht, Opdracht, Opdracht, Aanwezigheid;1;2;Verplicht
 bptb;bdisc;3;Theorietoets;1;2;Verplicht
 bptb;bptb;4;Project;1;2;Verplicht
@@ -16,42 +16,41 @@ bpgru;bwx;3;Praktijktoets;1;4;Verplicht
 bpgru;beve;4;Theorietoets, Aanwezigheid;1;4;Verplicht
 bpgru;bioch;3;Theorietoets;1;4;Verplicht
 bpgru;bpgru;4;Project;1;4;Verplicht
-bpab,bptb,bpgaa, bpgru;bslb01;1;Aanwezigheid, Opdracht;1;1,2,3,4;Verplicht
+bpab;bslb01;1;Aanwezigheid, Opdracht;1;1;Verplicht
 bpgepr;bpgepr;4;Logboek, Project;2;1;Verplicht
 bpgepr;bseqa;4;Theorietoets, Opdracht;2;1;Verplicht
 bpgepr;besm;4;Praktijktoets, Opdracht;2;1;Verplicht
 bpgepr;brela;4;Praktijktoets;2;1;Verplicht
-bmbl,brna;bpcogs;6;Project;2;2,3;Verplicht
+bmbl;bpcogs;6;Project;2;2;Verplicht
 bmbl;bmbl;6;Theorietoets, Opdracht;2;2;Verplicht
 bmbl;bgel;4;Theorietoets, Opdracht, Aanwezigheid;2;2;Verplicht
 brna;brna;5;Theorietoets, Opdracht;2;3;Verplicht
-brna,bpdat;bstop;5;Praktijktoets, Opdracht;2;3,4;Verplicht
+brna;bstop;5;Praktijktoets, Opdracht;2;3;Verplicht
 brna;bstk;5;Praktijktoets;2;3;Verplicht
 bpdat;bpdat;5;Logboek, Project;2;4;Verplicht
 bpdat;bdata;4;Theorietoets, Opdracht;2;4;Verplicht
-bpgepr,bmbl,brna,bpdat;bslb02;1;Opdracht, Aanwezigheid;2;1,2,3,4;Verplicht
+bpgepr;bslb02;1;Opdracht, Aanwezigheid;2;1;Verplicht
 Keuze;bviv;3;Theorietoets;2;4;Keuze
-Keuze;bkoxx$; 1-6;;;;Keuze
-Keuze;OA1$;1;Opdracht;2;1,2,3,4;Keuze
-Keuze;bmini;6;Opdracht;2;1,2,3,4;Keuze
+Keuze;OA1$;1;Opdracht;2;1;Keuze
+Keuze;bmini;6;Opdracht;2;1;Keuze
 bnext;bnext;8;Theorietoets, Opdracht, Aanwezigheid;3;1;Verplicht
 Keuze;bash2;4;Praktijktoets;3;1;Keuze
-Keuze;bpsda;8;Logboek, Project;3;1,2;Keuze
+Keuze;bpsda;8;Logboek, Project;3;1;Keuze
 bacf;bacf;5;Opdracht, Aanwezigheid;3;2;Verplicht
 Keuze;bapgc;4;Opdracht;3;2;Keuze
 Keuze;bsen;4;Opdracht, Opdracht ;3;2;Keuze
-bnext,bacf,bpsys,bspr,;bslbl03;1;Opdracht, Aanwezigheid;3;1,2,3,4;Verplicht
+bnext;bslbl03;1;Opdracht, Aanwezigheid;3;1;Verplicht
 bpsys;bara;3;Theorietoets;3;3;Minor
 bpsys;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
-bpsys,bspr;bpsys;8;Project, Logboek;3;3,4;Minor
-bpsys, bspr;bspec;6;Opdracht;3;3,4;Minor
+bpsys;bpsys;8;Project, Logboek;3;3;Minor
+bpsys;bspec;6;Opdracht;3;3;Minor
 bspr;blit;4;Opdracht;3;4;Minor
 bspr;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
-bmsta;bmsta;30;Stage;3;1,2,3,4;Minor
-bmnrxx;bmnrxx;30;WO;3;1,2,3,4;Minor
+bmsta;bmsta;30;Stage;3;3;Minor
+bmnrxx;bmnrxx;30;WO;3;3;Minor
 bmsbm;brna;5;Theorietoets,Opdracht;3;3;Minor
 bmsbm;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
-bmsbm;bpsys;8;Project, Logboek;3;3,4;Minor
+bmsbm;bpsys;8;Project, Logboek;3;3;Minor
 bmsbm;bdata;4;Theorietoets, Opdracht;3;4;Minor
 bmsbm;blit;4;Opdracht;3;4;Minor
 bmsbm;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
@@ -60,5 +59,5 @@ bmngs;blin;2;Praktijktoets;3;3;Minor
 bmngs;btsa;4;Theorietoets, Opdracht;3;3;Minor
 bmngs;bngsa;6;Theorietoets, Opdracht, Aanwezigheid;3;3;Minor
 bmngs;bpp;15;Project;3;4;Minor
-bafstu;bafstu$;59;Afstuderen;4;1,2,3,4;Verplicht
-bafstu;bslb04;1;Opdracht, Aanwezigheid;4;1,2,3,4;Verplicht
+bafstu;bafstu$;59;Afstuderen;4;1;Verplicht
+bafstu;bslb04;1;Opdracht, Aanwezigheid;4;1;Verplicht
