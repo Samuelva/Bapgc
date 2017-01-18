@@ -6,6 +6,10 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.event.ActionEvent;
+
+import java.util.LinkedList;
+
 
 public class Main extends Application {
 
@@ -35,7 +39,21 @@ public class Main extends Application {
 
         initTabs();
 
+        events();
+
         showScreen();
+
+    }
+
+    private void events() {
+        toevoeg.showExamBtn.setOnAction(event -> {
+            LinkedList searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
+            if (searchOnProperties == null) {
+                System.out.println("poep");
+            }
+            System.out.println(toevoeg.showExamBtn.getSelectionProperties().toString());
+
+        });
 
     }
 
