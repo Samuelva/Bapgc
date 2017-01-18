@@ -241,11 +241,10 @@ final class Invoeren extends StackPane {
         lbl2 = maakObject(new Label(), "Vragen");
         Region fillRight = new Region();
         HBox.setHgrow(fillRight, Priority.ALWAYS);
-        btn5 = maakObject(new Button(),"Nieuwe Student", 30, 80);
-        btn5.setPrefWidth(150);
+
         
         HBox hbox3 = new HBox();
-        hbox3.getChildren().addAll(btn5, fillLeft, lbl2, fillRight);
+        hbox3.getChildren().addAll(fillLeft, lbl2, fillRight);
        
         pointsTable = new TableView();
         VBox.setVgrow(pointsTable, Priority.ALWAYS);
