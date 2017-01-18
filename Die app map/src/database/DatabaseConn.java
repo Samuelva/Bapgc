@@ -86,6 +86,9 @@ public class DatabaseConn {
             " FULL OUTER JOIN VRAAG V ON T.ToetsID=V.ToetsID" +
             " WHERE T.ToetsID=%s AND V.Meerekenen='true'" +
             " GROUP BY T.ToetsID;";
+    private final String CESUURMAXGOKUPDATESQL = "UPDATE TOETS" +
+            " SET Cesuur=%s, PuntenDoorGokKans=%s" +
+            " WHERE ToetsID=%s;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -452,22 +455,35 @@ public class DatabaseConn {
         return ConvertArrayListTable(table);
     }
 
-    public String[] GetCesuurMaxGok(Integer toetsID) {
-        String[] array = new String[3];
+    public Integer[] GetCesuurMaxGok(Integer toetsID) {
+        Integer[] array = new Integer[3];
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.CESUURMAXGOKSQL, toetsID
             ));
             resultSet.next();
-            array[0] = resultSet.getString(1);
-            array[1] = resultSet.getString(2);
-            array[2] = resultSet.getString(3);
+            array[0] = Integer.valueOf(resultSet.getString(1));
+            array[1] = Integer.valueOf(resultSet.getString(2));
+            array[2] = Integer.valueOf(resultSet.getString(3));
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
             System.exit(0);
         }
         return array;
+    }
+
+    public void UpdateCesuurMaxGok(Integer toetsID, Integer[] array){
+        try {
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(String.format(
+                    this.CESUURMAXGOKUPDATESQL, array[0], array[2], toetsID
+            ));
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.exit(0);
+        }
     }
 }

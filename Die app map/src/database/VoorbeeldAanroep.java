@@ -20,6 +20,7 @@ public class VoorbeeldAanroep {
         //    System.out.println(y);
         //}
         //System.out.println(d.GetTable("MODULE").toString());
+        d.UpdateCesuurMaxGok(2, new Integer[]{5,100,10});
         d.CloseConnection();
     }
 }
