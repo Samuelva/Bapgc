@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+import database.DatabaseConn;
+
 
 /**
  * Created by Diego on 05-12-16.
@@ -56,6 +58,7 @@ public class Toevoegen extends TabPane{
     public ChoiceBoxes blockExamChoiceBox; //Periode
     public ChoiceBoxes courseExamChoiceBox; //Modules
     public ChoiceBoxes typeExamChoiceBox; //Toetsvorm
+    public ChoiceBoxes attemptExamChoiceBox; //Gelgeheid
 
     public ScreenButtons showExamBtn;
     public ScreenButtons saveExamBtn;
@@ -73,6 +76,9 @@ public class Toevoegen extends TabPane{
 
     public ExamTab examTab;
     public ModuleTab moduleTab;
+
+    private DatabaseConn databaseConn;
+
 
     public Toevoegen() {
         /**
@@ -108,14 +114,15 @@ public class Toevoegen extends TabPane{
         /**
          * Creeeren van choiceboxes voor de selectie menu.
          */
-        yearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "placeholder")));
+        yearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
         schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
         blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
-        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module",  "placeholder")));
+//        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList(databaseConn.GetTable("module")[0])));
+        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("hee")));
+
         typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
+        attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
     }
-
-
 
     private void createSelectionMenuButtons() {
         /**
@@ -125,7 +132,7 @@ public class Toevoegen extends TabPane{
         saveExamBtn = new ScreenButtons("Toets opslaan");
     }
 
-    private class ExamTab extends Tab {
+    public class ExamTab extends Tab {
         /**
          * Inner klasse voor het aanmaken van de toetstab
          *
@@ -138,7 +145,7 @@ public class Toevoegen extends TabPane{
          * die zijn ingeladen.
          *
          */
-        private BorderPane examPane = new BorderPane();
+        public BorderPane examPane = new BorderPane();
 
         private VBox selectionMenu;
 
@@ -211,7 +218,8 @@ public class Toevoegen extends TabPane{
                     schoolYearExamChoiceBox,
                     blockExamChoiceBox,
                     courseExamChoiceBox,
-                    typeExamChoiceBox
+                    typeExamChoiceBox,
+                    attemptExamChoiceBox
             );
             labelAndChoiceBoxesBox.setSpacing(20);
             return labelAndChoiceBoxesBox;
@@ -345,7 +353,7 @@ public class Toevoegen extends TabPane{
              * Verschillende eigenschappen elementen die van belang zijn voor
              * het juist toevoegen van een toets aan de database.
              */
-            yearPropertyChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "placeholder")));
+            yearPropertyChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
             schoolYearPropertyChoiceBox =  new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
             blockPropertyChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
             coursePropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module",  "placeholder")));
@@ -354,7 +362,7 @@ public class Toevoegen extends TabPane{
         }
 
 
-        public VBox createExamPropertiesScreen(String yearProperty,
+        public void createExamPropertiesScreen(String yearProperty,
                                                 String schoolYearProperty,
                                                 String blockProperty,
                                                 String courseProperty,
@@ -367,9 +375,9 @@ public class Toevoegen extends TabPane{
             buttonBox.setAlignment(Pos.CENTER);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
-            return vbox;
         }
-            private VBox createExamPropertiesScreen() {
+
+        private VBox createExamPropertiesScreen() {
             /**
              * Juistte layout voor het weergeven van de verschillende elementen
              * voor de toets. De onderdelen zijn examen eigenschappen met
@@ -483,7 +491,7 @@ public class Toevoegen extends TabPane{
                         chanceByGamblingTextfield.setText(newValue.replaceAll("[^\\d]", ""));
                     }
                     if (chanceByGamblingTextfield.getText().length() > 4) {
-                        String s = chanceByGamblingTextfield.getText().substring(0, 2);
+                        String s = chanceByGamblingTextfield.getText().substring(0, 4);
                         chanceByGamblingTextfield.setText(s);
                     }
                 }
@@ -498,7 +506,7 @@ public class Toevoegen extends TabPane{
              */
             VBox vbox1 = new VBox();
             Label lbl1 = new Label("Vragen aanwezig:");
-            lbl2 = new Label("Censuur:");
+            lbl2 = new Label("Cessuur:");
             lbl3 = new Label("Punten door gokkans:");
             lbl1.setPrefSize(160, 25);
             lbl2.setPrefSize(160, 25);
@@ -619,12 +627,29 @@ public class Toevoegen extends TabPane{
 
         public LinkedList getSelectionProperties() {
             LinkedList properties = new LinkedList();
-            properties.add(yearExamChoiceBox.getValue());
-            properties.add(schoolYearExamChoiceBox.getValue());
-            properties.add(blockExamChoiceBox.getValue());
+
+
+            if (yearExamChoiceBox.getValue().equals("Jaar"))
+                return null;
+            if (schoolYearExamChoiceBox.getValue().equals("Leerjaar"))
+                return null;
+            if (blockExamChoiceBox.getValue().equals("Periode"))
+                return null;
+            if (courseExamChoiceBox.getValue().equals("Module"))
+                return null;
+            if (typeExamChoiceBox.getValue().equals("Toetsvorm"))
+                return null;
+            if (attemptExamChoiceBox.getValue().equals("Gelegenheid"))
+                return null;
+
             properties.add(courseExamChoiceBox.getValue());
+            properties.add(yearExamChoiceBox.getValue());
+            properties.add(schoolYearExamChoiceBox.getValue().split(" ")[1]);
+            properties.add(blockExamChoiceBox.getValue().split(" ")[1]);
             properties.add(typeExamChoiceBox.getValue());
-            return null;
+            properties.add(attemptExamChoiceBox.getValue().split("")[0]);
+
+            return properties;
         }
     }
 
