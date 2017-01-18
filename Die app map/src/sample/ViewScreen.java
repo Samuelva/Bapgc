@@ -251,13 +251,13 @@ public class ViewScreen extends StackPane{
         this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Boxplot", "Histogram"));
-        this.plotChoiceBox.setOnAction(event -> {
-            if (plotChoiceBox.getValue() == "Boxplot") {
-                makeBoxplot();
-            } else if (plotChoiceBox.getValue() == "Histogram") {
-                makeHistogram();
-            }
-        });
+//        this.plotChoiceBox.setOnAction(event -> {
+//            if (plotChoiceBox.getValue() == "Boxplot") {
+//                makeBoxplot();
+//            } else if (plotChoiceBox.getValue() == "Histogram") {
+//                makeHistogram();
+//            }
+//        });
         this.plotChoiceBox.setValue("Boxplot");
         this.plotChoiceBox.setPrefWidth(100);
         this.plotChoiceBox.setPrefHeight(30);
