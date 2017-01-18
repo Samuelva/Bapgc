@@ -9,21 +9,16 @@ import java.util.ArrayList;
  */
 public class Reader {
 
-    public static void main(String[] args) {
+    public void Reader(String csvFile,
+                       String moduleCode, String jaar, String schoolJaar,
+                       String periode, String gelegenheid) {
 
-        String csvFile = "/Users/midas/Dropbox/csvInlaad/src/brela_1e_1617.csv";
         BufferedReader br = null;
         String line = "";
         String deelvraag = "";
-        String gokvraag = "";
+        String meerekenen = "";
         String punten = "";
         ArrayList<String[]> scores = new ArrayList<>();
-
-        String moduleCode = "Bapgc";
-        String jaar = "2016";
-        String schoolJaar = "3";
-        String periode = "2";
-        String gelegenheid = "1";
 
         DatabaseConn d = new DatabaseConn();
 
@@ -36,7 +31,7 @@ public class Reader {
             br = new BufferedReader(new FileReader(csvFile));
 
             deelvraag = br.readLine();
-            gokvraag = br.readLine();
+            meerekenen = br.readLine();
             punten = br.readLine();
 
             while ((line = br.readLine()) != null) {
@@ -53,8 +48,7 @@ public class Reader {
                         deelvraag.split(";")[i],
                         Integer.parseInt(punten.split(";")[i]),
                         ToetsID,
-                        Boolean.valueOf(gokvraag.split(";")[i]),
-                        true);
+                        Boolean.valueOf(meerekenen.split(";")[i]));
             }
 
 
@@ -70,8 +64,6 @@ public class Reader {
 
 
             }
-
-            //System.out.println(scores);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
