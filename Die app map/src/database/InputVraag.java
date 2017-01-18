@@ -1,40 +1,42 @@
+package database;
+
 import java.sql.Connection;
 import java.sql.Statement;
 
 /**
  * Created by Timothy.
  */
-class InputStudent {
-    private final String MODULESQL = "INSERT INTO STUDENT" +
-            " (StudentID, Naam, Klas)" +
-            " VALUES (%s, %s, %s);";
-    private Connection connection;
-    private QueryString naam = new QueryString();
-    private QueryString klas = new QueryString();
 
-    public InputStudent(Connection connection) {
+class InputVraag {
+    private final String MODULESQL = "INSERT INTO VRAAG" +
+            " (Vraagnummer, MaxScore, ToetsID, Meerekenen)" +
+            " VALUES (%s, %s, %s, %s);";
+    private Connection connection;
+    private QueryString vraagnummer = new QueryString();
+
+    public InputVraag(Connection connection) {
         this.connection = connection;
     }
 
-    public boolean insert(Integer studentID, String naamString,
-                          String klasIDString) {
+    public boolean insert(String vraagnummerString, Integer max,
+                          Integer toetsID, boolean meerekenen) {
         try {
-            this.naam.insert(naamString);
-            this.klas.insert(klasIDString);
+            this.vraagnummer.insert(vraagnummerString);
 
             Statement statement = connection.createStatement();
             String query = String.format(
                     this.MODULESQL,
-                    studentID,
-                    this.naam.getString(),
-                    this.klas.getString()
+                    this.vraagnummer.getString(),
+                    max,
+                    toetsID,
+                    meerekenen
             );
             System.out.println(query);
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
             if (e.getMessage().contains(
-                    "key value violates unique constraint \"student_pkey\""
+                    "key value violates unique constraint \"vraag_pkey\""
             )) {
                 System.out.println("Primary key exists");
             }
