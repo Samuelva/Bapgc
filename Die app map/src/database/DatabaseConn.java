@@ -1,4 +1,4 @@
-/*
+package database;/*
  * Created by Timothy.
  */
 
@@ -50,8 +50,8 @@ public class DatabaseConn {
             "references MODULE(ModuleCode)," +
             " Toetsvorm     TEXT                    NOT NULL," +
             " Gelegenheid   CHAR(1)                 NOT NULL," +
-            " Cesuur        SMALLINT                NOT NULL," +
-            " PuntenDoorGokKans SMALLINT            NOT NULL);";
+            " Cesuur        SMALLINT," +
+            " PuntenDoorGokKans SMALLINT);";
     private final String MODULESQL = "CREATE TABLE IF NOT EXISTS" +
             " MODULE " +
             "(ModuleCode    TEXT    PRIMARY KEY     NOT NULL, " +

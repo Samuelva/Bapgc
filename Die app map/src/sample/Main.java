@@ -7,7 +7,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
-
+import database.DatabaseConn;
 import java.util.LinkedList;
 
 
@@ -25,6 +25,8 @@ public class Main extends Application {
     private static Tab invoeren;
     private static Tab inzien;
     private static Tab vergelijken;
+
+    private static DatabaseConn databaseConn;
 
 
     public static void main(String[] args) {
@@ -51,7 +53,11 @@ public class Main extends Application {
             if (searchOnProperties == null) {
                 System.out.println("poep");
             }
-            System.out.println(toevoeg.showExamBtn.getSelectionProperties().toString());
+            else {
+                System.out.println(searchOnProperties.toString());
+//                toevoeg.examTab.createExamPropertiesScreen();
+//                databaseConn.GetToetsID(searchOnProperties.get(0),searchOnProperties.get(1), searchOnProperties.get(2), searchOnProperties.get(3), searchOnProperties.get(4))
+            }
 
         });
 
