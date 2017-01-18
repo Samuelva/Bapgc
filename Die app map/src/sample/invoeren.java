@@ -3,11 +3,15 @@ package sample;
 
 
 import java.io.File;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
@@ -70,12 +74,50 @@ final class Invoeren extends StackPane {
         
 
         btn4.setOnAction(e -> {
+        	/*
+        	 *Met FileChooser wordt de verkenner geopend in windows. 
+        	 */
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {;
                 btn4.setDisable(true);
             }
+        });
+        
+        btn2.setOnAction(e -> {
+        	/*
+        	 * Als op btn2 wordt geklikt,
+        	 * wordt een Alert aangemaakt om een pop-up waarschuwing weer te geven.
+        	 * De titel wordt op waarschuwing gezet.
+        	 * De tekst van de header bevat een zin of je het bestand echt wilt maken.
+        	 * Een tekst eronder geeft instructies, druk op OK als je het zeker weet, 
+        	 * anders druk je op cancel.
+        	 * Er worden twee button types aangemaakt: OK en Cancel.
+        	 * De button types worden toegevoegd aan alert.
+        	 * De optionele buttontype krijgt de naam result,
+        	 * als waarde krijgt hij showAndWait, dit betekent dat de pop-up wacht
+        	 * tot er input van de gebruiker volgt.
+        	 * Er volgt een if-else statement.
+        	 * Als result gelijk is aan OK moet alles gewist worden,
+        	 * dit is nu nog een zin die naar de terminal wordt geprint.
+        	 * Als result niet gelijk is aan OK wordt de pop-up afgesloten.
+        	 */
+        	Alert alert = new Alert(AlertType.WARNING);
+        	alert.setTitle("Waarschuwing");
+        	alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt maken?");
+        	alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel");
+        	ButtonType OK = new ButtonType("OK");
+        	ButtonType Cancel = new ButtonType("Cancel");
+        	
+        	alert.getButtonTypes().setAll(OK, Cancel);
+        	Optional<ButtonType> result = alert.showAndWait();
+        	
+        	if (result.get() == OK){
+        		System.out.println("Alles wordt gewist");
+        	} else {
+        	    alert.close();
+        	}
         });
 
         
@@ -241,11 +283,10 @@ final class Invoeren extends StackPane {
         lbl2 = maakObject(new Label(), "Vragen");
         Region fillRight = new Region();
         HBox.setHgrow(fillRight, Priority.ALWAYS);
-        btn5 = maakObject(new Button(),"Nieuwe Student", 30, 80);
-        btn5.setPrefWidth(150);
+
         
         HBox hbox3 = new HBox();
-        hbox3.getChildren().addAll(btn5, fillLeft, lbl2, fillRight);
+        hbox3.getChildren().addAll(fillLeft, lbl2, fillRight);
        
         pointsTable = new TableView();
         VBox.setVgrow(pointsTable, Priority.ALWAYS);
