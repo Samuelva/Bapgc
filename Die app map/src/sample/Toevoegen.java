@@ -77,8 +77,6 @@ public class Toevoegen extends TabPane{
     public ExamTab examTab;
     public ModuleTab moduleTab;
 
-    private DatabaseConn databaseConn;
-
 
     public Toevoegen() {
         /**
@@ -114,14 +112,18 @@ public class Toevoegen extends TabPane{
         /**
          * Creeeren van choiceboxes voor de selectie menu.
          */
+        DatabaseConn databaseConn = new DatabaseConn();
         yearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
         schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
         blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
-//        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList(databaseConn.GetTable("module")[0])));
-        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("hee")));
 
+        System.out.println(databaseConn.GetTable("MODULE")[0][0]);
+
+
+        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module", databaseConn.GetTable("MODULE")[0][0])));
         typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
         attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
+        databaseConn.CloseConnection();
     }
 
     private void createSelectionMenuButtons() {
@@ -633,6 +635,7 @@ public class Toevoegen extends TabPane{
                 return null;
             if (schoolYearExamChoiceBox.getValue().equals("Leerjaar"))
                 return null;
+            System.out.println(blockExamChoiceBox.getValue());
             if (blockExamChoiceBox.getValue().equals("Periode"))
                 return null;
             if (courseExamChoiceBox.getValue().equals("Module"))
