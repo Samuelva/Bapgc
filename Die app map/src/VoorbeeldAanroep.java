@@ -12,10 +12,10 @@ public class VoorbeeldAanroep {
         d.InputStudent(1088948,"Tim", "Bin3b");
         d.InputScore(1088948, 1, 10);
         //String[][] table = d.GetStudentScores(d.GetToetsID("Bapgc", "2016", "3", "2", "1"));
-        String[] table = d.GetCesuurMax(d.GetToetsID("Bapgc", "2016", "3", "2", "1"));
-        for (String y : table) {
-            System.out.println(y + " " );
-        }
+        //String[] table = d.GetCesuurMaxGok(d.GetToetsID("Bapgc", "2016", "3", "2", "1"));
+        //for (String y : table) {
+        //    System.out.println(y);
+        //}
         d.CloseConnection();
     }
 }
