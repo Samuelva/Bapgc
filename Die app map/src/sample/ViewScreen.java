@@ -11,6 +11,8 @@
 package sample;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.Arrays;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -49,7 +51,6 @@ public class ViewScreen extends StackPane{
     protected ChoiceBox typeChoiceBox;
     protected ChoiceBox attemptChoiceBox;
     protected ChoiceBox plotChoiceBox;
-    protected ChoiceBox questionChoiceBox;
     protected Button loadBtn;
     protected Button calculateBtn;
     protected Button plotBtn;
@@ -65,6 +66,9 @@ public class ViewScreen extends StackPane{
     protected StackPane graphPane;
     protected Histogram barChart;
     protected Boxplot boxplot;
+
+    protected String[][] gradeTable = null;
+    protected String[] questionLabels = null;
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -148,16 +152,17 @@ public class ViewScreen extends StackPane{
             public void handle(ActionEvent event) {
 
                 //ENKEL VOOR TETSEN
+
                 updateCohen("hello", "oho", "oh oh");
                 updateQualityStats("test", "1", "2");
                 updateStats("hey", "how", "are", "you", "doing",
                         "?", "Oh", "fine", "I", "guess",
                         "...");
-                String[] testArray = {"1.1", "1.2", "1.3"};
-                setupTable(testArray);
-                String[][] testArray2 = {{"s000000", "1", "0", "0", "0", "0"},
+                questionLabels = new String[] {"1.1", "1.2", "1.3"};
+                setupTable(questionLabels);
+                gradeTable = new String[][]{{"s000000", "1", "0", "0", "0", "0"},
                                          {"s000001", "2", "1", "1", "1", "1"}};
-                fillTable(testArray2);
+                fillTable(gradeTable);
             }
         });
 
@@ -251,23 +256,18 @@ public class ViewScreen extends StackPane{
         this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Boxplot", "Histogram"));
-//        this.plotChoiceBox.setOnAction(event -> {
-//            if (plotChoiceBox.getValue() == "Boxplot") {
-//                makeBoxplot();
-//            } else if (plotChoiceBox.getValue() == "Histogram") {
-//                makeHistogram();
-//            }
-//        });
+        this.plotChoiceBox.setOnAction(event -> {
+            if (plotChoiceBox.getValue() == "Boxplot") {
+                makeBoxplot();
+            } else if (plotChoiceBox.getValue() == "Histogram") {
+                makeHistogram();
+            }
+        });
         this.plotChoiceBox.setValue("Boxplot");
-        this.plotChoiceBox.setPrefWidth(100);
+        this.plotChoiceBox.setPrefWidth(133);
         this.plotChoiceBox.setPrefHeight(30);
-        this.questionChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                        "Cijfer", "Totaal", new Separator(), "placeholder"));
-        this.questionChoiceBox.setValue("Cijfer");
-        this.questionChoiceBox.setPrefWidth(100);
-        this.questionChoiceBox.setPrefHeight(30);
         this.plotBtn = new Button("Plotten");
-        this.plotBtn.setPrefWidth(67);
+        this.plotBtn.setPrefWidth(133);
         this.plotBtn.setPrefHeight(30);
         this.savePlotBtn = new Button("Afbeelding opslaan");
         this.savePlotBtn.setPrefWidth(133);
@@ -281,7 +281,7 @@ public class ViewScreen extends StackPane{
                 System.out.println(file);
             }
         });
-        HBox hBox = new HBox(this.questionChoiceBox, this.plotChoiceBox,
+        HBox hBox = new HBox(this.plotChoiceBox,
                 this.plotBtn, this.savePlotBtn);
         return new VBox(this.graphPane, hBox);
     }
@@ -307,6 +307,17 @@ public class ViewScreen extends StackPane{
      */
     private HBox makeMiddleBox(){
         this.exportBtn = new Button("Exporteer CSV");
+
+        this.exportBtn.setOnAction(e -> {
+            if (this.gradeTable != null) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)", "*.csv"));
+            fileChooser.setTitle("Opslaan Als");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                csvExport(this.gradeTable, questionLabels, file);
+            }}
+        });
         this.exportBtn.setPrefWidth(240);
         this.exportBtn.setPrefHeight(30);
         Region leftFill = new Region();
@@ -316,6 +327,22 @@ public class ViewScreen extends StackPane{
         Region rightFill = new Region();
         HBox.setHgrow(rightFill, Priority.ALWAYS);
         return new HBox(this.exportBtn, leftFill, questionLabel, rightFill);
+    }
+
+    /* Deze functie schrijft maakt een CSV bestand van de labels en scores die meegegeven worden
+       in het bestand dat meegegeven wordt.
+     */
+    private void csvExport(String[][] scores, String[] labels, File file){
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write("Studentnr,Cijfer,Totaal," + String.join(",", labels) + "\n");
+            for (String[] student: scores){
+                writer.write(String.join(",", student) + "\n");
+            }
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     /* Deze functie maakt de tabel waar de punten in gezet moeten worden.
