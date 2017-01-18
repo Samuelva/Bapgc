@@ -61,7 +61,7 @@ public class DatabaseConn {
     private final String GETTOETSIDSQL = "SELECT ToetsID" +
             " FROM TOETS" +
             " WHERE ModuleCode='%s' AND Jaar='%s' AND Schooljaar='%s' AND" +
-            " Periode='%s' AND gelegenheid='%s';";
+            " Periode='%s' AND gelegenheid='%s' AND Toetsvorm='%s';";
     private final String GETVRAAGIDSQL = "SELECT VraagID" +
             " FROM VRAAG" +
             " WHERE Vraagnummer='%s' AND ToetsID=%s;";
@@ -295,7 +295,7 @@ public class DatabaseConn {
 
     public Integer GetToetsID(
             String moduleCode, String jaar, String schoolJaar,
-            String periode, String gelegenheid){
+            String periode, String gelegenheid, String toetsVorm){
         /* Deze methode geeft een id van een toets terug als de
          * gegevens van die toets worden meegegeven.
          * Eerst opent het de connectie met de database. Dan maakt
@@ -314,7 +314,7 @@ public class DatabaseConn {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.GETTOETSIDSQL, moduleCode, jaar,
-                    schoolJaar, periode, gelegenheid
+                    schoolJaar, periode, gelegenheid, toetsVorm
             ));
             resultSet.next();
             id = resultSet.getInt(1);
