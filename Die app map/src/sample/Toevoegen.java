@@ -54,7 +54,6 @@ public class Toevoegen extends TabPane{
     public ChoiceBoxes blockExamChoiceBox; //Periode
     public ChoiceBoxes courseExamChoiceBox; //Modules
     public ChoiceBoxes typeExamChoiceBox; //Toetsvorm
-    public ChoiceBoxes attemptExamChoiceBox; //Gelegenheid
 
     public ScreenButtons showExamBtn;
     public ScreenButtons saveExamBtn;
@@ -106,7 +105,6 @@ public class Toevoegen extends TabPane{
         blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
         courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module",  "placeholder")));
         typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
-        attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid",  "1e kans", "2e kans")));
     }
 
     private void createSelectionMenuButtons() {
@@ -201,8 +199,7 @@ public class Toevoegen extends TabPane{
                     schoolYearExamChoiceBox,
                     blockExamChoiceBox,
                     courseExamChoiceBox,
-                    typeExamChoiceBox,
-                    attemptExamChoiceBox
+                    typeExamChoiceBox
             );
             labelAndChoiceBoxesBox.setSpacing(20);
             return labelAndChoiceBoxesBox;
@@ -339,7 +336,7 @@ public class Toevoegen extends TabPane{
             schoolYearPropertyChoiceBox =  new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
             blockPropertyChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
             coursePropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module",  "placeholder")));
-            attemptExamPropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid",  "1e kans", "2e kans")));
+            attemptExamPropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid",  "1e kans", "2e kans", "3e kans")));
             typePropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
             datePropertyDatePicker = new DatePicker();
             datePropertyDatePicker.setPrefWidth(150);
@@ -444,7 +441,7 @@ public class Toevoegen extends TabPane{
                     if (!newValue.matches("\\d{1,3}")) {
                         thresholdTextfield.setText(newValue.replaceAll("[^\\d]", ""));
                     }
-                    if (thresholdTextfield.getText().length() > 2) {
+                    if (thresholdTextfield.getText().length() > 4) {
                         String s = thresholdTextfield.getText().substring(0, 2);
                         thresholdTextfield.setText(s);
                     }
@@ -453,14 +450,14 @@ public class Toevoegen extends TabPane{
             vbox2.setSpacing(20);
             return vbox2;
         }
-
+//////PUNTEN DOOR GOKKANS TOEVOEGEN
         private VBox getGradePropertyLabels() {
             /**
              * VBOX met labels over de 2 eigenschappen beheersgraad en
              * vragen aanwezig.
              */
             VBox vbox1 = new VBox();
-            Label lbl1 = new Label("Beheersgraad:");
+            Label lbl1 = new Label("Censuur:");
             Label lbl2 = new Label("Vragen aanwezig:");
             lbl1.setPrefSize(125, 25);
             lbl2.setPrefSize(125, 25);
