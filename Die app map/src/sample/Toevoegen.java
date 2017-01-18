@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -627,8 +628,8 @@ public class Toevoegen extends TabPane{
 
         }
 
-        public LinkedList getSelectionProperties() {
-            LinkedList properties = new LinkedList();
+        public String[] getSelectionProperties() {
+            String[] properties = new String[6];
 
 
             if (yearExamChoiceBox.getValue().equals("Jaar"))
@@ -645,12 +646,13 @@ public class Toevoegen extends TabPane{
             if (attemptExamChoiceBox.getValue().equals("Gelegenheid"))
                 return null;
 
-            properties.add(courseExamChoiceBox.getValue());
-            properties.add(yearExamChoiceBox.getValue());
-            properties.add(schoolYearExamChoiceBox.getValue().split(" ")[1]);
-            properties.add(blockExamChoiceBox.getValue().split(" ")[1]);
-            properties.add(typeExamChoiceBox.getValue());
-            properties.add(attemptExamChoiceBox.getValue().split("")[0]);
+            properties[0] = courseExamChoiceBox.getValue();
+            properties[1] = yearExamChoiceBox.getValue();
+            properties[2] = schoolYearExamChoiceBox.getValue().split(" ")[1];
+            properties[3] = blockExamChoiceBox.getValue().split(" ")[1];
+            properties[4] = typeExamChoiceBox.getValue();
+            properties[5] = attemptExamChoiceBox.getValue().split("")[0];
+
 
             return properties;
         }

@@ -8,6 +8,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import database.DatabaseConn;
+
+import java.lang.reflect.Array;
 import java.util.LinkedList;
 
 
@@ -49,14 +51,16 @@ public class Main extends Application {
 
     private void events() {
         toevoeg.showExamBtn.setOnAction(event -> {
-            LinkedList searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
+            String[] searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
             if (searchOnProperties == null) {
                 System.out.println("poep");
             }
             else {
-                System.out.println(searchOnProperties.toString());
 //                toevoeg.examTab.createExamPropertiesScreen();
-//                databaseConn.GetToetsID(searchOnProperties.get(0),searchOnProperties.get(1), searchOnProperties.get(2), searchOnProperties.get(3), searchOnProperties.get(4))
+                DatabaseConn databaseConn = new DatabaseConn();
+                System.out.println(searchOnProperties.toString());
+                databaseConn.GetToetsID(searchOnProperties[0],searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                databaseConn.CloseConnection();
             }
 
         });
