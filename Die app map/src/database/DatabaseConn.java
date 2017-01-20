@@ -86,9 +86,14 @@ public class DatabaseConn {
             " FULL OUTER JOIN VRAAG V ON T.ToetsID=V.ToetsID" +
             " WHERE T.ToetsID=%s AND V.Meerekenen='true'" +
             " GROUP BY T.ToetsID;";
-    private final String CESUURMAXGOKUPDATESQL = "UPDATE TOETS" +
+    private final String CESUURGOKUPDATESQL = "UPDATE TOETS" +
             " SET Cesuur=%s, PuntenDoorGokKans=%s" +
             " WHERE ToetsID=%s;";
+    private final String VRAAGNUMMERSSQL = "SELECT VraagID, vraagnummer," +
+            " maxscore, meerekenen" +
+            " FROM VRAAG"+
+            " WHERE toetsID=%s" +
+            " ORDER BY vraagnummer;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -140,7 +145,6 @@ public class DatabaseConn {
             inputScore = new InputScore(connection);
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -165,7 +169,6 @@ public class DatabaseConn {
             System.out.printf("Table: %s is made.\n", table);
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -183,7 +186,6 @@ public class DatabaseConn {
             this.connection.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
     }
 
@@ -296,6 +298,22 @@ public class DatabaseConn {
         return tableArray;
     }
 
+    private Object[][] ConvertArrayMixTable(ArrayList<ArrayList<Object>> table){
+        /* Deze methode zorgt voor het converteren van een 2D
+         * arrayList naar een 2D object array.
+         * Eerst maakt het de 2D objectt array aan. Dan wordt geloopt
+         * door de top-level ArrayList en wordt een naar array
+         * geconverteerde rij toegevoegd aan de 2D array.
+         * Na de loop wordt de 2D array gereturned.
+         */
+        Object[][] tableArray = new Object[table.size()][];
+        for (int i=0; i< table.size(); i++){
+            ArrayList<Object> row = table.get(i);
+            tableArray[i] = row.toArray(new Object[row.size()]);
+        }
+        return tableArray;
+    }
+
     public Integer GetToetsID(
             String moduleCode, String jaar, String schoolJaar,
             String periode, String gelegenheid, String toetsVorm){
@@ -324,7 +342,6 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return id;
     }
@@ -355,7 +372,6 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return id;
     }
@@ -380,7 +396,6 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return ConvertArrayListTable(table);
     }
@@ -403,7 +418,6 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return ConvertArrayListTable(table);
     }
@@ -426,7 +440,6 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return ConvertArrayListTable(table);
     }
@@ -450,12 +463,20 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return ConvertArrayListTable(table);
     }
 
     public Integer[] GetCesuurMaxGok(Integer toetsID) {
+        /* Deze methode zorgt voor het returnen van de volgende
+         * waarden in een array:
+         * -0 Cesuur
+         * -1 Max punten
+         * -2 Aantal punten door gokkans
+         * Dit wordt opgehaald voor de toets die wordt meegegeven.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         Integer[] array = new Integer[3];
         try {
             this.statement = this.connection.createStatement();
@@ -469,21 +490,65 @@ public class DatabaseConn {
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
         return array;
     }
 
-    public void UpdateCesuurMaxGok(Integer toetsID, Integer[] array){
+    public void UpdateCesuurGok(Integer toetsID, Integer cesuur,
+                                Integer gokpunten){
+        /* Deze methode zorgt voor het updaten van de cesuur en het
+         * aantal gokpunten voor een toets.
+         * Met behulp van de CESUURGOKUPDATE sql en de meegegeven
+         * toets ID, en nieuwe waarden voor cesuur en gokpunten, wordt
+         * het geupdate in de database.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         try {
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(String.format(
-                    this.CESUURMAXGOKUPDATESQL, array[0], array[2], toetsID
+                    this.CESUURGOKUPDATESQL, cesuur, gokpunten, toetsID
             ));
             this.statement.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
-            System.exit(0);
         }
     }
+
+    public Object[][] GetVragenVanToets(Integer toetsID){
+        /* Deze methode zorgt voor het terugkeren van de vragen
+         * van een specifieke toets.
+         * De volgorde van de arrays is als volgt:
+         * -0 vraagID
+         * -1 vraagnummer
+         * -2 max score
+         * -3 meerekenen
+         *
+         * EerstVoert het de query uit met behulp van de meegegeven
+         * toets ID. Vervolgens haalt het in een loop, per vraag, de
+         * 4 waarden op.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
+        ArrayList<ArrayList<Object>> table = new ArrayList<>();
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.VRAAGNUMMERSSQL, toetsID
+            ));
+            while (resultSet.next()) {
+                ArrayList<Object> row = new ArrayList<Object>();
+                row.add(resultSet.getInt(1));
+                row.add(resultSet.getString(2));
+                row.add(resultSet.getInt(3));
+                row.add(resultSet.getBoolean(4));
+                table.add(row);
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+        }
+        return ConvertArrayMixTable(table);
+    }
+
 }

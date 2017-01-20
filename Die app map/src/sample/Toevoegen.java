@@ -3,6 +3,7 @@ package sample;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -15,11 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 
 import database.DatabaseConn;
 
@@ -117,14 +114,26 @@ public class Toevoegen extends TabPane{
         yearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
         schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
         blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
-
-        System.out.println(databaseConn.GetTable("MODULE")[0][0]);
-
-
-        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module", databaseConn.GetTable("MODULE")[0][0])));
+        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(createModuleList(databaseConn.GetTable("module"))));
         typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
         attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
         databaseConn.CloseConnection();
+    }
+
+    private List createModuleList(String[][] modules) {
+        /**
+         * Aanmaken van een module lijst voor het inladen van
+         * vanuit de database
+         *
+         * Looped over de 2d array en voegd de eerste waarde toe
+         * aan een lijst die word teruggestuurd.
+         */
+        ObservableList<String> choices = FXCollections.observableArrayList();
+        choices.add("Module");
+        for (String[] module : modules) {
+            choices.add(module[0]);
+        }
+        return choices;
     }
 
     private void createSelectionMenuButtons() {
@@ -152,7 +161,6 @@ public class Toevoegen extends TabPane{
 
         private VBox selectionMenu;
 
-        private ScreenButtons newExamBtn = new ScreenButtons("Nieuwe Toets");
         private ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
         private ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
         private VBox pointDistributionBox;
@@ -202,7 +210,6 @@ public class Toevoegen extends TabPane{
             selectionMenu.getChildren().addAll(
                     getChoiceBoxesSelectionMenu(),
                     spacer,
-                    newExamBtn,
                     showExamBtn);
             selectionMenu.setVgrow(spacer, Priority.ALWAYS);
         }
@@ -245,11 +252,6 @@ public class Toevoegen extends TabPane{
              * verwijderd zodat er nieuwe mogelijkheid wordt gegeven om een
              * csv opnieuw in te laden.
              */
-            newExamBtn.setOnAction(e -> {
-                createDataChoiceBoxes();
-                examPane.setCenter(createExamPropertiesScreen());
-                importCsvButton.setDisable(false);
-            });
             importCsvButton.setOnAction( e -> {
                 importQuestionsFromCSV();
                 importCsvButton.setDisable(true);
@@ -301,8 +303,6 @@ public class Toevoegen extends TabPane{
                     }
                 }
             } catch (FileNotFoundException e) {
-                System.out.println("hey");
-
             }
         }
 
@@ -365,19 +365,15 @@ public class Toevoegen extends TabPane{
         }
 
 
-        public void createExamPropertiesScreen(String yearProperty,
-                                                String schoolYearProperty,
-                                                String blockProperty,
-                                                String courseProperty,
-                                                String typeProperty,
-                                                String chanceByGamling,
-                                                String threshold) {
+        public void setExamPropertiesScreen(String[] examProperties) {
+            System.out.println(examProperties[0]);
             VBox vbox = new VBox();
             VBox buttonBox = new VBox(saveExamBtn);
-            vbox.getChildren().addAll(getExamInformationBoxes(), getPointDistribution(), buttonBox);
+            vbox.getChildren().addAll(getExamInformationBoxes(examProperties), getPointDistribution(), buttonBox);
             buttonBox.setAlignment(Pos.CENTER);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
+            examPane.setCenter(vbox);
         }
 
         private VBox createExamPropertiesScreen() {
@@ -389,7 +385,7 @@ public class Toevoegen extends TabPane{
              */
             VBox vbox = new VBox();
             VBox buttonBox = new VBox(saveExamBtn);
-            vbox.getChildren().addAll(getExamInformationBoxes(), getPointDistribution(), buttonBox);
+//            vbox.getChildren().addAll(getExamInformationBoxes(), getPointDistribution(), buttonBox);
             buttonBox.setAlignment(Pos.CENTER);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
@@ -421,7 +417,7 @@ public class Toevoegen extends TabPane{
             return questionButtonBox;
         }
 
-        public HBox getExamInformationBoxes() {
+        public HBox getExamInformationBoxes(String[] examProperties) {
             /**
              * Aanmaken van de box die eigenschappen bevat over de toets.
              *
@@ -429,12 +425,13 @@ public class Toevoegen extends TabPane{
              * en een textfield die van belang is voor de beheersgraad.
              */
             HBox hbox = new HBox();
-            hbox.getChildren().addAll(createExamData(), getExamGrader());
+            hbox.getChildren().addAll(createExamData(examProperties), getExamGrader());
             hbox.setHgrow(hbox.getChildren().get(0), Priority.ALWAYS);
             hbox.setHgrow(hbox.getChildren().get(1), Priority.ALWAYS);
             hbox.setPadding(new Insets(0, 0, 0, 5));
 
-            return hbox;        }
+            return hbox;
+        }
 
         private Node getExamGrader() {
             /**
@@ -548,17 +545,17 @@ public class Toevoegen extends TabPane{
             });
         }
 
-        private VBox createExamData() {
+        private VBox createExamData(String[] examProperties) {
             /**
              * Box met toetsgegevens.
              */
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(new BoxHeaders("Toets Gegevens"), getExamDataBox());
+            vbox.getChildren().addAll(new BoxHeaders("Toets Gegevens"), getExamDataBox(examProperties));
             vbox.setSpacing(20);
             return vbox;
         }
 
-        private VBox getExamDataBox() {
+        private VBox getExamDataBox(String[] examProperties) {
             /**
              * VBox met verschilllende eigenschappen over de toets.
              *
@@ -567,12 +564,12 @@ public class Toevoegen extends TabPane{
              */
             VBox examDataVbox = new VBox();
             examDataVbox.getChildren().addAll(
-                    yearPropertyChoiceBox,
-                    schoolYearPropertyChoiceBox,
-                    blockPropertyChoiceBox,
-                    coursePropertyChoiceBox,
-                    attemptExamPropertyChoiceBox,
-                    typePropertyChoiceBox
+                    new labelPropertyWithValue("Module", examProperties[0]),
+                    new labelPropertyWithValue("Jaar", examProperties[1]),
+                    new labelPropertyWithValue("Schooljaar", examProperties[2]),
+                    new labelPropertyWithValue("Periode", examProperties[3]),
+                    new labelPropertyWithValue("Gelegenheid", examProperties[4]),
+                    new labelPropertyWithValue("Toetsvorm", examProperties[5])
             );
             examDataVbox.setSpacing(12);
             return examDataVbox;
@@ -636,7 +633,6 @@ public class Toevoegen extends TabPane{
                 return null;
             if (schoolYearExamChoiceBox.getValue().equals("Leerjaar"))
                 return null;
-            System.out.println(blockExamChoiceBox.getValue());
             if (blockExamChoiceBox.getValue().equals("Periode"))
                 return null;
             if (courseExamChoiceBox.getValue().equals("Module"))
@@ -650,8 +646,8 @@ public class Toevoegen extends TabPane{
             properties[1] = yearExamChoiceBox.getValue();
             properties[2] = schoolYearExamChoiceBox.getValue().split(" ")[1];
             properties[3] = blockExamChoiceBox.getValue().split(" ")[1];
-            properties[4] = typeExamChoiceBox.getValue();
-            properties[5] = attemptExamChoiceBox.getValue().split("")[0];
+            properties[4] = attemptExamChoiceBox.getValue().split("")[0];
+            properties[5] = typeExamChoiceBox.getValue();
 
 
             return properties;

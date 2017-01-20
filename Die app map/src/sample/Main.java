@@ -53,13 +53,12 @@ public class Main extends Application {
         toevoeg.showExamBtn.setOnAction(event -> {
             String[] searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
             if (searchOnProperties == null) {
-                System.out.println("poep");
+                System.out.println("test");
             }
             else {
-//                toevoeg.examTab.createExamPropertiesScreen();
                 DatabaseConn databaseConn = new DatabaseConn();
-                System.out.println(searchOnProperties.toString());
                 databaseConn.GetToetsID(searchOnProperties[0],searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
                 databaseConn.CloseConnection();
             }
 
