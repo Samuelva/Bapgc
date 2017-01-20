@@ -225,7 +225,7 @@ public class Statistics {
             int[] points = stringToIntArray(original[i], 1);
             out[i][1] = Double.toString(grade(points, threshold, max));
             out[i][2] = Integer.toString(sum(points));
-            for (int x = 1; x < original.length; x++){
+            for (int x = 1; x < original[0].length; x++){
                 out[i][x+2] = original[i][x];
             }
         }
@@ -437,5 +437,13 @@ public class Statistics {
      */
     public static double cohen(double meanPoints, double mastery, double chancePoints){
         return (meanPoints-chancePoints) * mastery + chancePoints;
+    }
+
+    public static String[] getColumn(int index, Object[][] matrix) {
+        String[] out = new String[matrix.length];
+        for (int i = 0; i < matrix.length; ++i){
+            out[i] = matrix[i][index].toString();
+        }
+        return out;
     }
 }

@@ -15,6 +15,8 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Arrays;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import database.DatabaseConn;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -67,8 +69,11 @@ public class ViewScreen extends StackPane{
     protected Histogram barChart;
     protected Boxplot boxplot;
 
-    protected String[][] gradeTable = null;
-    protected String[] questionLabels = null;
+    private String[][] gradeTable = null;
+    private String[] questionLabels = null;
+    private int threshold;
+    private int maxPoints;
+    private int guessPoints;
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -150,19 +155,8 @@ public class ViewScreen extends StackPane{
         this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                //ENKEL VOOR TETSEN
-
-                updateCohen("hello", "oho", "oh oh");
-                updateQualityStats("test", "1", "2");
-                updateStats("hey", "how", "are", "you", "doing",
-                        "?", "Oh", "fine", "I", "guess",
-                        "...");
-                questionLabels = new String[] {"1.1", "1.2", "1.3"};
-                setupTable(questionLabels);
-                gradeTable = new String[][]{{"s000000", "1", "0", "0", "0", "0"},
-                                         {"s000001", "2", "1", "1", "1", "1"}};
-                fillTable(gradeTable);
+                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
+                fillTable(examID);
             }
         });
 
@@ -366,7 +360,8 @@ public class ViewScreen extends StackPane{
 
             //HIER MOET DE CODE VOOR ALS ER EEN VRAAG GESELECTEERD WORDT!!
             @Override
-            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue, TablePosition newValue) {
+            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue,
+                                TablePosition newValue) {
                 if (newValue.getTableColumn() != null) {
                     pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
                             pointsTable.getItems().size(), newValue.getTableColumn());
@@ -381,6 +376,21 @@ public class ViewScreen extends StackPane{
                                 "...", "I've", "come", "to");
                     }
                 }
+            }
+        });
+        pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
+                TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                                        Boolean newValue) {
+                        header.setReordering(false);
+                    }
+                });
             }
         });
     }
@@ -469,11 +479,22 @@ public class ViewScreen extends StackPane{
 
     /* Deze functie vult de tabel in.
      */
-    protected void fillTable(String[][] values){
+    protected void fillTable(int examID){
+        DatabaseConn d = new DatabaseConn();
+        Object[][] questionData = d.GetVragenVanToets(examID);
+        this.questionLabels = Statistics.getColumn(1, questionData);
+        setupTable(this.questionLabels);
+        Integer[] examPoints = d.GetCesuurMaxGok(examID);
+        this.threshold = examPoints[0];
+        this.maxPoints = examPoints[1];
+        this.guessPoints = examPoints[2];
+        this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.threshold, this.maxPoints);
         ObservableList<String[]> data = FXCollections.observableArrayList();
-        data.addAll(Arrays.asList(values));
+        data.addAll(Arrays.asList(this.gradeTable));
         this.pointsTable.setItems(data);
+        d.CloseConnection();
     }
+
 
     protected void makeHistogram() {
         barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
