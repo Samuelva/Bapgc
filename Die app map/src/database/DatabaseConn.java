@@ -94,6 +94,8 @@ public class DatabaseConn {
             " FROM VRAAG"+
             " WHERE toetsID=%s" +
             " ORDER BY vraagnummer;";
+    private final String MODULEPERIODESQL = "SELECT array_agg(ModuleCode)" +
+            " FROM TOETS WHERE Periode='%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -551,4 +553,27 @@ public class DatabaseConn {
         return ConvertArrayMixTable(table);
     }
 
+    public String[] GetModulecodesPerPeriode(char periode){
+        /* Deze methode returned een array met alle modulecodes voor een
+         * opgegeven periode.
+         * Eerst voert het de query uit, waarna het de array extract.
+         * De statement wordt gesloten en de array gereturned.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
+        String[] array;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.MODULEPERIODESQL, periode
+            ));
+            resultSet.next();
+            array = (String[])resultSet.getArray(1).getArray();
+            this.statement.close();
+            return array;
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
+        }
+        return array = new String[0];
+    }
 }
