@@ -75,6 +75,12 @@ public class Toevoegen extends TabPane{
     public ExamTab examTab;
     public ModuleTab moduleTab;
 
+    protected TableView pointsTable;
+
+    public Button emptyButton;
+    public Button saveButton;
+    public Button importCSV;
+
 
     public Toevoegen() {
         /**
@@ -713,6 +719,34 @@ public class Toevoegen extends TabPane{
     private class ModuleTab extends Tab{
         public ModuleTab(String text) {
             super(text);
+            Region leftFill = new Region();
+            HBox.setHgrow(leftFill, Priority.ALWAYS);
+
+            emptyButton = new Button("Leeg maken");
+            saveButton = new Button("Wijzigingen opslaan");
+            importCSV = new Button("Import CSV");
+
+            emptyButton.setPrefSize(150, 30);
+            saveButton.setPrefSize(150, 30);
+            importCSV.setPrefSize(150, 30);
+            Region rightFill = new Region();
+            HBox.setHgrow(rightFill, Priority.ALWAYS);
+
+            HBox hbox = new HBox();
+            hbox.getChildren().addAll(rightFill, emptyButton, saveButton, importCSV, leftFill);
+            hbox.setSpacing(20);
+
+            pointsTable = new TableView();
+            VBox.setVgrow(pointsTable, Priority.ALWAYS);
+
+            VBox vbox = new VBox();
+
+            vbox.setSpacing(20);
+            vbox.getChildren().addAll(pointsTable, hbox);
+
+
+            this.setContent(vbox);
+
 
         }
     }
