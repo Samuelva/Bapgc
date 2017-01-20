@@ -275,18 +275,16 @@ public class Statistics {
             throw new IllegalArgumentException("k must be between 0 and 1");
         }
         Arrays.sort(values);
-        double index = k*values.length - 1;
-        int i = (int) round(index, 0);
+        double index = k*(values.length - 1);
+        int i = (int) Math.floor(index);
 
         if (i < 0){
             return 0;
-        } else if (i == values.length-1) {
+        } else if (i >= values.length-1) {
             return values[values.length-1];
-        } else if (i == index) {
-            int[] array = {values[i], values[i+1]};
-            return mean(array);
         } else {
-            return (double) values[i];
+            double fraction = index-i;
+            return values[i] + fraction*(values[i+1]-values[i]);
         }
     }
 
@@ -297,18 +295,16 @@ public class Statistics {
             throw new IllegalArgumentException("k must be between 0 and 1");
         }
         Arrays.sort(values);
-        double index = k*values.length - 1;
-        int i = (int) round(index, 0);
+        double index = k*(values.length - 1);
+        int i = (int) Math.floor(index);
 
         if (i < 0){
             return 0;
-        } else if (i == values.length-1) {
+        } else if (i >= values.length-1) {
             return values[values.length-1];
-        } else if (i == index) {
-            double[] array = {values[i], values[i+1]};
-            return mean(array);
         } else {
-            return (double) values[i];
+            double fraction = index-i;
+            return values[i] + fraction*(values[i+1]-values[i]);
         }
     }
 
