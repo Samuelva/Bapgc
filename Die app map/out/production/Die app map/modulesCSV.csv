@@ -1,64 +1,63 @@
-ModuleID;vakID;EC;Toetsvorm;Jaar;Periode;Extra
-bpab;bato;2;Theorietoets;1;1;Verplicht
-bpab;bdna;3;Theorietoets;1;1;Verplicht
-bpab;bpab;4;Project;1;1;Verplicht
-bpab,bptb;binp;6;Praktijktoets, Opdracht;1;1,2;Verplicht
-bptb;bcpp;4;Opdracht, Opdracht, Opdracht, Aanwezigheid;1;2;Verplicht
-bptb;bdisc;3;Theorietoets;1;2;Verplicht
-bptb;bptb;4;Project;1;2;Verplicht
-bptb;bmer;3;Theorietoets;1;2;Verplicht
-bpgaa;bche;3;Theorietoets;1;3;Verplicht
-bpgaa;bpgaa;4;Project;1;3;Verplicht
-bpgaa;bash1;3;Praktijktoets;1;3;Verplicht
-bpgaa;bstl;3;Theorietoets, Opdracht;1;3;Verplicht
-bpgaa;bogpp;3;Praktijktoets;1;3;Verplicht
-bpgru;bwx;3;Praktijktoets;1;4;Verplicht
-bpgru;beve;4;Theorietoets, Aanwezigheid;1;4;Verplicht
-bpgru;bioch;3;Theorietoets;1;4;Verplicht
-bpgru;bpgru;4;Project;1;4;Verplicht
-bpab,bptb,bpgaa, bpgru;bslb01;1;Aanwezigheid, Opdracht;1;1,2,3,4;Verplicht
-bpgepr;bpgepr;4;Logboek, Project;2;1;Verplicht
-bpgepr;bseqa;4;Theorietoets, Opdracht;2;1;Verplicht
-bpgepr;besm;4;Praktijktoets, Opdracht;2;1;Verplicht
-bpgepr;brela;4;Praktijktoets;2;1;Verplicht
-bmbl,brna;bpcogs;6;Project;2;2,3;Verplicht
-bmbl;bmbl;6;Theorietoets, Opdracht;2;2;Verplicht
-bmbl;bgel;4;Theorietoets, Opdracht, Aanwezigheid;2;2;Verplicht
-brna;brna;5;Theorietoets, Opdracht;2;3;Verplicht
-brna,bpdat;bstop;5;Praktijktoets, Opdracht;2;3,4;Verplicht
-brna;bstk;5;Praktijktoets;2;3;Verplicht
-bpdat;bpdat;5;Logboek, Project;2;4;Verplicht
-bpdat;bdata;4;Theorietoets, Opdracht;2;4;Verplicht
-bpgepr,bmbl,brna,bpdat;bslb02;1;Opdracht, Aanwezigheid;2;1,2,3,4;Verplicht
-Keuze;bviv;3;Theorietoets;2;4;Keuze
-Keuze;bkoxx$; 1-6;;;;Keuze
-Keuze;OA1$;1;Opdracht;2;1,2,3,4;Keuze
-Keuze;bmini;6;Opdracht;2;1,2,3,4;Keuze
-bnext;bnext;8;Theorietoets, Opdracht, Aanwezigheid;3;1;Verplicht
-Keuze;bash2;4;Praktijktoets;3;1;Keuze
-Keuze;bpsda;8;Logboek, Project;3;1,2;Keuze
-bacf;bacf;5;Opdracht, Aanwezigheid;3;2;Verplicht
-Keuze;bapgc;4;Opdracht;3;2;Keuze
-Keuze;bsen;4;Opdracht, Opdracht ;3;2;Keuze
-bnext,bacf,bpsys,bspr,;bslbl03;1;Opdracht, Aanwezigheid;3;1,2,3,4;Verplicht
-bpsys;bara;3;Theorietoets;3;3;Minor
-bpsys;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
-bpsys,bspr;bpsys;8;Project, Logboek;3;3,4;Minor
-bpsys, bspr;bspec;6;Opdracht;3;3,4;Minor
-bspr;blit;4;Opdracht;3;4;Minor
-bspr;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
-bmsta;bmsta;30;Stage;3;1,2,3,4;Minor
-bmnrxx;bmnrxx;30;WO;3;1,2,3,4;Minor
-bmsbm;brna;5;Theorietoets,Opdracht;3;3;Minor
-bmsbm;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
-bmsbm;bpsys;8;Project, Logboek;3;3,4;Minor
-bmsbm;bdata;4;Theorietoets, Opdracht;3;4;Minor
-bmsbm;blit;4;Opdracht;3;4;Minor
-bmsbm;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
-bmngs;blab;3;Opdracht, Aanwezigheid;3;3;Minor
-bmngs;blin;2;Praktijktoets;3;3;Minor
-bmngs;btsa;4;Theorietoets, Opdracht;3;3;Minor
-bmngs;bngsa;6;Theorietoets, Opdracht, Aanwezigheid;3;3;Minor
-bmngs;bpp;15;Project;3;4;Minor
-bafstu;bafstu$;59;Afstuderen;4;1,2,3,4;Verplicht
-bafstu;bslb04;1;Opdracht, Aanwezigheid;4;1,2,3,4;Verplicht
+Schooljaar;vakID;EC;Toetsvorm;Jaar;Periode;Extra
+2017;bato;2;Theorietoets;1;1;Verplicht
+2017;bdna;3;Theorietoets;1;1;Verplicht
+2017;bpab;4;Project;1;1;Verplicht
+2017;binp;6;Praktijktoets, Opdracht;1;1;Verplicht
+2017;bcpp;4;Opdracht, Opdracht, Opdracht, Aanwezigheid;1;2;Verplicht
+2017;bdisc;3;Theorietoets;1;2;Verplicht
+2017;bptb;4;Project;1;2;Verplicht
+2017;bmer;3;Theorietoets;1;2;Verplicht
+2017;bche;3;Theorietoets;1;3;Verplicht
+2017;bpgaa;4;Project;1;3;Verplicht
+2017;bash1;3;Praktijktoets;1;3;Verplicht
+2017;bstl;3;Theorietoets, Opdracht;1;3;Verplicht
+2017;bogpp;3;Praktijktoets;1;3;Verplicht
+2017;bwx;3;Praktijktoets;1;4;Verplicht
+2017;beve;4;Theorietoets, Aanwezigheid;1;4;Verplicht
+2017;bioch;3;Theorietoets;1;4;Verplicht
+2017;bpgru;4;Project;1;4;Verplicht
+2017;bslb01;1;Aanwezigheid, Opdracht;1;1;Verplicht
+2017;bpgepr;4;Logboek, Project;2;1;Verplicht
+2017;bseqa;4;Theorietoets, Opdracht;2;1;Verplicht
+2017;besm;4;Praktijktoets, Opdracht;2;1;Verplicht
+2017;brela;4;Praktijktoets;2;1;Verplicht
+2017;bpcogs;6;Project;2;2;Verplicht
+2017;bmbl;6;Theorietoets, Opdracht;2;2;Verplicht
+2017;bgel;4;Theorietoets, Opdracht, Aanwezigheid;2;2;Verplicht
+2017;brna;5;Theorietoets, Opdracht;2;3;Verplicht
+2017;bstop;5;Praktijktoets, Opdracht;2;3;Verplicht
+2017;bstk;5;Praktijktoets;2;3;Verplicht
+2017;bpdat;5;Logboek, Project;2;4;Verplicht
+2017;bdata;4;Theorietoets, Opdracht;2;4;Verplicht
+2017;bslb02;1;Opdracht, Aanwezigheid;2;1;Verplicht
+2017;bviv;3;Theorietoets;2;4;Keuze
+2017;OA1$;1;Opdracht;2;1;Keuze
+2017;bmini;6;Opdracht;2;1;Keuze
+2017;bnext;8;Theorietoets, Opdracht, Aanwezigheid;3;1;Verplicht
+2017;bash2;4;Praktijktoets;3;1;Keuze
+2017;bpsda;8;Logboek, Project;3;1;Keuze
+2017;bacf;5;Opdracht, Aanwezigheid;3;2;Verplicht
+2017;bapgc;4;Opdracht;3;2;Keuze
+2017;bsen;4;Opdracht, Opdracht ;3;2;Keuze
+2017;bslbl03;1;Opdracht, Aanwezigheid;3;1;Verplicht
+2017;bara;3;Theorietoets;3;3;Minor
+2017;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
+2017;bpsys;8;Project, Logboek;3;3;Minor
+2017;bspec;6;Opdracht;3;3;Minor
+2017;blit;4;Opdracht;3;4;Minor
+2017;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
+2017;bmsta;30;Stage;3;1;Minor
+2017;bmnrxx;30;WO;3;1;Minor
+2017;brna;5;Theorietoets,Opdracht;3;3;Minor
+2017;bsymo;4;Theorietoets, Aanwezigheid;3;3;Minor
+2017;bpsys;8;Project, Logboek;3;3;Minor
+2017;bdata;4;Theorietoets, Opdracht;3;4;Minor
+2017;blit;4;Opdracht;3;4;Minor
+2017;bmep;5;Theorietoets, Aanwezigheid;3;4;Minor
+2017;blab;3;Opdracht, Aanwezigheid;3;3;Minor
+2017;blin;2;Praktijktoets;3;3;Minor
+2017;btsa;4;Theorietoets, Opdracht;3;3;Minor
+2017;bngsa;6;Theorietoets, Opdracht, Aanwezigheid;3;3;Minor
+2017;bpp;15;Project;3;4;Minor
+2017;bafstu$;59;Afstuderen;4;1;Verplicht
+2017;bslb04;1;Opdracht, Aanwezigheid;4;1;Verplicht
