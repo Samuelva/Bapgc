@@ -3,6 +3,7 @@ package sample;
 import com.sun.org.apache.bcel.internal.generic.Select;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import database.DatabaseConn;
+
 
 /**
  * Created by Samuel on 4-12-2016.
@@ -34,10 +37,14 @@ public class Keuzemenu {
     private Button allButton;
     private Button resetButton;
 
+
+    private static DatabaseConn databaseConn = new DatabaseConn();
+
     public Keuzemenu() {
         /**
          * Hoofd functies roept subfuncties aan om keuzemenu onderdelen te maken.
          */
+        test();
         setComboBox();
         setChoiceMenuButtonBox();
     }
@@ -61,6 +68,32 @@ public class Keuzemenu {
         period.getItems().addAll("Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5");
         type.getItems().addAll("Theorietoets", "Praktijktoets", "Opdracht", "Aanwezigheid",
                 "Logboek", "Project");
+
+        period.setOnAction(event -> {
+            module.getItems().clear();
+            String[] modules = new String[' '];
+            System.out.println(period.getValue());
+
+            if (period.getValue() == "Periode 1") {
+                modules = databaseConn.GetModulecodesPerPeriode('1');
+            }
+            else if (period.getValue() == "Periode 2") {
+                modules = databaseConn.GetModulecodesPerPeriode('2');
+            }
+            else if (period.getValue() == "Periode 3") {
+                modules = databaseConn.GetModulecodesPerPeriode('3');
+            }
+            else if (period.getValue() == "Periode 4") {
+                modules = databaseConn.GetModulecodesPerPeriode('4');
+            }
+            else if (period.getValue() == "Periode 5") {
+                modules = databaseConn.GetModulecodesPerPeriode('5');
+            }
+            for (int i = 0; i < modules.length; i++) {
+                module.getItems().addAll(modules[i]);
+            }
+
+        });
 
     }
 
@@ -87,6 +120,9 @@ public class Keuzemenu {
         allButton.setMinHeight(30);
         resetButton.setPrefWidth(75);
         resetButton.setMinHeight(30);
+        allButton.setOnAction(event -> {
+            System.out.println("Alles knop");
+        });
         choiceMenuButtonBox.setSpacing(5);
         choiceMenuButtonBox.getChildren().addAll(allButton, resetButton);
     }
@@ -197,6 +233,21 @@ public class Keuzemenu {
          */
         selectionMenuItems = FXCollections.observableArrayList(selection);
         selectionMenu.setItems(selectionMenuItems);
+    }
+
+    private void test() {
+        databaseConn.InputModule("Bapgc", "jemama", 8);
+        databaseConn.InputModule("Bacf", "jepapa", 8);
+        databaseConn.InputToets("2016","3","2","Bapgc","Praktijk","2",70, 30);
+        //new Reader(Paths.get("src/brela_1e_1617.csv").toString(), d.GetToetsID("Bapgc", "2016", "3", "2", "1", "Toets"));
+        databaseConn.InputVraag("2a", 10, 1, true);
+        databaseConn.InputVraag("2b", 10, 1, true);
+        databaseConn.InputStudent(1088948,"Tim", "Bin3b");
+        databaseConn.InputStudent(1000000,"noname", "Bin3b");
+        databaseConn.InputScore(1088948, 1, 10);
+        databaseConn.InputScore(1088948, 2, 5);
+        databaseConn.InputScore(1000000, 1, 10);
+        databaseConn.InputScore(1000000, 2, 8);
     }
 
 }

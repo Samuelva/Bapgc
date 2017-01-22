@@ -47,7 +47,7 @@ public class Vergelijken extends StackPane {
 
         // Voeg zo inhoud toe aan de dropdown menu's
         testChoiceMenu.setYearContent("2016", "2017", "2018");
-        testChoiceMenu.setModuleContent("Bapgc", "Bacf");
+//        testChoiceMenu.setModuleContent("Bapgc", "Bacf");
         moduleChoiceMenu.setYearContent("2016", "207");
 
         // Voeg zo items toe aan het menu in het keuzemenu
@@ -154,12 +154,15 @@ public class Vergelijken extends StackPane {
         testStatistics.graphButton.setOnAction(event -> {
             if (testStatistics.graphButton.getValue() == "Histogram") {
                 testStatistics.setBarChart();
+                testStatistics.activeGraphInt = 1;
             } else if (testStatistics.graphButton.getValue() == "Lijngrafiek") {
                 testStatistics.setLineChart();
-            } else if (testStatistics.graphButton.getValue() == "Taartgrafiek") {
-                testStatistics.setPieChart();
+                testStatistics.activeGraphInt = 2;
+//            } else if (testStatistics.graphButton.getValue() == "Taartgrafiek") {
+//                testStatistics.setPieChart();
             } else if (testStatistics.graphButton.getValue() == "Boxplot") {
                 testStatistics.setBoxPlot();
+                testStatistics.activeGraphInt = 3;
             }
         });
     }
@@ -168,12 +171,15 @@ public class Vergelijken extends StackPane {
         moduleStatistics.graphButton.setOnAction(event -> {
             if (moduleStatistics.graphButton.getValue() == "Histogram") {
                 moduleStatistics.setBarChart();
+                moduleStatistics.activeGraphInt = 1;
             } else if (moduleStatistics.graphButton.getValue() == "Lijngrafiek") {
                 moduleStatistics.setLineChart();
-            } else if (moduleStatistics.graphButton.getValue() == "Taartgrafiek") {
-                moduleStatistics.setPieChart();
+                moduleStatistics.activeGraphInt = 2;
+//            } else if (moduleStatistics.graphButton.getValue() == "Taartgrafiek") {
+//                moduleStatistics.setPieChart();
             } else if (moduleStatistics.graphButton.getValue() == "Boxplot") {
                 moduleStatistics.setBoxPlot();
+                moduleStatistics.activeGraphInt = 3;
             }
         });
     }
@@ -182,12 +188,15 @@ public class Vergelijken extends StackPane {
         periodStatistics.graphButton.setOnAction(event -> {
             if (periodStatistics.graphButton.getValue() == "Histogram") {
                 periodStatistics.setBarChart();
+                periodStatistics.activeGraphInt = 1;
             } else if (periodStatistics.graphButton.getValue() == "Lijngrafiek") {
                 periodStatistics.setLineChart();
-            } else if (periodStatistics.graphButton.getValue() == "Taartgrafiek") {
-                periodStatistics.setPieChart();
+                periodStatistics.activeGraphInt = 2;
+//            } else if (periodStatistics.graphButton.getValue() == "Taartgrafiek") {
+//                periodStatistics.setPieChart();
             } else if (periodStatistics.graphButton.getValue() == "Boxplot") {
                 periodStatistics.setBoxPlot();
+                periodStatistics.activeGraphInt = 3;
             }
         });
     }

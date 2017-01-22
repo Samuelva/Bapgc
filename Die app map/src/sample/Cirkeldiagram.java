@@ -13,6 +13,7 @@ import static javafx.collections.FXCollections.observableArrayList;
 public class Cirkeldiagram {
     private String title;
     private VBox chartBox;
+    private PieChart pieChart;
     ObservableList<PieChart.Data> pieChartData;
 
     public Cirkeldiagram(String setTitle) {
@@ -21,7 +22,7 @@ public class Cirkeldiagram {
     }
 
     public VBox makePieChart() {
-        final PieChart pieChart = new PieChart(pieChartData);
+        pieChart = new PieChart(pieChartData);
         pieChart.setTitle("Taartgrafiek");
         chartBox = new VBox();
         chartBox.getChildren().add(pieChart);
@@ -33,5 +34,9 @@ public class Cirkeldiagram {
         for (int i=0; i<names.length; i++) {
             pieChartData.add(new PieChart.Data(names[i], values[i]));
         }
+    }
+
+    public PieChart getPieChart() {
+        return pieChart;
     }
 }

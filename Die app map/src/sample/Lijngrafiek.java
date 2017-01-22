@@ -45,10 +45,14 @@ public class Lijngrafiek {
         lineChart.getData().add(series);
     }
 
-    public VBox getLineChart() {
+    public VBox getLineChartBox() {
         chartBox = new VBox();
         chartBox.getChildren().addAll(lineChart);
         chartBox.setVgrow(lineChart, Priority.ALWAYS);
         return chartBox;
+    }
+
+    public LineChart<String, Number> getLineChart() {
+        return lineChart;
     }
 }
