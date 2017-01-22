@@ -62,12 +62,6 @@ public class Toevoegen extends TabPane{
     public ScreenButtons saveExamBtn;
 
     //EXAM PROPERTIES
-    public ChoiceBox yearPropertyChoiceBox;
-    public ChoiceBox schoolYearPropertyChoiceBox;
-    public ChoiceBox blockPropertyChoiceBox;
-    public ChoiceBox coursePropertyChoiceBox;
-    public ChoiceBox typePropertyChoiceBox;
-    public ChoiceBox attemptExamPropertyChoiceBox;
     public CheckBox questionPropertyCheckBox;
     public TextField thresholdTextfield;
     public TextField chanceByGamblingTextfield;
@@ -115,9 +109,17 @@ public class Toevoegen extends TabPane{
         schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
         blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
         courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(createModuleList(databaseConn.GetTable("module"))));
-        typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
+        typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Toets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
         attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
         databaseConn.CloseConnection();
+    }
+    public void setSelection(String[] selection) {
+        courseExamChoiceBox.setValue(selection[0]);
+        yearExamChoiceBox.setValue(selection[1]);
+        schoolYearExamChoiceBox.setValue(selection[2]);
+        blockExamChoiceBox.setValue(selection[3]);
+        typeExamChoiceBox.setValue(selection[4]);
+        attemptExamChoiceBox.setValue(selection[5]);
     }
 
     private List createModuleList(String[][] modules) {
@@ -164,6 +166,7 @@ public class Toevoegen extends TabPane{
         private ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
         private ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
         private VBox pointDistributionBox;
+        private ScrollPane questionAndCheckBoxesScrollpane;
         private FlowPane questionAndCheckboxes;
 
         private Label lbl2;
@@ -259,7 +262,7 @@ public class Toevoegen extends TabPane{
             });
             resetPointDistributionButton.setOnAction( event -> {
                 questionAndCheckboxes.getChildren().clear();
-                pointDistributionBox.getChildren().remove(questionAndCheckboxes);
+                pointDistributionBox.getChildren().remove(questionAndCheckBoxesScrollpane);
                 importCsvButton.setDisable(false);
                 resetPointDistributionButton.setDisable(true);
             });
@@ -326,42 +329,28 @@ public class Toevoegen extends TabPane{
              *
              * Hierna volgen een paar layout aanpassingen.
              */
-//            int indexVraagnummer;
+            questionAndCheckBoxesScrollpane = new ScrollPane();
             questionAndCheckboxes = new FlowPane();
-            questionAndCheckboxes.setMaxHeight(140);
             for (int i = 0; i < subQuestions.length; i++) {
                 if (subQuestions[i].contains("Vraagnummer:")) {
-//                    indexVraagnummer = i;
                     int index = i+2; //Remove Vraagnummer and whitespaces
                     String currentQuestion = "1";
                     while (((questions[index].length() != 0 || subQuestions[index].length() != 0) && subQuestionsPoints[index].length() != 0)) {// || index-1 == indexVraagnummer) {
                         if (questions[index].length() != 0) {
                             currentQuestion = questions[index];
                         }
-                        questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(currentQuestion, subQuestions[index], subQuestionsPoints[index]));
+                        questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(String.valueOf(currentQuestion) + subQuestions[index], subQuestionsPoints[index], "true"));
                         index++;
                     }
                 }
             }
+            questionAndCheckboxes.setMaxHeight(130);
             questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
             questionAndCheckboxes.setVgap(4);
             questionAndCheckboxes.setHgap(10);
             questionAndCheckboxes.setPrefHeight(150);
-            saveExamBtn.setAlignment(Pos.CENTER);
-            pointDistributionBox.getChildren().add(2,questionAndCheckboxes);
-        }
-
-        private void createDataChoiceBoxes() {
-            /**
-             * Verschillende eigenschappen elementen die van belang zijn voor
-             * het juist toevoegen van een toets aan de database.
-             */
-            yearPropertyChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
-            schoolYearPropertyChoiceBox =  new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
-            blockPropertyChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
-            coursePropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Module",  "placeholder")));
-            attemptExamPropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid",  "1e kans", "2e kans", "3e kans")));
-            typePropertyChoiceBox  = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
+            questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
+            pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
         }
 
 
@@ -369,39 +358,46 @@ public class Toevoegen extends TabPane{
             System.out.println(examProperties[0]);
             VBox vbox = new VBox();
             VBox buttonBox = new VBox(saveExamBtn);
-            vbox.getChildren().addAll(getExamInformationBoxes(examProperties), getPointDistribution(), buttonBox);
+            vbox.getChildren().addAll(getExamInformationBoxes(examProperties), getPointDistribution(examProperties), buttonBox);
             buttonBox.setAlignment(Pos.CENTER);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
+            saveExamBtn.setAlignment(Pos.CENTER);
             examPane.setCenter(vbox);
         }
 
-        private VBox createExamPropertiesScreen() {
-            /**
-             * Juistte layout voor het weergeven van de verschillende elementen
-             * voor de toets. De onderdelen zijn examen eigenschappen met
-             * choiceboxes, de punten verdeling en de buttonbox voor het
-             * opslaan van de toetsgegevens.
-             */
-            VBox vbox = new VBox();
-            VBox buttonBox = new VBox(saveExamBtn);
-//            vbox.getChildren().addAll(getExamInformationBoxes(), getPointDistribution(), buttonBox);
-            buttonBox.setAlignment(Pos.CENTER);
-            vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
-            vbox.setPadding(new Insets(0, 20, 0, 20));
 
-            return vbox;
-        }
-
-        private VBox getPointDistribution() {
+        private VBox getPointDistribution(String[] examProperties) {
             /**
              * Aanmaken van de VBOX die de puntenverdeling zal laten zien.
              */
+            questionAndCheckBoxesScrollpane = new ScrollPane();
             pointDistributionBox = new VBox();
             pointDistributionBox.getChildren().addAll(new BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
+            try {
+                questionAndCheckboxes = new FlowPane();
+                DatabaseConn databaseConn = new DatabaseConn();
+                String[][] questionInfo  = databaseConn.GetTable("vraag", "toetsid = " + databaseConn.GetToetsID(examProperties[0],examProperties[1], examProperties[2], examProperties[3], examProperties[4], examProperties[5]));
+                for (String[] info: questionInfo) {
+                    questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(info[1], info[2],info[4]));
+                }
+                questionAndCheckboxes.setMaxHeight(130);
+                questionAndCheckBoxesScrollpane.setMaxHeight(140);
+                questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
+                questionAndCheckboxes.setVgap(4);
+                questionAndCheckboxes.setHgap(10);
+                questionAndCheckboxes.setPrefHeight(150);
+                databaseConn.CloseConnection();
+                importCsvButton.setDisable(true);
+                resetPointDistributionButton.setDisable(false);
+                questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
+                pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }
             return pointDistributionBox;
         }
-
 
         private HBox getImportQuestionButtons() {
             /**
@@ -479,7 +475,7 @@ public class Toevoegen extends TabPane{
                         thresholdTextfield.setText(newValue.replaceAll("[^\\d]", ""));
                     }
                     if (thresholdTextfield.getText().length() > 4) {
-                        String s = thresholdTextfield.getText().substring(0, 2);
+                        String s = thresholdTextfield.getText().substring(0, 4);
                         thresholdTextfield.setText(s);
                     }
                 }
@@ -660,21 +656,21 @@ public class Toevoegen extends TabPane{
          *
          * Vraagnummer, Deelvraag nummer, Punten en of de vraag meetelt
          */
-        String questionNumber;
-        String subQuestionNumber;
+        String question;
         String subQuestionPoints;
         CheckBox accountable;
 
-        public QuestionBoxWithCheck(String questionNumber, String subQuestionNumber, String subQuestionPoints) {
+        public QuestionBoxWithCheck(String questionNumber, String subQuestionPoints, String accoubtAble) {
             /**
              * Constructor voor het juistaanmaken van een HBOX die van belang
              * is voor het juist weergeven van de punten.
              */
-            this.questionNumber = questionNumber;
-            this.subQuestionNumber = subQuestionNumber;
+            this.question = questionNumber;
             this.subQuestionPoints = subQuestionPoints;
             this.accountable = new CheckBox();
-            this.accountable.setSelected(true);
+            if (accoubtAble.equals("true")) {
+                this.accountable.setSelected(true);
+            }
             getQuestionAndCheckBox();
         }
 
@@ -685,7 +681,7 @@ public class Toevoegen extends TabPane{
              * Label met gegevens en een checkbox die informatie geeft
              * over het meerekenen van de vraag
              */
-            Label question = new Label("Vraag " + questionNumber + '.' + subQuestionNumber + ": " + subQuestionPoints);
+            Label question = new Label("Vraag " + this.question+ ": " + subQuestionPoints);
             Region spacer = new Region();
             this.getChildren().addAll(question, spacer, accountable);
             this.setHgrow(spacer, Priority.ALWAYS);
@@ -694,12 +690,8 @@ public class Toevoegen extends TabPane{
             this.setStyle("-fx-border-color: lightgrey");
         }
 
-        public String getQuestionNumber() {
-            return questionNumber;
-        }
-
-        public String getSubQuestionNumber() {
-            return subQuestionNumber;
+        public String getQuestion() {
+            return question;
         }
 
         public String getSubQuestionPoints() {

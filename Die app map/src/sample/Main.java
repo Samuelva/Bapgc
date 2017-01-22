@@ -58,12 +58,11 @@ public class Main extends Application {
                 warning();
             }
             else {
-//                toevoeg.examTab.createExamPropertiesScreen();
                 invoer.setSelection(searchOnProperties);
                 view.setSelection(searchOnProperties);
                 DatabaseConn databaseConn = new DatabaseConn();
-                System.out.println(searchOnProperties.toString());
                 databaseConn.GetToetsID(searchOnProperties[0],searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
                 databaseConn.CloseConnection();
             }
         });
