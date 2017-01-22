@@ -1,4 +1,3 @@
-
 package sample;
 
 
@@ -124,11 +123,6 @@ final class Invoeren extends StackPane {
         	} else {
         	    alert.close();
         	}
-        });
-
-        btn1.setOnAction(e -> {
-            int examID = 1; //HIER MOET DE TOETS ID OPGEHAALD WORDEN MBV HET KEUZEMENU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            fillTable(examID);
         });
     }
 
@@ -314,7 +308,7 @@ final class Invoeren extends StackPane {
         lbl1 = maakObject(new Label(), "Keuzemenu");
         lbl1.setPrefWidth(150);
         year = new ChoiceBox(FXCollections.observableArrayList("Jaartal", 
-                new Separator(), "placeholder"));
+                new Separator(), "2016/2017"));
         year.setValue("Jaartal");
         year.setPrefWidth(150);
         year.setPrefHeight(30);
@@ -415,13 +409,35 @@ final class Invoeren extends StackPane {
         this.getChildren().add(hbox2);
         
     }
+    
+    public String[] getSelectionProperties() {
+            String[] properties = new String[6];
+
+
+            if (year.getValue().equals("Jaartal"))
+                return null;
+            if (studyyear.getValue().equals("Leerjaar"))
+                return null;
+            if (period.getValue().equals("Periode"))
+                return null;
+            if (module.getValue().equals("Module"))
+                return null;
+            if (type.getValue().equals("Toetsvorm"))
+                return null;
+            if (chance.getValue().equals("Gelegenheid"))
+                return null;
+
+            properties[0] = (String) module.getValue();
+            properties[1] = (String) year.getValue();
+            properties[2] = (String) studyyear.getValue();
+            properties[3] = (String) period.getValue();
+            properties[4] = (String) type.getValue();
+            properties[5] = (String) chance.getValue();
+
+
+            return properties;
+        }
+
 
 
 }
-    
-
-
-
-    
-
-

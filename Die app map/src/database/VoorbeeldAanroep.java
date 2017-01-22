@@ -10,7 +10,7 @@ public class VoorbeeldAanroep {
         DatabaseConn d = new DatabaseConn();
         d.InputModule("Bapgc", "jemama", 8);
         d.InputModule("Bacf", "jepapa", 8);
-        d.InputToets("2016","3","2","Bapgc","Praktijk","2",70, 30);
+        d.InputToets("2016","3","2","Bapgc","Praktijk","2",70, 2);
         //new Reader(Paths.get("src/brela_1e_1617.csv").toString(), d.GetToetsID("Bapgc", "2016", "3", "2", "1", "Toets"));
         d.InputVraag("2a", 10, 1, true);
         d.InputVraag("2b", 10, 1, true);
