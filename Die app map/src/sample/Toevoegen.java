@@ -658,6 +658,15 @@ public class Toevoegen extends TabPane{
             return properties;
         }
     }
+    
+        public void setSelection(String[] selection) {
+        courseExamChoiceBox.setValue(selection[0]);
+        yearExamChoiceBox.setValue(selection[1]);
+        schoolYearExamChoiceBox.setValue(selection[2]);
+        blockExamChoiceBox.setValue(selection[3]);
+        typeExamChoiceBox.setValue(selection[4]);
+        attemptExamChoiceBox.setValue(selection[5]);        
+    }
 
     private class QuestionBoxWithCheck extends HBox{
         /**

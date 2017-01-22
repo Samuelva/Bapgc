@@ -437,6 +437,15 @@ final class Invoeren extends StackPane {
 
             return properties;
         }
+    
+    public void setSelection(String[] selection) {
+        module.setValue(selection[0]);
+        year.setValue(selection[1]);
+        studyyear.setValue(selection[2]);
+        period.setValue(selection[3]);
+        type.setValue(selection[4]);
+        chance.setValue(selection[5]);        
+    }
 
 
 

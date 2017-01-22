@@ -59,6 +59,8 @@ public class Main extends Application {
             }
             else {
 //                toevoeg.examTab.createExamPropertiesScreen();
+                invoer.setSelection(searchOnProperties);
+                view.setSelection(searchOnProperties);
                 DatabaseConn databaseConn = new DatabaseConn();
                 System.out.println(searchOnProperties.toString());
                 databaseConn.GetToetsID(searchOnProperties[0],searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
@@ -72,6 +74,8 @@ public class Main extends Application {
                 warning();
             }
             else {
+                view.setSelection(searchOnProperties);
+                toevoeg.setSelection(searchOnProperties);
                 int examID = 1; //HIER MOET DE TOETS ID OPGEHAALD WORDEN MBV HET KEUZEMENU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 invoer.fillTable(examID);
             }
@@ -83,6 +87,8 @@ public class Main extends Application {
                 warning();
             }
             else {
+                invoer.setSelection(searchOnProperties);
+                toevoeg.setSelection(searchOnProperties);
                 int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
                 view.fillTable(examID);
 
