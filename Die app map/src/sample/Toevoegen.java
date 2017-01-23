@@ -51,29 +51,32 @@ public class Toevoegen extends TabPane{
      * worden aangepast. Deze staan in choiceboxes.
      */
     //SELECTION MENU
-    public sample.Toevoegen.ChoiceBoxes yearExamChoiceBox; //Jaartal
-    public sample.Toevoegen.ChoiceBoxes schoolYearExamChoiceBox; //Schooljaar
-    public sample.Toevoegen.ChoiceBoxes blockExamChoiceBox; //Periode
-    public sample.Toevoegen.ChoiceBoxes courseExamChoiceBox; //Modules
-    public sample.Toevoegen.ChoiceBoxes typeExamChoiceBox; //Toetsvorm
-    public sample.Toevoegen.ChoiceBoxes attemptExamChoiceBox; //Gelgeheid
+    public ChoiceBoxes yearExamChoiceBox; //Jaartal
+    public ChoiceBoxes schoolYearExamChoiceBox; //Schooljaar
+    public ChoiceBoxes blockExamChoiceBox; //Periode
+    public ChoiceBoxes courseExamChoiceBox; //Modules
+    public ChoiceBoxes typeExamChoiceBox; //Toetsvorm
+    public ChoiceBoxes attemptExamChoiceBox; //Gelgeheid
+    public ScreenButtons showExamBtn;
 
-    public sample.Toevoegen.ScreenButtons showExamBtn;
-    public sample.Toevoegen.ScreenButtons saveExamBtn;
-
+    public ScreenButtons saveExamBtn;
     //EXAM PROPERTIES
     public CheckBox questionPropertyCheckBox;
+
     public TextField thresholdTextfield;
     public TextField chanceByGamblingTextfield;
+    public ExamTab examTab;
 
-    public sample.Toevoegen.ExamTab examTab;
-    public sample.Toevoegen.ModuleTab moduleTab;
+    public ModuleTab moduleTab;
 
-    protected TableView pointsTable;
+    private  Button emptyButton;
+    private  Button saveButton;
+    private  Button importCSV;
 
-    public Button emptyButton;
-    public Button saveButton;
-    public Button importCSV;
+    private TableView pointsTable;
+    public Integer examID;
+
+
 
 
     public Toevoegen() {
@@ -88,8 +91,8 @@ public class Toevoegen extends TabPane{
         createSelectionMenuElements();
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
         this.setTabMinWidth(100);
-        examTab = new sample.Toevoegen.ExamTab("Toetsen");
-        moduleTab = new sample.Toevoegen.ModuleTab("Modulen");
+        examTab = new ExamTab("Toetsen");
+        moduleTab = new ModuleTab("Modulen");
         this.getTabs().add(moduleTab);
         this.getTabs().add(examTab);
     }
@@ -111,12 +114,12 @@ public class Toevoegen extends TabPane{
          * Creeeren van choiceboxes voor de selectie menu.
          */
         DatabaseConn databaseConn = new DatabaseConn();
-        yearExamChoiceBox = new sample.Toevoegen.ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
-        schoolYearExamChoiceBox = new sample.Toevoegen.ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
-        blockExamChoiceBox = new sample.Toevoegen.ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
-        courseExamChoiceBox = new sample.Toevoegen.ChoiceBoxes(new ArrayList<>(createModuleList(databaseConn.GetTable("module"))));
-        typeExamChoiceBox = new sample.Toevoegen.ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Toets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
-        attemptExamChoiceBox = new sample.Toevoegen.ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
+        yearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
+        schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
+        blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
+        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(createModuleList(databaseConn.GetTable("module"))));
+        typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
+        attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
         databaseConn.CloseConnection();
     }
     public void setSelection(String[] selection) {
@@ -148,8 +151,8 @@ public class Toevoegen extends TabPane{
         /**
          * Aanmaken van knoppen voor de selectie menu
          */
-        showExamBtn = new sample.Toevoegen.ScreenButtons("Toets weergeven");
-        saveExamBtn = new sample.Toevoegen.ScreenButtons("Toets opslaan");
+        showExamBtn = new ScreenButtons("Toets weergeven");
+        saveExamBtn = new ScreenButtons("Toets opslaan");
     }
 
     public class ExamTab extends Tab {
@@ -169,8 +172,8 @@ public class Toevoegen extends TabPane{
 
         private VBox selectionMenu;
 
-        private sample.Toevoegen.ScreenButtons importCsvButton = new sample.Toevoegen.ScreenButtons("Importeer CSV");
-        private sample.Toevoegen.ScreenButtons resetPointDistributionButton = new sample.Toevoegen.ScreenButtons("Reset");
+        private ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
+        private ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
         private VBox pointDistributionBox;
         private ScrollPane questionAndCheckBoxesScrollpane;
         private FlowPane questionAndCheckboxes;
@@ -232,7 +235,7 @@ public class Toevoegen extends TabPane{
              */
             VBox labelAndChoiceBoxesBox = new VBox();
             labelAndChoiceBoxesBox.getChildren().addAll(
-                    new sample.Toevoegen.BoxHeaders("Keuzemenu"),
+                    new BoxHeaders("Keuzemenu"),
                     yearExamChoiceBox,
                     schoolYearExamChoiceBox,
                     blockExamChoiceBox,
@@ -345,16 +348,15 @@ public class Toevoegen extends TabPane{
                         if (questions[index].length() != 0) {
                             currentQuestion = questions[index];
                         }
-                        questionAndCheckboxes.getChildren().add(new sample.Toevoegen.QuestionBoxWithCheck(String.valueOf(currentQuestion) + subQuestions[index], subQuestionsPoints[index], "true"));
+                        questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(String.valueOf(currentQuestion) + subQuestions[index], subQuestionsPoints[index], "true"));
                         index++;
                     }
                 }
             }
-            questionAndCheckboxes.setMaxHeight(130);
+            questionAndCheckBoxesScrollpane.setMaxHeight(Double.MAX_VALUE);
             questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
             questionAndCheckboxes.setVgap(4);
             questionAndCheckboxes.setHgap(10);
-            questionAndCheckboxes.setPrefHeight(150);
             questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
             pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
         }
@@ -364,7 +366,7 @@ public class Toevoegen extends TabPane{
             System.out.println(examProperties[0]);
             VBox vbox = new VBox();
             VBox buttonBox = new VBox(saveExamBtn);
-            vbox.getChildren().addAll(getExamInformationBoxes(examProperties), getPointDistribution(examProperties), buttonBox);
+            vbox.getChildren().addAll(getExamInformationBoxes(examProperties, examID), getPointDistribution(examProperties), buttonBox);
             buttonBox.setAlignment(Pos.CENTER);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
@@ -379,20 +381,17 @@ public class Toevoegen extends TabPane{
              */
             questionAndCheckBoxesScrollpane = new ScrollPane();
             pointDistributionBox = new VBox();
-            pointDistributionBox.getChildren().addAll(new sample.Toevoegen.BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
+            pointDistributionBox.getChildren().addAll(new BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
             try {
                 questionAndCheckboxes = new FlowPane();
                 DatabaseConn databaseConn = new DatabaseConn();
                 String[][] questionInfo  = databaseConn.GetTable("vraag", "toetsid = " + databaseConn.GetToetsID(examProperties[0],examProperties[1], examProperties[2], examProperties[3], examProperties[4], examProperties[5]));
                 for (String[] info: questionInfo) {
-                    questionAndCheckboxes.getChildren().add(new sample.Toevoegen.QuestionBoxWithCheck(info[1], info[2],info[4]));
+                    questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(info[1], info[2],info[4]));
                 }
-                questionAndCheckboxes.setMaxHeight(130);
-                questionAndCheckBoxesScrollpane.setMaxHeight(140);
                 questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
                 questionAndCheckboxes.setVgap(4);
                 questionAndCheckboxes.setHgap(10);
-                questionAndCheckboxes.setPrefHeight(150);
                 databaseConn.CloseConnection();
                 importCsvButton.setDisable(true);
                 resetPointDistributionButton.setDisable(false);
@@ -419,7 +418,7 @@ public class Toevoegen extends TabPane{
             return questionButtonBox;
         }
 
-        public HBox getExamInformationBoxes(String[] examProperties) {
+        public HBox getExamInformationBoxes(String[] examProperties, Integer examID) {
             /**
              * Aanmaken van de box die eigenschappen bevat over de toets.
              *
@@ -427,7 +426,7 @@ public class Toevoegen extends TabPane{
              * en een textfield die van belang is voor de beheersgraad.
              */
             HBox hbox = new HBox();
-            hbox.getChildren().addAll(createExamData(examProperties), getExamGrader());
+            hbox.getChildren().addAll(createExamData(examProperties), getExamGrader(examID));
             hbox.setHgrow(hbox.getChildren().get(0), Priority.ALWAYS);
             hbox.setHgrow(hbox.getChildren().get(1), Priority.ALWAYS);
             hbox.setPadding(new Insets(0, 0, 0, 5));
@@ -435,29 +434,29 @@ public class Toevoegen extends TabPane{
             return hbox;
         }
 
-        private Node getExamGrader() {
+        private Node getExamGrader(Integer examID) {
             /**
              * Een VBOX met informatie over de cijfer gegevens.
              */
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(new sample.Toevoegen.BoxHeaders("Cijfer Gegevens"), getGradeData());
+            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"), getGradeData(examID));
             vbox.setSpacing(20);
             return vbox;
         }
 
-        private HBox getGradeData() {
+        private HBox getGradeData(Integer examID) {
             /**
              * HBOX die informatie bevat over de beheersgraad en of er
              * wel vragen aanwezig zijn bij de toets.
              */
             HBox hbox = new HBox();
             VBox vbox1 = getGradePropertyLabels();
-            VBox vbox2 = getGradePropertyInputFields();
+            VBox vbox2 = getGradePropertyInputFields(examID);
             hbox.getChildren().addAll(vbox1, vbox2);
             return hbox;
         }
 
-        private VBox getGradePropertyInputFields() {
+        private VBox getGradePropertyInputFields(Integer examID) {
             /**
              * VBOX met elementen die informatie bevattene over de toets.
              * Er wordt een textfield toegevoegd die informatie bevat over de
@@ -467,12 +466,20 @@ public class Toevoegen extends TabPane{
              * De questionPropertyCheckBox bevat een checkbox die de
              * puntenverdeling wel of niet verdeelt.
              */
-            VBox vbox2 = new VBox();
-            questionPropertyCheckBox = new CheckBox();
-            questionPropertyCheckBox.setSelected(true);
-            setQuestionPropertyEvent();
             thresholdTextfield = new TextField();
             chanceByGamblingTextfield = new TextField();
+            questionPropertyCheckBox = new CheckBox();
+            DatabaseConn databaseConn = new DatabaseConn();
+            try {
+                String[][] gradeInfo = databaseConn.GetTable("toets", "toetsID = " + String.valueOf(examID));
+                thresholdTextfield.setText(gradeInfo[0][7]);
+                chanceByGamblingTextfield.setText(gradeInfo[0][8]);
+            } catch (Exception E) {
+
+            }
+            VBox vbox2 = new VBox();
+            questionPropertyCheckBox.setSelected(true);
+            setQuestionPropertyEvent();
             vbox2.getChildren().addAll(questionPropertyCheckBox, thresholdTextfield, chanceByGamblingTextfield);
             thresholdTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -499,6 +506,7 @@ public class Toevoegen extends TabPane{
                 }
             });
             vbox2.setSpacing(20);
+            databaseConn.CloseConnection();
             return vbox2;
         }
         private VBox getGradePropertyLabels() {
@@ -552,7 +560,7 @@ public class Toevoegen extends TabPane{
              * Box met toetsgegevens.
              */
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(new sample.Toevoegen.BoxHeaders("Toets Gegevens"), getExamDataBox(examProperties));
+            vbox.getChildren().addAll(new BoxHeaders("Toets Gegevens"), getExamDataBox(examProperties));
             vbox.setSpacing(20);
             return vbox;
         }
@@ -566,12 +574,12 @@ public class Toevoegen extends TabPane{
              */
             VBox examDataVbox = new VBox();
             examDataVbox.getChildren().addAll(
-                    new sample.Toevoegen.ExamTab.labelPropertyWithValue("Module", examProperties[0]),
-                    new sample.Toevoegen.ExamTab.labelPropertyWithValue("Jaar", examProperties[1]),
-                    new sample.Toevoegen.ExamTab.labelPropertyWithValue("Schooljaar", examProperties[2]),
-                    new sample.Toevoegen.ExamTab.labelPropertyWithValue("Periode", examProperties[3]),
-                    new sample.Toevoegen.ExamTab.labelPropertyWithValue("Gelegenheid", examProperties[4]),
-                    new sample.Toevoegen.ExamTab.labelPropertyWithValue("Toetsvorm", examProperties[5])
+                    new labelPropertyWithValue("Module", examProperties[0]),
+                    new labelPropertyWithValue("Jaar", examProperties[1]),
+                    new labelPropertyWithValue("Schooljaar", examProperties[2]),
+                    new labelPropertyWithValue("Periode", examProperties[3]),
+                    new labelPropertyWithValue("Gelegenheid", examProperties[4]),
+                    new labelPropertyWithValue("Toetsvorm", examProperties[5])
             );
             examDataVbox.setSpacing(12);
             return examDataVbox;
@@ -738,7 +746,6 @@ public class Toevoegen extends TabPane{
 
 
             this.setContent(vbox);
-
 
         }
     }
