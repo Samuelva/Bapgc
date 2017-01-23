@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
@@ -11,6 +12,14 @@ class InputToets {
             " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
             " Gelegenheid, Cesuur, PuntenDoorGokKans)" +
             " VALUES (%s, %s, %s, %s, %s, %s, %s, %s);";
+    private final String CHECKSQL = "SELECT ToetsID" +
+            " FROM TOETS" +
+            " WHERE ModuleCode=%s AND" +
+            " Jaar=%s AND" +
+            " Schooljaar=%s AND" +
+            " Periode=%s AND" +
+            " Toetsvorm=%s AND" +
+            " Gelegenheid=%s;";
     private Connection connection;
     private QueryString jaar = new QueryString();
     private QueryString schooljaar = new QueryString();
@@ -36,21 +45,24 @@ class InputToets {
             this.toetsvorm.insert(toetsvormString);
             this.gelegenheid.insert(gelegenheidString);
 
-            Statement statement = connection.createStatement();
-            String query = String.format(
-                    this.MODULESQL,
-                    this.jaar.getString(),
-                    this.schooljaar.getString(),
-                    this.periode.getString(),
-                    this.moduleCode.getString(),
-                    this.toetsvorm.getString(),
-                    this.gelegenheid.getString(),
-                    cesuur,
-                    puntenDoorGokKans
-            );
-            System.out.println(query);
-            statement.executeUpdate(query);
-            return true;
+            if (!CheckExist()) {
+                Statement statement = connection.createStatement();
+                String query = String.format(
+                        this.MODULESQL,
+                        this.jaar.getString(),
+                        this.schooljaar.getString(),
+                        this.periode.getString(),
+                        this.moduleCode.getString(),
+                        this.toetsvorm.getString(),
+                        this.gelegenheid.getString(),
+                        cesuur,
+                        puntenDoorGokKans
+                );
+                System.out.println(query);
+                statement.executeUpdate(query);
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             if (e.getMessage().contains(
                     "key value violates unique constraint \"toets_pkey\""
@@ -64,6 +76,27 @@ class InputToets {
                         e.getClass().getName() + ": " + e.getMessage()
                 );
             }
+            return false;
+        }
+    }
+
+    private Boolean CheckExist(){
+        try {
+            Statement statement = connection.createStatement();
+            String query = String.format(
+                    this.CHECKSQL,
+                    this.moduleCode.getString(),
+                    this.jaar.getString(),
+                    this.schooljaar.getString(),
+                    this.periode.getString(),
+                    this.toetsvorm.getString(),
+                    this.gelegenheid.getString()
+            );
+            System.out.println(query);
+            ResultSet resultSet = statement.executeQuery(query);
+            resultSet.next();
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }

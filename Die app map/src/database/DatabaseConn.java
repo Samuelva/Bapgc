@@ -99,7 +99,7 @@ public class DatabaseConn {
     private final String MODULEPERIODESQL = "SELECT array_agg(ModuleCode)" +
             " FROM TOETS WHERE Periode='%s';";
     private final String TOETSKANSENSQL = "SELECT ToetsVorm," +
-            " array_agg(gelegenheid)" +
+            " array_agg(ToetsID)" +
             " FROM TOETS" +
             " WHERE ModuleCode='%s'" +
             " GROUP BY ToetsVorm;";
@@ -350,7 +350,6 @@ public class DatabaseConn {
             id = resultSet.getInt(1);
             this.statement.close();
         } catch (Exception e) {
-
             throw new EmptyStackException();
         }
         return id;
@@ -381,7 +380,7 @@ public class DatabaseConn {
             id = resultSet.getInt(1);
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return id;
     }
@@ -405,7 +404,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -427,7 +426,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -449,7 +448,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -472,7 +471,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -499,7 +498,7 @@ public class DatabaseConn {
             array[2] = Integer.valueOf(resultSet.getString(3));
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return array;
     }
@@ -521,7 +520,7 @@ public class DatabaseConn {
             ));
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
     }
 
@@ -556,7 +555,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayMixTable(table);
     }
@@ -580,16 +579,15 @@ public class DatabaseConn {
             this.statement.close();
             return array;
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
-        return array = new String[0];
     }
 
-    public String[][] GetToetsKansen(String modulecode){
+    public Object[][] GetToetsKansen(String modulecode){
         /* Deze methode returned een tabel waarin per toetsvorm staat:
          * - Toetsvorm
-         * - kans1 (als aanwezig)
-         * - kans2 (als aanwezig)
+         * - Toets ID van kans1 (als aanwezig)
+         * - Toets ID van kans2 (als aanwezig)
          * - enz.
          * Dit wordt gedaan bij een specifieke module die wordt
          * meegegeven.
@@ -601,25 +599,26 @@ public class DatabaseConn {
          * Met dezelfde reden als de constructor wordt het in een
          * try-catch gedaan.
          */
-        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        ArrayList<ArrayList<Object>> table = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.TOETSKANSENSQL, modulecode
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<>();
+                ArrayList<Object> row = new ArrayList<>();
                 row.add(resultSet.getString(1));
-                String[] temp = (String[])resultSet.getArray(2).getArray();
-                for(String x : temp) {
+                Integer[] temp = (Integer[])resultSet.getArray(2).getArray();
+                for(Integer x : temp) {
                     row.add(x);
                 }
                 table.add(row);
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            System.out.println(e);
+            throw new EmptyStackException();
         }
-        return ConvertArrayListTable(table);
+        return ConvertArrayMixTable(table);
     }
 }
