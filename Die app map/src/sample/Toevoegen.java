@@ -22,9 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-//import javafx.scene.control.Alert;
-//import javafx.scene.control.Alert.AlertType;
-
 
 /**
  * Created by Diego on 05-12-16.
@@ -103,12 +100,12 @@ public class Toevoegen extends TabPane{
     }
 
     private void warning() {
-//        Alert alert = new Alert(AlertType.ERROR);
-//                alert.setTitle("Waarschuwing!");
-//                alert.setHeaderText("Niet alles is ingevoerd!");
-//                alert.setContentText("Voer de niet gevoerde keuzes in het "
-//                        + "keuzemenu in om verder te gaan.");
-//                alert.showAndWait();
+        Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Waarschuwing!");
+                alert.setHeaderText("Niet alles is ingevoerd!");
+                alert.setContentText("Voer de niet gevoerde keuzes in het "
+                        + "keuzemenu in om verder te gaan.");
+                alert.showAndWait();
     }
 
 
@@ -188,7 +185,7 @@ public class Toevoegen extends TabPane{
 
         private VBox selectionMenu;
 
-        private ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
+        public ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
         public ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
         private VBox pointDistributionBox;
         private ScrollPane questionAndCheckBoxesScrollpane;

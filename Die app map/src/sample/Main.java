@@ -1,18 +1,14 @@
 package sample;
 
+import database.DatabaseConn;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import database.DatabaseConn;
-import org.postgresql.util.PSQLException;
 
-import java.lang.reflect.Array;
 import java.util.EmptyStackException;
-import java.util.LinkedList;
 //import javafx.scene.control.Alert;
 //import javafx.scene.control.Alert.AlertType;
 
@@ -54,12 +50,19 @@ public class Main extends Application {
     }
 
     private void events() {
+        toevoeg.examTab.resetPointDistributionButton.setOnAction(event -> {
+            warning();
+            System.out.println("Punten worden verwijderd!");
+            DatabaseConn databaseConn = new DatabaseConn();
+            databaseConn.DeleteVragenToets(toevoeg.examID);
+            toevoeg.examTab.resetPointDistributionButton.setDisable(true);
+            toevoeg.examTab.importCsvButton.setDisable(false);
+            databaseConn.CloseConnection();
+        });
         toevoeg.saveExamBtn.setOnAction(event -> {
             DatabaseConn databaseConn = new DatabaseConn();
             databaseConn.UpdateCesuurGok(toevoeg.examID,Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
-
             databaseConn.CloseConnection();
-
         });
         toevoeg.showExamBtn.setOnAction(event -> {
             String[] searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
@@ -80,7 +83,7 @@ public class Main extends Application {
                 }
             }
         });
-        
+
         invoer.btn1.setOnAction(event -> {
             String[] searchOnProperties = invoer.getSelectionProperties();
             if (searchOnProperties == null) {
@@ -111,12 +114,12 @@ public class Main extends Application {
     }
     
     private void warning() {
-//        Alert alert = new Alert(AlertType.ERROR);
-//                alert.setTitle("Error");
-//                alert.setHeaderText("Niet alles is ingevoerd!");
-//                alert.setContentText("Voer de niet gevoerde keuzes in het "
-//                        + "keuzemenu in om verder te gaan.");
-//                alert.showAndWait();
+        Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Niet alles is ingevoerd!");
+                alert.setContentText("Voer de niet gevoerde keuzes in het "
+                        + "keuzemenu in om verder te gaan.");
+                alert.showAndWait();
     }
 
     private static void initLayout(){
