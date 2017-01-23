@@ -660,4 +660,19 @@ public class DatabaseConn {
         }
         return ConvertArrayMixTable(table);
     }
+
+    public void DeleteTables(){
+        try {
+            this.statement = this.connection.createStatement();
+            for (String tabel : this.TABLES) {
+                this.statement.executeUpdate(String.format(
+                        "DROP TABLE %s CASCADE;", tabel
+                ));
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new EmptyStackException();
+        }
+    }
 }

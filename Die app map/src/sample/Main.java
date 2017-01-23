@@ -2,6 +2,7 @@ package sample;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.*;
@@ -111,12 +112,12 @@ public class Main extends Application {
     }
     
     private void warning() {
-//        Alert alert = new Alert(AlertType.ERROR);
-//                alert.setTitle("Error");
-//                alert.setHeaderText("Niet alles is ingevoerd!");
-//                alert.setContentText("Voer de niet gevoerde keuzes in het "
-//                        + "keuzemenu in om verder te gaan.");
-//                alert.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Niet alles is ingevoerd!");
+                alert.setContentText("Voer de niet gevoerde keuzes in het "
+                        + "keuzemenu in om verder te gaan.");
+                alert.showAndWait();
     }
 
     private static void initLayout(){

@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 public class VoorbeeldAanroep {
     public static void main(String[] args) {
         DatabaseConn d = new DatabaseConn();
+//        d.DeleteTables();
 //        d.InputModule("Bapgc", "jemama", 8);
 //        d.InputModule("Bacf", "jepapa", 8);
 //        d.InputToets("2017","3","2","Bapgc","Praktijk","2",70, 2);
@@ -33,8 +34,14 @@ public class VoorbeeldAanroep {
 //        }
         //System.out.println(d.GetTable("MODULE").toString());
         //d.UpdateCesuurMaxGok(2, new Integer[]{5,100,10});
-        new ModuleReader(new File("src/modulesCSV.csv").getAbsolutePath());
-        new Reader(new File("src/brela_1e_1617.csv").getAbsolutePath(), d.GetToetsID("Brela", "2016", "3", "2", "1", "Toets"));
+        try {
+            new ModuleReader(new File("src/modulesCSV.csv").getAbsolutePath());
+            new Reader(new File("src/brela_1e_1617.csv").getAbsolutePath(),
+                    d.GetToetsID("bato", "2017", "1",
+                            "1", "1", "Theorietoets"));
+        } catch (Exception e){
+            System.out.println(e);
+        }
         d.CloseConnection();
     }
 }

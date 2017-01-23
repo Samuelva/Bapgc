@@ -40,7 +40,7 @@ public class ModuleReader {
             for (int i = 0; i < modules.size(); i++) {
 
                 //Get moduleCode
-                for (int j = 1; j < gelegenheid.size(); j++) {
+                for (int j = 0; j < gelegenheid.size(); j++) {
                     for (int n = 0; n < modules.get(i)[3].toString().split(",").length; n++) {
                         d.InputToets(modules.get(i)[0],
                                 modules.get(i)[4],

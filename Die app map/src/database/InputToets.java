@@ -37,15 +37,14 @@ class InputToets {
                           String moduleCodeString, String toetsvormString,
                           String gelegenheidString, Integer cesuur,
                           Integer puntenDoorGokKans) {
-        try {
-            this.jaar.insert(jaarString);
-            this.schooljaar.insert(schooljaarString);
-            this.periode.insert(periodeString);
-            this.moduleCode.insert(moduleCodeString);
-            this.toetsvorm.insert(toetsvormString);
-            this.gelegenheid.insert(gelegenheidString);
-
-            if (!CheckExist()) {
+        this.jaar.insert(jaarString);
+        this.schooljaar.insert(schooljaarString);
+        this.periode.insert(periodeString);
+        this.moduleCode.insert(moduleCodeString);
+        this.toetsvorm.insert(toetsvormString);
+        this.gelegenheid.insert(gelegenheidString);
+        if (!CheckExist()) {
+            try {
                 Statement statement = connection.createStatement();
                 String query = String.format(
                         this.MODULESQL,
@@ -61,23 +60,22 @@ class InputToets {
                 System.out.println(query);
                 statement.executeUpdate(query);
                 return true;
+            } catch (Exception e) {
+                if (e.getMessage().contains(
+                        "key value violates unique constraint \"toets_pkey\""
+                )) {
+                    System.out.println("Primary key exists");
+                } else if (e.getMessage().contains("violates not-null constraint")) {
+                    System.out.println("False input vars");
+                } else {
+                    System.err.println(
+                            e.getClass().getName() + ": " + e.getMessage()
+                    );
+                }
+                return false;
             }
-            return false;
-        } catch (Exception e) {
-            if (e.getMessage().contains(
-                    "key value violates unique constraint \"toets_pkey\""
-            )) {
-                System.out.println("Primary key exists");
-            }
-            else if (e.getMessage().contains("violates not-null constraint")) {
-                System.out.println("False input vars");
-            } else {
-                System.err.println(
-                        e.getClass().getName() + ": " + e.getMessage()
-                );
-            }
-            return false;
         }
+        return false;
     }
 
     private Boolean CheckExist(){
@@ -92,10 +90,12 @@ class InputToets {
                     this.toetsvorm.getString(),
                     this.gelegenheid.getString()
             );
-            System.out.println(query);
             ResultSet resultSet = statement.executeQuery(query);
             resultSet.next();
-            return true;
+            boolean temp = resultSet.getString(1).isEmpty();
+            resultSet.close();
+            statement.close();
+            return !temp;
         } catch (Exception e) {
             return false;
         }
