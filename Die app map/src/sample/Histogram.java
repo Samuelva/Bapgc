@@ -45,10 +45,14 @@ public class Histogram {
         series.getData().add(new XYChart.Data(xValue, yValue));
     }
 
-    public VBox getBarChart() {
+    public VBox getBarChartBox() {
         chartBox = new VBox();
         chartBox.getChildren().addAll(barChart);
         chartBox.setVgrow(barChart, Priority.ALWAYS);
         return chartBox;
+    }
+
+    public BarChart<String, Number> getBarChart() {
+        return barChart;
     }
 }

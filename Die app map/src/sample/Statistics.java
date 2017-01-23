@@ -126,9 +126,13 @@ public class Statistics {
     /* Rond een waarde 'value' af tot 'places' plaatsen.
      */
     public static double round(double value, int places) {
-        BigDecimal value2 = new BigDecimal(value);
-        value2 = value2.setScale(places, RoundingMode.HALF_UP);
-        return value2.doubleValue();
+        if (Double.isFinite(value)) {
+            BigDecimal value2 = new BigDecimal(value);
+            value2 = value2.setScale(places, RoundingMode.HALF_UP);
+            return value2.doubleValue();
+        } else {
+            return value;
+        }
     }
 
     /* Bereken het cijfer voor een int array van punten 'values' met behulp van een maximum aantal punten
@@ -225,7 +229,7 @@ public class Statistics {
             int[] points = stringToIntArray(original[i], 1);
             out[i][1] = Double.toString(grade(points, threshold, max));
             out[i][2] = Integer.toString(sum(points));
-            for (int x = 1; x < original.length; x++){
+            for (int x = 1; x < original[0].length; x++){
                 out[i][x+2] = original[i][x];
             }
         }
@@ -271,44 +275,34 @@ public class Statistics {
     /* Bepaal de kth percentiel in 'values'.
      */
     public static double kthPercentile(double k, int[] values){
-        if (k < 0 || k > 1){
-            throw new IllegalArgumentException("k must be between 0 and 1");
-        }
         Arrays.sort(values);
-        double index = k*values.length - 1;
-        int i = (int) round(index, 0);
+        double index = k*(values.length - 1);
+        int i = (int) Math.floor(index);
 
         if (i < 0){
             return 0;
-        } else if (i == values.length-1) {
+        } else if (i >= values.length-1) {
             return values[values.length-1];
-        } else if (i == index) {
-            int[] array = {values[i], values[i+1]};
-            return mean(array);
         } else {
-            return (double) values[i];
+            double fraction = index-i;
+            return values[i] + fraction*(values[i+1]-values[i]);
         }
     }
 
     /* Bepaal de kth percentiel in 'values'.
      */
     public static double kthPercentile(double k, double[] values){
-        if (k < 0 || k > 1){
-            throw new IllegalArgumentException("k must be between 0 and 1");
-        }
         Arrays.sort(values);
-        double index = k*values.length - 1;
-        int i = (int) round(index, 0);
+        double index = k*(values.length - 1);
+        int i = (int) Math.floor(index);
 
         if (i < 0){
             return 0;
-        } else if (i == values.length-1) {
+        } else if (i >= values.length-1) {
             return values[values.length-1];
-        } else if (i == index) {
-            double[] array = {values[i], values[i+1]};
-            return mean(array);
         } else {
-            return (double) values[i];
+            double fraction = index-i;
+            return values[i] + fraction*(values[i+1]-values[i]);
         }
     }
 
@@ -379,19 +373,17 @@ public class Statistics {
     /* Bereken de som van de varianties van de vragen.
      */
     public static double varianceQuestions(String[][] values){
-        int num = values[0].length - 1;
+        int num = values[0].length - 3;
 
         double[] vars = new double[num];
 
         for (int i = 0; i < num; i++){
             String[] points = new String[values.length];
             for (int x = 0; x < values.length; x++){
-                points[x] = values[x][i+1];
+                points[x] = values[x][i+3];
             }
-            System.out.println(Arrays.toString(points));
             vars[i] = var(stringToIntArray(points, 0));
         }
-        System.out.println(Arrays.toString(vars));
         return sum(vars);
     }
 
@@ -425,9 +417,8 @@ public class Statistics {
 
     /* Bereken de gemiddelde score van een percentiel.
      */
-    public static double percentileMean(int[] values, double percentile){
-        double per = kthPercentile(percentile, values);
-        int[] values2 = getBiggerThan(per, values);
+    public static double percentileMean(int[] values, double percentilePoints){
+        int[] values2 = getBiggerThan(percentilePoints, values);
         return mean(values2);
     }
 
@@ -441,5 +432,13 @@ public class Statistics {
      */
     public static double cohen(double meanPoints, double mastery, double chancePoints){
         return (meanPoints-chancePoints) * mastery + chancePoints;
+    }
+
+    public static String[] getColumn(int index, Object[][] matrix) {
+        String[] out = new String[matrix.length];
+        for (int i = 0; i < matrix.length; ++i){
+            out[i] = matrix[i][index].toString();
+        }
+        return out;
     }
 }

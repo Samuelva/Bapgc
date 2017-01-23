@@ -1,13 +1,3 @@
-/* Changelog:
- * 01-12-2016    Davy Cats   Start basis script schrijven.
- * 04-12-2016    Davy Cats   Basis script af.
- * 08-12-2016    Davy Cats   Layout aangepast.
- * 09-12-2016    Davy Cats   ChoiceBox labels aangepast.
- * 17-12-2016    Davy Cats   Update funties toegevoegd.
- * 11-01-2017    Aaricia     Knop voor het plotten toegevoegd.
- *
- * Deze class maakt een StackPane dat het inzage scherm bevat.
- */
 package sample;
 
 import java.io.File;
@@ -15,6 +5,8 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Arrays;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import database.DatabaseConn;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -43,6 +35,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+/* Deze class maakt een StackPane dat het inzage scherm bevat.
+ */
 public class ViewScreen extends StackPane{
     protected ChoiceBox schoolYearChoiceBox;
     protected ChoiceBox yearChoiceBox;
@@ -67,8 +61,12 @@ public class ViewScreen extends StackPane{
     protected Histogram barChart;
     protected Boxplot boxplot;
 
-    protected String[][] gradeTable = null;
-    protected String[] questionLabels = null;
+    private String[][] gradeTable = null;
+    private String[] questionLabels = null;
+    private int threshold;
+    private int maxPoints;
+    private int guessPoints;
+    private Object[][] questionData;
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -102,7 +100,7 @@ public class ViewScreen extends StackPane{
         label.setPrefWidth(150);
         //Dropdown voor jaar
         this.yearChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Jaar", new Separator(), "placeholder"));
+                "Jaar", new Separator(), "2016/2017"));
         this.yearChoiceBox.setValue("Jaar");
         this.yearChoiceBox.setPrefWidth(150);
         this.yearChoiceBox.setPrefHeight(30);
@@ -146,25 +144,16 @@ public class ViewScreen extends StackPane{
         //laad knop
         this.loadBtn = new Button("Laad toets");
 
-        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
-        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                //ENKEL VOOR TETSEN
-
-                updateCohen("hello", "oho", "oh oh");
-                updateQualityStats("test", "1", "2");
-                updateStats("hey", "how", "are", "you", "doing",
-                        "?", "Oh", "fine", "I", "guess",
-                        "...");
-                questionLabels = new String[] {"1.1", "1.2", "1.3"};
-                setupTable(questionLabels);
-                gradeTable = new String[][]{{"s000000", "1", "0", "0", "0", "0"},
-                                         {"s000001", "2", "1", "1", "1", "1"}};
-                fillTable(gradeTable);
-            }
-        });
+//        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
+//        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
+//                fillTable(examID);
+//
+//                updateQualityStats();
+//            }
+//        });
 
         this.loadBtn.setPrefWidth(150);
         this.loadBtn.setPrefHeight(30);
@@ -219,6 +208,12 @@ public class ViewScreen extends StackPane{
         HBox percentileBox = makePercentileBox();
         this.calculateBtn = new Button("Bereken");
         this.calculateBtn.setPrefHeight(30);
+        this.calculateBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                updateCohen();
+            }
+        });
         return new VBox(firstLabel, this.qualityText, secondLabel, 
                 this.cohenText, percentileBox, this.calculateBtn);
     }
@@ -258,9 +253,9 @@ public class ViewScreen extends StackPane{
                         "Boxplot", "Histogram"));
         this.plotChoiceBox.setOnAction(event -> {
             if (plotChoiceBox.getValue() == "Boxplot") {
-                makeBoxplot();
+                //makeBoxplot();
             } else if (plotChoiceBox.getValue() == "Histogram") {
-                makeHistogram();
+                //makeHistogram();
             }
         });
         this.plotChoiceBox.setValue("Boxplot");
@@ -335,7 +330,7 @@ public class ViewScreen extends StackPane{
     private void csvExport(String[][] scores, String[] labels, File file){
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write("Studentnr,Cijfer,Totaal," + String.join(",", labels) + "\n");
+            writer.write("Studentnr,Cijfer,Totaal," + String.join(";", labels) + "\n");
             for (String[] student: scores){
                 writer.write(String.join(",", student) + "\n");
             }
@@ -364,25 +359,74 @@ public class ViewScreen extends StackPane{
         this.pointsTable.getSelectionModel().setCellSelectionEnabled(true);
         this.pointsTable.getFocusModel().focusedCellProperty().addListener(new ChangeListener<TablePosition>() {
 
-            //HIER MOET DE CODE VOOR ALS ER EEN VRAAG GESELECTEERD WORDT!!
+            /* Als er op een cel gedrukt wordt, wordt de gehele kolom geselecteerd en de statistiek geupdate.
+             * Als een van de eerste drie kolomen geselecteerd wordt worden de statistieken voor de hele toets
+             * weergegeven, anders voor de specifieke vraag.
+             */
             @Override
-            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue, TablePosition newValue) {
+            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue,
+                                TablePosition newValue) {
                 if (newValue.getTableColumn() != null) {
                     pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
                             pointsTable.getItems().size(), newValue.getTableColumn());
-                    if ( newValue.getColumn() < 3){
-                        //ENKEL VOOR TESTEN!!
-                        updateStats("hey", "how", "are", "you", "doing",
-                                "?", "Oh", "fine", "I", "guess",
-                                "...");
+                    if (newValue.getColumn() < 3){
+                        examSelectedUpdate();
                     } else {
-                        //ENKEL VOOR TESTEN!!
-                        updateStats("hello", "darkness", "my", "old", "friend",
-                                "...", "I've", "come", "to");
+                        questionSelectedUpdate(newValue.getColumn());
                     }
                 }
             }
         });
+        pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
+            /* Zorg ervoor dat de kolomen niet van volgorde veranderd kunnen worden.
+             */
+            @Override
+            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
+                TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                                        Boolean newValue) {
+                        header.setReordering(false);
+                    }
+                });
+            }
+        });
+    }
+
+    /* Bereken de statistieken voor de geselecteerde vraag en update de weergave.
+     */
+    private void questionSelectedUpdate(int i) {
+        int[] points = Statistics.stringToIntArray(Statistics.getColumn(i, gradeTable), 0);
+        int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
+        double average = Statistics.mean(points);
+        String counts;
+        updateStats(questionData[i-3][2].toString(), (boolean) questionData[i-3][3],
+                Integer.toString(Statistics.max(points)), Integer.toString(Statistics.min(points)),
+                Integer.toString(Statistics.count((int) questionData[i-3][2], points)),
+                Integer.toString(Statistics.count(0, points)),
+                Double.toString(Statistics.round(average, 2)),
+                Double.toString(Statistics.round(Statistics.var(points), 2)),
+                Double.toString(Statistics.round(Statistics.correlation(points, total), 2)),
+                Double.toString(Statistics.round(average /((int) questionData[i-3][2]), 2)));
+    }
+
+    /* Bereken de statistieken voor de geselecteerde toets en update de weergave.
+     */
+    private void examSelectedUpdate() {
+        double[] grades = Statistics.stringToDoubleArray(Statistics.getColumn(1, gradeTable), 0);
+        int passes = Statistics.getPasses(grades);
+        int fails = gradeTable.length - passes;
+        double performance = Statistics.percentage(passes, gradeTable.length);
+        updateStats(Integer.toString(questionLabels.length),
+                Integer.toString(maxPoints), Integer.toString(guessPoints),
+                Integer.toString(maxPoints-guessPoints),
+                Double.toString(Statistics.round(Statistics.percentage(threshold-guessPoints, maxPoints),
+                        2)),
+                Integer.toString(threshold), Integer.toString(gradeTable.length),
+                Integer.toString(passes), Integer.toString(fails), Double.toString(performance),
+                Double.toString(Statistics.round(Statistics.mean(grades), 2)));
     }
 
     /* Deze functie zet het rechter gedeelte van het scherm in elkaar.
@@ -405,7 +449,7 @@ public class ViewScreen extends StackPane{
                                String performance, String average) {
         this.statisticsText.setText("Aantal vragen: " + questions + "\nMaximum punten: " + maxPoints +
                 "\nPunten door gokkans: " + guessPoints + "\nTotaal te verdienen: " + earnablePoints + "" +
-                "\nBeheersgraad: " + degree + "\nCensuur: " + threshold + "\n");
+                "\nBeheersgraad: " + degree + "%\nCensuur: " + threshold + "\n");
         this.resultsText.setText("Aantal deelnemers: " + participants + "\nAantal voldoendes: " + passes +
                 "\nAantal onvoldoendes: " + fails + "\nRendement: " + performance + "\nGemiddelde cijfer: " +
                 average + "\n");
@@ -413,26 +457,46 @@ public class ViewScreen extends StackPane{
 
     /* Deze functie update de statistieken voor de geselecteerde vraag.
      */
-    protected void updateStats(String maxPoints, String highGiven, String lowGiven, String maxGiven, String noneGiven,
-                               String average, String varPoints, String r, String p){
-        this.statisticsText.setText("Maximum punten: " + maxPoints + "\n");
+    protected void updateStats(String maxPoints,  boolean countsBoolean, String highGiven, String lowGiven,
+                               String maxGiven, String noneGiven, String average, String varPoints, String r, String p){
+        String counts;
+        if (countsBoolean){
+            counts = "Ja";
+        } else {
+            counts = "Nee";
+        }
+        this.statisticsText.setText("Maximum punten: " + maxPoints + "\nMeerekenen: " + counts + "\n");
         this.resultsText.setText("Hoogste behaald: " + highGiven +
                 "\nLaagste behaald: " + lowGiven + "\nAantal met maximum punten: " + maxGiven +
                 "\nAantal met nul punten: " + noneGiven + "\nGemiddelde punten behaald: " + average +
-                "\nVariantie gehaalde punten: "+ varPoints + "\nR(item-rest): " + r + "\np-waarde: " + p + "\n");
+                "\nVariantie gehaalde punten: "+ varPoints + "\nR(item-rest): " + r + "\np-waarde: " + p + "\n\n");
     }
+
     /* Deze functie update het kwaliteits gedeelte van de statistieken.
      */
-    protected void updateQualityStats(String varQuestions, String varTest, String cronbach) {
-        this.qualityText.setText("Variantie vragen: " + varQuestions + "\nVariantie Toets: " + varTest +
-                "\nCronbach alfa: " + cronbach + "\n");
+    protected void updateQualityStats() {
+        double varQuestions = Statistics.varianceQuestions(gradeTable);
+        double varTest = Statistics.var(Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable),
+                0));
+        double cronbach = Statistics.cronbach(questionData.length, varQuestions, varTest);
+        this.qualityText.setText("Variantie vragen: " + Statistics.round(varQuestions, 2) +
+                "\nVariantie Toets: " + Statistics.round(varTest, 2) + "\nCronbach alfa: " +
+                Statistics.round(cronbach, 2) + "\n");
     }
 
     /* Deze functie update het Cohen-Schotanus gedeelte van de statistieken
      */
-    protected void updateCohen(String percentilePoints, String average, String cohen) {
-        this.cohenText.setText("Punten percentiel: " + percentilePoints + "\nGemiddelde punten percentiel: " +
-                average + "\nCohen-Schotanus censuur: " + cohen + "\n");
+    protected void updateCohen() {
+        if (! (this.gradeTable == null)) {
+            int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
+            double percentilePoints = Statistics.kthPercentile(this.percentileSlider.getValue(), total);
+            double average = Statistics.percentileMean(total, percentilePoints);
+            double cohen = Statistics.cohen(average,
+                    Statistics.percentage(threshold - guessPoints, maxPoints) / 100, this.guessPoints);
+            this.cohenText.setText("Punten percentiel: " + Statistics.round(percentilePoints, 2) +
+                    "\nGemiddelde punten percentiel: " + Statistics.round(average, 2) +
+                    "\nCohen-Schotanus censuur: " + Statistics.round(cohen, 2) + "\n");
+        }
     }
 
     /* Deze functie maakt de tabel leeg en de kolommen aan.
@@ -469,11 +533,22 @@ public class ViewScreen extends StackPane{
 
     /* Deze functie vult de tabel in.
      */
-    protected void fillTable(String[][] values){
+    protected void fillTable(int examID){
+        DatabaseConn d = new DatabaseConn();
+        this.questionData = d.GetVragenVanToets(examID);
+        this.questionLabels = Statistics.getColumn(1, questionData);
+        setupTable(this.questionLabels);
+        Integer[] examPoints = d.GetCesuurMaxGok(examID);
+        this.threshold = examPoints[0];
+        this.maxPoints = examPoints[1];
+        this.guessPoints = examPoints[2];
+        this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.threshold, this.maxPoints);
         ObservableList<String[]> data = FXCollections.observableArrayList();
-        data.addAll(Arrays.asList(values));
+        data.addAll(Arrays.asList(this.gradeTable));
         this.pointsTable.setItems(data);
+        d.CloseConnection();
     }
+
 
     protected void makeHistogram() {
         barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
@@ -492,5 +567,42 @@ public class ViewScreen extends StackPane{
         graphPane.getChildren().clear();
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
+    }
+    
+    public String[] getSelectionProperties() {
+            String[] properties = new String[6];
+
+
+            if (yearChoiceBox.getValue().equals("Jaar"))
+                return null;
+            if (schoolYearChoiceBox.getValue().equals("Leerjaar"))
+                return null;
+            if (blockChoiceBox.getValue().equals("Periode"))
+                return null;
+            if (courseChoiceBox.getValue().equals("Module"))
+                return null;
+            if (typeChoiceBox.getValue().equals("Toetsvorm"))
+                return null;
+            if (attemptChoiceBox.getValue().equals("Gelegenheid"))
+                return null;
+
+            properties[0] = (String) courseChoiceBox.getValue();
+            properties[1] = (String) yearChoiceBox.getValue();
+            properties[2] = (String) schoolYearChoiceBox.getValue();
+            properties[3] = (String) blockChoiceBox.getValue();
+            properties[4] = (String) typeChoiceBox.getValue();
+            properties[5] = (String) attemptChoiceBox.getValue();
+
+
+            return properties;
+        }
+    
+    public void setSelection(String[] selection) {
+        courseChoiceBox.setValue(selection[0]);
+        yearChoiceBox.setValue(selection[1]);
+        schoolYearChoiceBox.setValue(selection[2]);
+        blockChoiceBox.setValue(selection[3]);
+        typeChoiceBox.setValue(selection[4]);
+        attemptChoiceBox.setValue(selection[5]);        
     }
 }

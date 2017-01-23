@@ -2,6 +2,8 @@ package database;/*
  * Created by Timothy.
  */
 
+import sun.invoke.empty.Empty;
+
 import java.sql.*;
 import java.util.*;
 
@@ -94,6 +96,18 @@ public class DatabaseConn {
             " FROM VRAAG"+
             " WHERE toetsID=%s" +
             " ORDER BY vraagnummer;";
+    private final String MODULEPERIODESQL = "SELECT array_agg(ModuleCode)" +
+            " FROM TOETS WHERE Periode='%s';";
+    private final String TOETSKANSENSQL = "SELECT ToetsVorm," +
+            " array_agg(ToetsID)" +
+            " FROM TOETS" +
+            " WHERE ModuleCode='%s'" +
+            " GROUP BY ToetsVorm;";
+    private final String DELETEVRAGENSQL = "DELETE FROM SCORE" +
+            " USING VRAAG" +
+            " WHERE VRAAG.ToetsID=%s;" +
+            " DELETE FROM VRAAG" +
+            " WHERE ToetsID=%s;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -341,7 +355,7 @@ public class DatabaseConn {
             id = resultSet.getInt(1);
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return id;
     }
@@ -371,7 +385,7 @@ public class DatabaseConn {
             id = resultSet.getInt(1);
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return id;
     }
@@ -395,7 +409,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -417,7 +431,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -439,7 +453,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -462,7 +476,7 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
     }
@@ -489,7 +503,7 @@ public class DatabaseConn {
             array[2] = Integer.valueOf(resultSet.getString(3));
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return array;
     }
@@ -511,7 +525,19 @@ public class DatabaseConn {
             ));
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
+        }
+    }
+
+    public void DeleteVragenToets(Integer toetsID){
+        try {
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(String.format(
+                    this.DELETEVRAGENSQL, toetsID, toetsID
+            ));
+            this.statement.close();
+        } catch (Exception e) {
+            throw new EmptyStackException();
         }
     }
 
@@ -546,9 +572,70 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+            throw new EmptyStackException();
         }
         return ConvertArrayMixTable(table);
     }
 
+    public String[] GetModulecodesPerPeriode(char periode){
+        /* Deze methode returned een array met alle modulecodes voor een
+         * opgegeven periode.
+         * Eerst voert het de query uit, waarna het de array extract.
+         * De statement wordt gesloten en de array gereturned.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
+        String[] array;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.MODULEPERIODESQL, periode
+            ));
+            resultSet.next();
+            array = (String[])resultSet.getArray(1).getArray();
+            this.statement.close();
+            return array;
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+    }
+
+    public Object[][] GetToetsKansen(String modulecode){
+        /* Deze methode returned een tabel waarin per toetsvorm staat:
+         * - Toetsvorm
+         * - Toets ID van kans1 (als aanwezig)
+         * - Toets ID van kans2 (als aanwezig)
+         * - enz.
+         * Dit wordt gedaan bij een specifieke module die wordt
+         * meegegeven.
+         * De query hiervoor wordt eerst uitgevoert, waarna door de
+         * rijen van de tabel wordt geloopt. Dan slaat het in een
+         * tijdelijke arraylist eerst de toesvorm op en dan in een
+         * extra loop alle kansen. de rij wordt aan de tabel
+         * toegevoegd en het wordt geconverteerd naar array gereturned.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
+        ArrayList<ArrayList<Object>> table = new ArrayList<>();
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.TOETSKANSENSQL, modulecode
+            ));
+            while (resultSet.next()) {
+                ArrayList<Object> row = new ArrayList<>();
+                row.add(resultSet.getString(1));
+                Integer[] temp = (Integer[])resultSet.getArray(2).getArray();
+                for(Integer x : temp) {
+                    row.add(x);
+                }
+                table.add(row);
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new EmptyStackException();
+        }
+        return ConvertArrayMixTable(table);
+    }
 }

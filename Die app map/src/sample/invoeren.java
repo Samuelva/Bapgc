@@ -1,24 +1,23 @@
-
 package sample;
 
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Optional;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import database.DatabaseConn;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -29,6 +28,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 
 /*
@@ -58,8 +58,12 @@ final class Invoeren extends StackPane {
     protected ChoiceBox module;
     protected ChoiceBox type;
     protected ChoiceBox chance;
-   
-        
+
+    private String[] questionLabels;
+    private String[][] pointsArray;
+    private int[] questionIDs;
+
+
     public Invoeren() {
         /*
         De methode menuUnder wordt aangeroepen en maakt een HBox aan met
@@ -70,7 +74,8 @@ final class Invoeren extends StackPane {
         
         HBox hbox = menuUnder();
         VBox vbox2 = MenuMaken();
-        BoxenVullen(vbox2, hbox); 
+        makeTable();
+        BoxenVullen(vbox2, hbox);
         
 
         btn4.setOnAction(e -> {
@@ -119,8 +124,84 @@ final class Invoeren extends StackPane {
         	    alert.close();
         	}
         });
+    }
 
-        
+    /* Maak de kolommen aan voor de tabel.
+     * Maak eerst de tabel leeg en verwijder alle kolomen. Voeg vervolgens de string "Student nr." toe aan de
+     * columnsTotal op de eerste positie gevolgd door de waardes van columns. Maak voor iedere String in
+     * columnsTotal een kolom aan. Geef deze kolomen een Cell Factory die een String accepteerd (anders kunnen de
+     * String arrays niet als waardes voor de tabel gebruikt worden). Maak de kolommen 40 breed en de eerste 80.
+     * Geef alle kolommen een TextField als cell (op de eerste na) en  voeg de hantering toe voor als die gewijzigd
+     * wordt. Voeg de kolommen toe aan de tabel.
+     */
+    protected void setupTable(String[] columns) {
+        this.pointsTable.getItems().clear();
+        this.pointsTable.getColumns().clear();
+        String[] columnsTotal = new String[columns.length + 1];
+        columnsTotal[0] = "Student nr.";
+        for (int i = 0; i < columns.length; i++){
+            columnsTotal[i+1] = columns[i];
+        }
+        for (int i = 0; i < columnsTotal.length; i++) {
+            TableColumn column = new TableColumn(columnsTotal[i]);
+            final int index = i;
+            column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>>() {
+                @Override
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> values) {
+                    return new SimpleStringProperty((values.getValue()[index]));
+                }
+            });
+            if (i == 0){
+                column.setMinWidth(80);
+                column.setMaxWidth(80);
+            } else {
+                column.setMinWidth(40);
+                column.setMaxWidth(40);
+                TextFieldTableCell cell = new TextFieldTableCell();
+                column.setCellFactory(TextFieldTableCell.<String>forTableColumn());
+                column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+
+                    /* Wanneer de waarde van een cel gewijzigd wordt, wordt deze doorgevoerd naar de items van de
+                     * tabel. Er wordt ook gecontroleerd of het een cijfer is.
+                     */
+                    @Override
+                    public void handle(TableColumn.CellEditEvent event) {
+                        try{
+                            int x = Integer.parseInt(event.getNewValue().toString());
+                            ObservableList items = pointsTable.getItems();
+                            String[] newRow = ((String[]) event.getRowValue());
+                            newRow[pointsTable.getColumns().indexOf(column)] = event.getNewValue().toString();
+                            items.set(event.getTablePosition().getRow(), newRow);
+                            pointsTable.setItems(items);
+                        } catch (Exception e) {
+                            column.setVisible(false);
+                            column.setVisible(true);
+                        }
+                    }
+                });
+            }
+            this.pointsTable.getColumns().add(column);
+        }
+    }
+
+    /* Deze functie vult de tabel in.
+     * Er wordt connectie gemaakt met de database. De vraagnummers en ids worden opgehaald en opgeslagen onder
+     * eerder geinitialiseerde variabelen. setupTable wordt gebruikt om de kolomen aan te maken.
+     * De punten die de studenten per vraag hebben worden oopgehaald en toegevoegd aan een ObservableList die
+     * aan de tabel gegeven wordt.
+     */
+    protected void fillTable(int examID){
+        DatabaseConn d = new DatabaseConn();
+        Object[][] questionData = d.GetVragenVanToets(examID);
+        this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
+        this.questionLabels = Statistics.getColumn(1, questionData);
+        setupTable(this.questionLabels);
+        this.pointsArray = d.GetStudentScores(examID);
+        ObservableList<String[]> data = FXCollections.observableArrayList();
+        data.addAll(Arrays.asList(this.pointsArray));
+        this.pointsTable.setItems(data);
+        d.CloseConnection();
+
     }
     
     public HBox menuUnder(){
@@ -176,8 +257,30 @@ final class Invoeren extends StackPane {
         lbl.setFont(new Font("Arial", 18));
         return lbl;
     }
-    
-    
+
+    //maak de tabel aan
+    private void makeTable() {
+        pointsTable = new TableView();
+        pointsTable.setEditable(true);
+        VBox.setVgrow(pointsTable, Priority.ALWAYS);
+        
+        pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
+                TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                                        Boolean newValue) {
+                        header.setReordering(false);
+                    }
+                });
+            }
+        });
+    }
+
     @SuppressWarnings("unchecked")
 	public VBox MenuMaken(){
         /*
@@ -205,7 +308,7 @@ final class Invoeren extends StackPane {
         lbl1 = maakObject(new Label(), "Keuzemenu");
         lbl1.setPrefWidth(150);
         year = new ChoiceBox(FXCollections.observableArrayList("Jaartal", 
-                new Separator(), "placeholder"));
+                new Separator(), "2016/2017"));
         year.setValue("Jaartal");
         year.setPrefWidth(150);
         year.setPrefHeight(30);
@@ -287,9 +390,6 @@ final class Invoeren extends StackPane {
         
         HBox hbox3 = new HBox();
         hbox3.getChildren().addAll(fillLeft, lbl2, fillRight);
-       
-        pointsTable = new TableView();
-        VBox.setVgrow(pointsTable, Priority.ALWAYS);
         
         VBox vbox3 = new VBox();
         
@@ -310,11 +410,43 @@ final class Invoeren extends StackPane {
         
     }
     
- }
+    public String[] getSelectionProperties() {
+            String[] properties = new String[6];
+
+
+            if (year.getValue().equals("Jaartal"))
+                return null;
+            if (studyyear.getValue().equals("Leerjaar"))
+                return null;
+            if (period.getValue().equals("Periode"))
+                return null;
+            if (module.getValue().equals("Module"))
+                return null;
+            if (type.getValue().equals("Toetsvorm"))
+                return null;
+            if (chance.getValue().equals("Gelegenheid"))
+                return null;
+
+            properties[0] = (String) module.getValue();
+            properties[1] = (String) year.getValue();
+            properties[2] = (String) studyyear.getValue();
+            properties[3] = (String) period.getValue();
+            properties[4] = (String) type.getValue();
+            properties[5] = (String) chance.getValue();
+
+
+            return properties;
+        }
     
+    public void setSelection(String[] selection) {
+        module.setValue(selection[0]);
+        year.setValue(selection[1]);
+        studyyear.setValue(selection[2]);
+        period.setValue(selection[3]);
+        type.setValue(selection[4]);
+        chance.setValue(selection[5]);        
+    }
 
 
 
-    
-
-
+}
