@@ -54,6 +54,13 @@ public class Main extends Application {
     }
 
     private void events() {
+        toevoeg.saveExamBtn.setOnAction(event -> {
+            DatabaseConn databaseConn = new DatabaseConn();
+            databaseConn.UpdateCesuurGok(toevoeg.examID,Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
+
+            databaseConn.CloseConnection();
+
+        });
         toevoeg.showExamBtn.setOnAction(event -> {
             String[] searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
             if (searchOnProperties == null) {
@@ -64,7 +71,8 @@ public class Main extends Application {
                     invoer.setSelection(searchOnProperties);
                     view.setSelection(searchOnProperties);
                     DatabaseConn databaseConn = new DatabaseConn();
-                    databaseConn.GetToetsID(searchOnProperties[0], searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                    Integer examID = databaseConn.GetToetsID(searchOnProperties[0], searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                    toevoeg.examID = examID;
                     toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
                     databaseConn.CloseConnection();
                 } catch (EmptyStackException e) {
