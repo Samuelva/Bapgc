@@ -459,6 +459,22 @@ public class DatabaseConn {
     }
 
     public String[][] GetStudentScores(Integer toetsID) {
+        /* Deze methode zorgt voor het returnen van een tabel met
+         * alle scores per student voor een bepaalde toets.
+         * Hierbij wordt eerst een arraylist in een arraylist
+         * aangemaakt, omdat nog niet bekend is hoelang de lijsten
+         * worden.
+         * Dan wordt de quer opgesteld met het meegegeven toetsID en
+         * wordt deze uitgevoerd.
+         * Dan wordt in een loop door de rijen heen achter elkaar het
+         * studentnummer toegevoegd, waarna in een loop alle scores
+         * worden toegevoegd. Deze rij wordt dan aan de hoofd tabel
+         * toegevoegd.
+         * Na deze loop wordt de arraylist omgezet in een String[][] en
+         * wordt deze gereturned.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
@@ -530,6 +546,12 @@ public class DatabaseConn {
     }
 
     public void DeleteVragenToets(Integer toetsID){
+        /* Deze methode zorgt voor het deleten van alle vragen
+         * en bijbehorende scores uit de database aan de and van
+         * de meegegeven toetsID.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         try {
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(String.format(

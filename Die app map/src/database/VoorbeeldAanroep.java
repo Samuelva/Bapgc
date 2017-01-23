@@ -1,5 +1,6 @@
 package database;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 /**
@@ -11,7 +12,6 @@ public class VoorbeeldAanroep {
 //        d.InputModule("Bapgc", "jemama", 8);
 //        d.InputModule("Bacf", "jepapa", 8);
 //        d.InputToets("2017","3","2","Bapgc","Praktijk","2",70, 2);
-//        new Reader(Paths.get("src/brela_1e_1617.csv").toString(), d.GetToetsID("Bapgc", "2016", "3", "2", "1", "Toets"));
 //        d.InputVraag("2a", 10, 1, true);
 //        d.InputVraag("2b", 10, 1, true);
 //        d.InputStudent(1088948,"Tim", "Bin3b");
@@ -33,6 +33,8 @@ public class VoorbeeldAanroep {
 //        }
         //System.out.println(d.GetTable("MODULE").toString());
         //d.UpdateCesuurMaxGok(2, new Integer[]{5,100,10});
+        new ModuleReader(new File("src/modulesCSV.csv").getAbsolutePath());
+        new Reader(new File("src/brela_1e_1617.csv").getAbsolutePath(), d.GetToetsID("Brela", "2016", "3", "2", "1", "Toets"));
         d.CloseConnection();
     }
 }
