@@ -2,7 +2,6 @@ package sample;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
 
@@ -13,19 +12,21 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -33,7 +34,6 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javax.imageio.ImageIO;
 
 /* Deze class maakt een StackPane dat het inzage scherm bevat.
  */
@@ -60,9 +60,6 @@ public class ViewScreen extends StackPane{
     protected StackPane graphPane;
     protected Histogram barChart;
     protected Boxplot boxplot;
-    protected Cirkeldiagram pieChart;
-    protected int activeGraphInt;
-    protected WritableImage graphImage;
 
     private String[][] gradeTable = null;
     private String[] questionLabels = null;
@@ -253,17 +250,12 @@ public class ViewScreen extends StackPane{
         this.graphPane.setPrefHeight(250);
         this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                        "Boxplot", "Histogram", "Cirkeldiagram"));
+                        "Boxplot", "Histogram"));
         this.plotChoiceBox.setOnAction(event -> {
             if (plotChoiceBox.getValue() == "Boxplot") {
-                makeBoxplot();
-                activeGraphInt = 1;
+                //makeBoxplot();
             } else if (plotChoiceBox.getValue() == "Histogram") {
-                makeHistogram();
-                activeGraphInt = 2;
-            } else if (plotChoiceBox.getValue() == "Cirkeldiagram") {
-                makePieChart();
-                activeGraphInt = 3;
+                //makeHistogram();
             }
         });
         this.plotChoiceBox.setValue("Boxplot");
@@ -276,28 +268,12 @@ public class ViewScreen extends StackPane{
         this.savePlotBtn.setPrefWidth(133);
         this.savePlotBtn.setPrefHeight(30);
         this.savePlotBtn.setOnAction(e -> {
-            if (activeGraphInt > 0) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG (*.png)", "*.png"));
-                fileChooser.setTitle("Opslaan Als");
-                File file = fileChooser.showSaveDialog(new Stage());
-                if (file != null) {
-                    saveGraph();
-                    try {
-                        ImageIO.write(SwingFXUtils.fromFXImage(graphImage, null), "png", file);
-                    } catch (IOException ie) {
-                        System.out.println("error");
-                    }
-                }
-            }
-            else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Geen grafiek");
-                alert.setHeaderText("Grafiek kan niet worden opgeslagen.");
-                alert.setContentText("Selecteer een grafiek.");
-                ButtonType ok = new ButtonType("OK");
-                alert.getButtonTypes().setAll(ok);
-                alert.show();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG (*.png)", "*.png"));
+            fileChooser.setTitle("Opslaan Als");
+            File file = fileChooser.showSaveDialog(new Stage());
+            if (file != null) {
+                System.out.println(file);
             }
         });
         HBox hBox = new HBox(this.plotChoiceBox,
@@ -592,35 +568,7 @@ public class ViewScreen extends StackPane{
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
     }
-    protected void makePieChart() {
-        String[] names = new String[] {"Voldoendes", "Onvoldoendes"};
-        int[] values = new int[] {30, 59};
-
-        pieChart = new Cirkeldiagram("test titel");
-        graphPane.getChildren().clear();
-        graphPane.getChildren().add(pieChart.makePieChart());
-        pieChart.addData(names, values);
-    }
-
-    public void saveGraph() {
-        BarChart<String, Number> barChartGraph;
-        LineChart<String, Number> lineChartGraph;
-        PieChart pieChartGraph;
-        switch (activeGraphInt) {
-            case 1:
-                barChartGraph = barChart.getBarChart();
-                graphImage = barChartGraph.snapshot(new SnapshotParameters(), null);
-                break;
-            case 2:
-                barChartGraph = barChart.getBarChart();
-                graphImage = barChartGraph.snapshot(new SnapshotParameters(), null);
-                break;
-            case 3:
-                pieChartGraph = pieChart.getPieChart();
-                graphImage = pieChartGraph.snapshot(new SnapshotParameters(), null);
-                break;
-        }
-    }
+    
     public String[] getSelectionProperties() {
             String[] properties = new String[6];
 
@@ -648,4 +596,13 @@ public class ViewScreen extends StackPane{
 
             return properties;
         }
+    
+    public void setSelection(String[] selection) {
+        courseChoiceBox.setValue(selection[0]);
+        yearChoiceBox.setValue(selection[1]);
+        schoolYearChoiceBox.setValue(selection[2]);
+        blockChoiceBox.setValue(selection[3]);
+        typeChoiceBox.setValue(selection[4]);
+        attemptChoiceBox.setValue(selection[5]);        
+    }
 }
