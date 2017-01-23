@@ -45,7 +45,6 @@ public class Row {
         name.set(nameI);
     }
 
-
     public void setParticipants(Integer participantsI) {
         participants.set(participantsI);
     }

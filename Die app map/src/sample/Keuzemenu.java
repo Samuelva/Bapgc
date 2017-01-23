@@ -121,10 +121,10 @@ public class Keuzemenu {
         resetButton.setPrefWidth(75);
         resetButton.setMinHeight(30);
         allButton.setOnAction(event -> {
-            System.out.println("Alles knop");
+            selectionMenu.getSelectionModel().selectAll();
         });
         resetButton.setOnAction(event -> {
-
+            selectionMenu.getSelectionModel().clearSelection();
         });
         choiceMenuButtonBox.setSpacing(5);
         choiceMenuButtonBox.getChildren().addAll(allButton, resetButton);

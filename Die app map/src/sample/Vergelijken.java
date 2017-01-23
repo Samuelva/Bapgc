@@ -60,27 +60,6 @@ public class Vergelijken extends StackPane {
         periodStatistics.setPeriodTableContent(moduleStatistics.moduleData);
 
         // Voeg zo statistieken toe
-//        testStatistics.addStatistics(new String[] {"Toets:", "Gemiddelde cijfer:", "Aantal Deelnemers:", "Aantal onvoldoendes:", "Aantal voldoendes:", "Rendement:"});
-//        testStatistics.addStatistics(new String[] {"Binp 2016 opdracht 1", "4.0", "5.0", "5.0", "3.0", "3.0"});
-//        testStatistics.addStatistics(new String[] {"Binp 2016 opdracht 2", "3.0", "2.0", "6.0", "7.0", "2.4"});
-//        testStatistics.addStatistics(new String[] {"Binp 2015 opdracht 1", "5.0", "8.0", "6.0", "4.0", "5.6"});
-//        testStatistics.addStatistics(new String[] {"Binp 2015 opdracht 2", "4.0", "5.0", "5.0", "3.0", "7.0"});
-//        testStatistics.addStatistics(new String[] {"Binp 2014 opdracht 1", "3.0", "2.0", "6.0", "7.0", "4.0"});
-//        testStatistics.addStatistics(new String[] {"Binp 2014 opdracht 2", "5.0", "8.0", "6.0", "4.0", "2.0"});
-//        testStatistics.addStatistics(new String[] {"Binp 2013 opdracht 1", "4.0", "5.0", "5.0", "3.0", "5.0"});
-//        testStatistics.addStatistics(new String[] {"Binp 2013 opdracht 2", "3.0", "2.0", "6.0", "7.0", "1.0"});
-//        testStatistics.addStatistics(new String[] {"Binp 2012 opdracht 1", "5.0", "8.0", "6.0", "4.0", "5.0"});
-//
-//        moduleStatistics.addStatistics(new String[] {"Module:", "Gemiddelde cijfer:", "Aantal Deelnemers:", "Aantal onvoldoendes:", "Rendement:"});
-//        moduleStatistics.addStatistics(new String[] {"Binp 2016", "1.1", "4.6", "2.3", "7.7"});
-//        moduleStatistics.addStatistics(new String[] {"Binp 2015", "3.3", "6.8", "4.3", "6.0"});
-//        moduleStatistics.addStatistics(new String[] {"Binp 2014", "7.7", "2.3", "5.5", "7.7"});
-//        moduleStatistics.addStatistics(new String[] {"Binp 2013", "1.1", "4.6", "2.3", "7.7"});
-//        moduleStatistics.addStatistics(new String[] {"Binp 2012", "3.3", "6.7", "4.3", "6.0"});
-//        moduleStatistics.addStatistics(new String[] {"Binp 2011", "7.8", "2.3", "5.4", "7.7"});
-//
-//        periodStatistics.addStatistics(new String[] {"Periode:", "Gemiddelde cijfer:", "Aantal Deelnemers:", "Aantal onvoldoendes:", "Rendement:"});
-//        periodStatistics.addStatistics(new String[] {"1", "5.4", "6.7", "5.6", "4.6"});
 
         // Voeg zo een grafiek toe
         testGraphButtonEvent();
@@ -128,9 +107,9 @@ public class Vergelijken extends StackPane {
         /**
          * Initieerd instanties voor het statistiek gedeelte
          */
-        testStatistics = new Statistiek();
-        moduleStatistics = new Statistiek();
-        periodStatistics = new Statistiek();
+        testStatistics = new Statistiek(1);
+        moduleStatistics = new Statistiek(2);
+        periodStatistics = new Statistiek(3);
     }
 
     private void fillTabs() {
@@ -157,13 +136,13 @@ public class Vergelijken extends StackPane {
     public void testGraphButtonEvent() {
         testStatistics.graphButton.setOnAction(event -> {
             if (testStatistics.graphButton.getValue() == "Histogram") {
-                testStatistics.setBarChart();
+//                testStatistics.setBarChart();
                 testStatistics.activeGraphInt = 1;
             } else if (testStatistics.graphButton.getValue() == "Lijngrafiek") {
-                testStatistics.setLineChart();
+//                testStatistics.setLineChart();
                 testStatistics.activeGraphInt = 2;
             } else if (testStatistics.graphButton.getValue() == "Boxplot") {
-                testStatistics.setBoxPlot();
+//                testStatistics.setBoxPlot();
                 testStatistics.activeGraphInt = 3;
             }
         });
@@ -172,13 +151,13 @@ public class Vergelijken extends StackPane {
     public void moduleGraphButtonEvent() {
         moduleStatistics.graphButton.setOnAction(event -> {
             if (moduleStatistics.graphButton.getValue() == "Histogram") {
-                moduleStatistics.setBarChart();
+//                moduleStatistics.setBarChart();
                 moduleStatistics.activeGraphInt = 1;
             } else if (moduleStatistics.graphButton.getValue() == "Lijngrafiek") {
-                moduleStatistics.setLineChart();
+//                moduleStatistics.setLineChart();
                 moduleStatistics.activeGraphInt = 2;
             } else if (moduleStatistics.graphButton.getValue() == "Boxplot") {
-                moduleStatistics.setBoxPlot();
+//                moduleStatistics.setBoxPlot();
                 moduleStatistics.activeGraphInt = 3;
             }
         });
@@ -187,13 +166,13 @@ public class Vergelijken extends StackPane {
     public void periodGraphButtonEvent() {
         periodStatistics.graphButton.setOnAction(event -> {
             if (periodStatistics.graphButton.getValue() == "Histogram") {
-                periodStatistics.setBarChart();
+//                periodStatistics.setBarChart();
                 periodStatistics.activeGraphInt = 1;
             } else if (periodStatistics.graphButton.getValue() == "Lijngrafiek") {
-                periodStatistics.setLineChart();
+//                periodStatistics.setLineChart();
                 periodStatistics.activeGraphInt = 2;
             } else if (periodStatistics.graphButton.getValue() == "Boxplot") {
-                periodStatistics.setBoxPlot();
+//                periodStatistics.setBoxPlot();
                 periodStatistics.activeGraphInt = 3;
             }
         });
