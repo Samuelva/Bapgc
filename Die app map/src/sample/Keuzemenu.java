@@ -123,6 +123,9 @@ public class Keuzemenu {
         allButton.setOnAction(event -> {
             System.out.println("Alles knop");
         });
+        resetButton.setOnAction(event -> {
+
+        });
         choiceMenuButtonBox.setSpacing(5);
         choiceMenuButtonBox.getChildren().addAll(allButton, resetButton);
     }
