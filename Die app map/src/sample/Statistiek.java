@@ -13,6 +13,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -32,6 +33,7 @@ import java.util.Optional;
  * Deze klasse maakt het statistiek gedeelte aan en kan deze uitbreiden/aanpassen
  */
 public class Statistiek {
+    private Integer instance;
     private VBox statisticsBox; // Box met toets statistieken, grafiekopties en de grafiek
     private VBox statisticsTableBox;
     private BorderPane graphButtonBox; // Box met grafiek optie knoppen
@@ -46,6 +48,8 @@ public class Statistiek {
     private Cirkeldiagram pieChart;
     private Boxplot boxplot;
     private WritableImage graphImage;
+
+    public int activeGraphInt;
 
     TableView<TestRow> table;
     TableColumn testCol;
@@ -79,13 +83,11 @@ public class Statistiek {
             new Row("Binp 2011", 8, 9, 5, 6)
     );
 
-
-    public int activeGraphInt;
-
-    public Statistiek() {
+    public Statistiek(Integer instanceI) {
         /**
          * Roept functies aan welke de boxjes aanmaken en vullen met de jusite inhoud (statistiek en grafiek)
          */
+        instance = instanceI;
         statisticsBox = new VBox();
         createStatisticsTableBox();
         createGraphPane();
@@ -98,20 +100,20 @@ public class Statistiek {
         table = new TableView();
         table.setEditable(false);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.getSelectionModel().setCellSelectionEnabled(true);
-        table.getFocusModel().focusedCellProperty().addListener(new ChangeListener<TablePosition>() {
-
-            /* Als er op een cel gedrukt wordt, wordt de gehele kolom geselecteerd en de statistiek geupdate.
-             * Als een van de eerste drie kolomen geselecteerd wordt worden de statistieken voor de hele toets
-             * weergegeven, anders voor de specifieke vraag.
-             */
-            @Override
-            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue,
-                                TablePosition newValue) {
-                if (newValue.getTableColumn() != null) {
-                    table.getSelectionModel().selectRange(0, newValue.getTableColumn(),
-                            table.getItems().size(), newValue.getTableColumn());
-
+        table.getFocusModel().focusedCellProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.getTableColumn() != null) {
+                table.getSelectionModel().selectRange(0, newValue.getTableColumn(),
+                        table.getItems().size(), newValue.getTableColumn());
+                if (instance == 1) {
+                    fillGraph(newValue, testCol, " per toets");
+                }
+                else if (instance == 2) {
+                    fillGraph(newValue, moduleCol, " per module");
+                }
+                else if (instance == 3) {
+                    fillGraph(newValue, periodCol, " per periode");
                 }
             }
         });
@@ -151,7 +153,7 @@ public class Statistiek {
         graphButton = new ComboBox(); // ComboBox voor het instellen van de soort grafiek
         graphButton.setPrefWidth(150);
         graphButton.setMinHeight(30);
-        graphButton.setPromptText("Grafiek Soort");
+        graphButton.setPromptText("Grafiek");
         graphButton.getItems().addAll("Histogram", "Lijngrafiek", "Boxplot"); // Inhoud comboBox
 
         saveButton = new Button("Afbeelding opslaan");
@@ -231,6 +233,25 @@ public class Statistiek {
         graphPane.getChildren().add(graphBox);
     }
 
+    public void fillGraph(TablePosition newValue, TableColumn column, String title) {
+        if (activeGraphInt == 1) {
+            setBarChart(column.getText(), newValue.getTableColumn().getText(), newValue.getTableColumn().getText() + title, newValue.getTableColumn().getText());
+            for (int i = 0; i < table.getItems().size(); i++) {
+                barChart.addBar(column.getCellObservableValue(i).getValue().toString(), (int) newValue.getTableColumn().getCellObservableValue(i).getValue());
+            }
+        }
+        else if (activeGraphInt == 2) {
+            setLineChart(column.getText(), newValue.getTableColumn().getText(), newValue.getTableColumn().getText() + title);
+            String[] xValues = new String[table.getItems().size()];
+            int[] yValues = new int[table.getItems().size()];
+            for (int i = 0; i < table.getItems().size(); i++) {
+                xValues[i] = column.getCellObservableValue(i).getValue().toString();
+                yValues[i] = (int) newValue.getTableColumn().getCellObservableValue(i).getValue();
+            };
+            addLineChartLine(xValues, yValues, newValue.getTableColumn().getText());
+        }
+    }
+
     public void saveGraph() {
         BarChart<String, Number> barChartGraph;
         LineChart<String, Number> lineChartGraph;
@@ -251,29 +272,20 @@ public class Statistiek {
 
     }
 
-    public void setLineChart() {
-        lineChart = new Lijngrafiek("test x-as", "test y-as", "test titel");
+    public void setLineChart(String xAxis, String yAxis, String title) {
+        lineChart = new Lijngrafiek(xAxis, yAxis, title);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(lineChart.getLineChartBox());
-        String[] xValues = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        int[] yValues = new int[] {6, 5, 4, 6, 7, 5, 4, 6, 7};
-        String[] xValues2 = new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-        int[] yValues2 = new int[] {4, 5, 8, 3, 2, 6, 8, 9, 5};
-        addLineChartLine(xValues, yValues, "testlijn");
-        addLineChartLine(xValues2, yValues2, "testlijn");
     }
 
-    public void addLineChartLine(String[] xValues, int[] yValues, String title) {
-        lineChart.addLine(xValues, yValues, "testLijn 1");
+    public void addLineChartLine(String[] xValues, int[] yValues, String legend) {
+        lineChart.addLine(xValues, yValues, legend);
     }
 
-    public void setBarChart() {
-        barChart = new Histogram("test x-as", "test y-as", "test title", "test naam");
+    public void setBarChart(String xAxis, String yAxis, String title, String legend) {
+        barChart = new Histogram(xAxis, yAxis, title, legend);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(barChart.getBarChartBox());
-        barChart.addBar("1", 8);
-        barChart.addBar("2", 9);
-        barChart.addBar("3", 5);
     }
 
 
@@ -281,7 +293,6 @@ public class Statistiek {
         boxplot = new Boxplot();
         graphPane.getChildren().clear();
         graphPane.getChildren().add(boxplot.makeBoxPlot());
-        boxplot.addData();
     }
 }
 
