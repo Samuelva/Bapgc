@@ -8,11 +8,13 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import database.DatabaseConn;
+import org.postgresql.util.PSQLException;
 
 import java.lang.reflect.Array;
+import java.util.EmptyStackException;
 import java.util.LinkedList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+//import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert.AlertType;
 
 
 public class Main extends Application {
@@ -58,12 +60,16 @@ public class Main extends Application {
                 warning();
             }
             else {
-                invoer.setSelection(searchOnProperties);
-                view.setSelection(searchOnProperties);
-                DatabaseConn databaseConn = new DatabaseConn();
-                databaseConn.GetToetsID(searchOnProperties[0],searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
-                toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
-                databaseConn.CloseConnection();
+                try {
+                    invoer.setSelection(searchOnProperties);
+                    view.setSelection(searchOnProperties);
+                    DatabaseConn databaseConn = new DatabaseConn();
+                    databaseConn.GetToetsID(searchOnProperties[0], searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                    toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
+                    databaseConn.CloseConnection();
+                } catch (EmptyStackException e) {
+                    System.out.println("Database leeg");
+                }
             }
         });
         
@@ -97,13 +103,12 @@ public class Main extends Application {
     }
     
     private void warning() {
-        Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Niet alles is ingevoerd!");
-                alert.setContentText("Voer de niet gevoerde keuzes in het "
-                        + "keuzemenu in om verder te gaan.");
-
-                alert.showAndWait();
+//        Alert alert = new Alert(AlertType.ERROR);
+//                alert.setTitle("Error");
+//                alert.setHeaderText("Niet alles is ingevoerd!");
+//                alert.setContentText("Voer de niet gevoerde keuzes in het "
+//                        + "keuzemenu in om verder te gaan.");
+//                alert.showAndWait();
     }
 
     private static void initLayout(){

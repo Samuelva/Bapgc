@@ -2,6 +2,8 @@ package database;/*
  * Created by Timothy.
  */
 
+import sun.invoke.empty.Empty;
+
 import java.sql.*;
 import java.util.*;
 
@@ -348,7 +350,8 @@ public class DatabaseConn {
             id = resultSet.getInt(1);
             this.statement.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName()+": "+e.getMessage());
+
+            throw new EmptyStackException();
         }
         return id;
     }
