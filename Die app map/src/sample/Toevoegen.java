@@ -115,7 +115,7 @@ public class Toevoegen extends TabPane{
         schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
         blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
         courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(createModuleList(databaseConn.GetTable("module"))));
-        typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Toets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
+        typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
         attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
         databaseConn.CloseConnection();
     }
