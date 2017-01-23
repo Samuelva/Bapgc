@@ -100,7 +100,7 @@ public class ViewScreen extends StackPane{
         label.setPrefWidth(150);
         //Dropdown voor jaar
         this.yearChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Jaar", new Separator(), "placeholder"));
+                "Jaar", new Separator(), "2016/2017"));
         this.yearChoiceBox.setValue("Jaar");
         this.yearChoiceBox.setPrefWidth(150);
         this.yearChoiceBox.setPrefHeight(30);
@@ -144,16 +144,16 @@ public class ViewScreen extends StackPane{
         //laad knop
         this.loadBtn = new Button("Laad toets");
 
-        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
-        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
-                fillTable(examID);
-
-                updateQualityStats();
-            }
-        });
+//        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
+//        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
+//                fillTable(examID);
+//
+//                updateQualityStats();
+//            }
+//        });
 
         this.loadBtn.setPrefWidth(150);
         this.loadBtn.setPrefHeight(30);
@@ -253,9 +253,9 @@ public class ViewScreen extends StackPane{
                         "Boxplot", "Histogram"));
         this.plotChoiceBox.setOnAction(event -> {
             if (plotChoiceBox.getValue() == "Boxplot") {
-                makeBoxplot();
+                //makeBoxplot();
             } else if (plotChoiceBox.getValue() == "Histogram") {
-                makeHistogram();
+                //makeHistogram();
             }
         });
         this.plotChoiceBox.setValue("Boxplot");
@@ -567,5 +567,42 @@ public class ViewScreen extends StackPane{
         graphPane.getChildren().clear();
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
+    }
+    
+    public String[] getSelectionProperties() {
+            String[] properties = new String[6];
+
+
+            if (yearChoiceBox.getValue().equals("Jaar"))
+                return null;
+            if (schoolYearChoiceBox.getValue().equals("Leerjaar"))
+                return null;
+            if (blockChoiceBox.getValue().equals("Periode"))
+                return null;
+            if (courseChoiceBox.getValue().equals("Module"))
+                return null;
+            if (typeChoiceBox.getValue().equals("Toetsvorm"))
+                return null;
+            if (attemptChoiceBox.getValue().equals("Gelegenheid"))
+                return null;
+
+            properties[0] = (String) courseChoiceBox.getValue();
+            properties[1] = (String) yearChoiceBox.getValue();
+            properties[2] = (String) schoolYearChoiceBox.getValue();
+            properties[3] = (String) blockChoiceBox.getValue();
+            properties[4] = (String) typeChoiceBox.getValue();
+            properties[5] = (String) attemptChoiceBox.getValue();
+
+
+            return properties;
+        }
+    
+    public void setSelection(String[] selection) {
+        courseChoiceBox.setValue(selection[0]);
+        yearChoiceBox.setValue(selection[1]);
+        schoolYearChoiceBox.setValue(selection[2]);
+        blockChoiceBox.setValue(selection[3]);
+        typeChoiceBox.setValue(selection[4]);
+        attemptChoiceBox.setValue(selection[5]);        
     }
 }
