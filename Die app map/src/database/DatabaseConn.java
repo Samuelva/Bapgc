@@ -103,6 +103,11 @@ public class DatabaseConn {
             " FROM TOETS" +
             " WHERE ModuleCode='%s'" +
             " GROUP BY ToetsVorm;";
+    private final String DELETEVRAGENSQL = "DELETE FROM SCORE" +
+            " USING VRAAG" +
+            " WHERE VRAAG.ToetsID=%s;" +
+            " DELETE FROM VRAAG" +
+            " WHERE ToetsID=%s;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -517,6 +522,18 @@ public class DatabaseConn {
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(String.format(
                     this.CESUURGOKUPDATESQL, cesuur, gokpunten, toetsID
+            ));
+            this.statement.close();
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+    }
+
+    public void DeleteVragenToets(Integer toetsID){
+        try {
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(String.format(
+                    this.DELETEVRAGENSQL, toetsID, toetsID
             ));
             this.statement.close();
         } catch (Exception e) {
