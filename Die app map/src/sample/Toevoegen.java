@@ -1,5 +1,6 @@
 package sample;
 
+import database.DatabaseConn;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,9 +17,13 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
-import database.DatabaseConn;
+//import javafx.scene.control.Alert;
+//import javafx.scene.control.Alert.AlertType;
 
 
 /**
@@ -97,6 +102,15 @@ public class Toevoegen extends TabPane{
         this.getTabs().add(examTab);
     }
 
+    private void warning() {
+//        Alert alert = new Alert(AlertType.ERROR);
+//                alert.setTitle("Waarschuwing!");
+//                alert.setHeaderText("Niet alles is ingevoerd!");
+//                alert.setContentText("Voer de niet gevoerde keuzes in het "
+//                        + "keuzemenu in om verder te gaan.");
+//                alert.showAndWait();
+    }
+
 
     private void createSelectionMenuElements(){
         /**
@@ -155,6 +169,8 @@ public class Toevoegen extends TabPane{
         saveExamBtn = new ScreenButtons("Toets opslaan");
     }
 
+
+
     public class ExamTab extends Tab {
         /**
          * Inner klasse voor het aanmaken van de toetstab
@@ -173,10 +189,10 @@ public class Toevoegen extends TabPane{
         private VBox selectionMenu;
 
         private ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
-        private ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
+        public ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
         private VBox pointDistributionBox;
         private ScrollPane questionAndCheckBoxesScrollpane;
-        private FlowPane questionAndCheckboxes;
+        public FlowPane questionAndCheckboxes;
 
         private Label lbl2;
         private Label lbl3;
@@ -270,6 +286,7 @@ public class Toevoegen extends TabPane{
                 resetPointDistributionButton.setDisable(false);
             });
             resetPointDistributionButton.setOnAction( event -> {
+                warning();
                 questionAndCheckboxes.getChildren().clear();
                 pointDistributionBox.getChildren().remove(questionAndCheckBoxesScrollpane);
                 importCsvButton.setDisable(false);
@@ -664,7 +681,7 @@ public class Toevoegen extends TabPane{
         }
     }
 
-    private class QuestionBoxWithCheck extends HBox{
+    public class QuestionBoxWithCheck extends HBox{
         /**
          * Inner klasse met gegevens over de punten.
          *
@@ -711,6 +728,7 @@ public class Toevoegen extends TabPane{
         public String getSubQuestionPoints() {
             return subQuestionPoints;
         }
+
         public Boolean getAccountability() {
             return this.accountable.isSelected();
         }
