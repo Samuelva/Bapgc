@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ModuleReader {
     public ModuleReader(String csvFile){
-        csvFile = "modulesCSV.csv";
+        csvFile = "C:/Users/midas/Desktop/Githup/Bapgc/Die app map/src/modulesCSV.csv";
         BufferedReader br = null;
         String line = "";
         ArrayList<String[]> modules = new ArrayList<>();
@@ -27,6 +27,7 @@ public class ModuleReader {
         try {
 
             br = new BufferedReader(new FileReader(csvFile));
+            line = br.readLine();
             while ((line = br.readLine()) != null) {
 
                 String[] lijn = line.split(";");
@@ -35,32 +36,37 @@ public class ModuleReader {
 
                 //d.InputModule("Bapgc", "jemama", 8);
                 //d.InputToets("2016","3","2","Bapgc","Toets","1",70, 30);
+            }
 
-                for(int i=0; i<modules.size(); i++) {
+                for (int i = 0; i < modules.size(); i++) {
                     d.InputModule(modules.get(i)[1], modules.get(i)[1], Integer.parseInt(modules.get(i)[2]));
                 }
+            System.out.println(modules.size());
+            System.out.println(gelegenheid.size());
+            System.out.println(modules.get(3).toString().split(",").length);
+            for (int i = 0; i < modules.size(); i++) {
 
-                for(int i=0; i<modules.size(); i++) {
+                //Get moduleCode
 
-                    //Get moduleCode
-
-                    for (int j=1; i<gelegenheid.size(); j++) {
-
-                        for (int n=1; i<modules.get(3).toString().split(",").length; n++) {
-                            d.InputToets(modules.get(i)[0],
-                                    modules.get(i)[4],
-                                    modules.get(i)[5],
-                                    modules.get(i)[1],
-                                    modules.get(3).toString().split(",")[n],
-                                    gelegenheid.get(j),
-                                    0,
-                                    0);
-                        }
+                for (int j = 1; j < gelegenheid.size(); j++) {
 
 
+                    for (int n = 0; n < modules.get(i)[3].toString().split(",").length; n++) {
+                        System.out.println(modules.get(i)[3].toString().split(",").length);
+                        d.InputToets(modules.get(i)[0],
+                                modules.get(i)[4],
+                                modules.get(i)[5],
+                                modules.get(i)[1],
+                                modules.get(i)[3].toString().split(",")[n],
+                                gelegenheid.get(j),
+                                0,
+                                0);
                     }
+
+
                 }
             }
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -77,5 +83,7 @@ public class ModuleReader {
         }
         d.CloseConnection();
     }
-
+    public static void main(String[] args) {
+        new ModuleReader("sdf");
+    }
 }
