@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ModuleReader {
     public ModuleReader(String csvFile){
-        csvFile = "C:/Users/midas/Desktop/Githup/Bapgc/Die app map/src/modulesCSV.csv";
+        //csvFile = "C:/Users/midas/Desktop/Githup/Bapgc/Die app map/src/modulesCSV.csv";
         BufferedReader br = null;
         String line = "";
         ArrayList<String[]> modules = new ArrayList<>();
@@ -83,7 +83,7 @@ public class ModuleReader {
         }
         d.CloseConnection();
     }
-    public static void main(String[] args) {
-        new ModuleReader("sdf");
-    }
+    //public static void main(String[] args) {
+        //new ModuleReader("sdf");
+    //}
 }
