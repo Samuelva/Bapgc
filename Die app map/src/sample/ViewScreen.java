@@ -16,15 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Separator;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TablePosition;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -38,12 +30,12 @@ import javafx.util.Callback;
 /* Deze class maakt een StackPane dat het inzage scherm bevat.
  */
 public class ViewScreen extends StackPane{
-    protected ChoiceBox schoolYearChoiceBox;
-    protected ChoiceBox yearChoiceBox;
-    protected ChoiceBox blockChoiceBox;
-    protected ChoiceBox courseChoiceBox;
-    protected ChoiceBox typeChoiceBox;
-    protected ChoiceBox attemptChoiceBox;
+    protected ComboBox schoolYearChoiceBox;
+    protected ComboBox yearChoiceBox;
+    protected ComboBox blockChoiceBox;
+    protected ComboBox courseChoiceBox;
+    protected ComboBox typeChoiceBox;
+    protected ComboBox attemptChoiceBox;
     protected ChoiceBox plotChoiceBox;
     protected Button loadBtn;
     protected Button calculateBtn;
@@ -60,6 +52,7 @@ public class ViewScreen extends StackPane{
     protected StackPane graphPane;
     protected Histogram barChart;
     protected Boxplot boxplot;
+    protected Keuzemenu choiceMenu;
 
     private String[][] gradeTable = null;
     private String[] questionLabels = null;
@@ -98,47 +91,9 @@ public class ViewScreen extends StackPane{
         label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(150);
-        //Dropdown voor jaar
-        this.yearChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Jaar", new Separator(), "2016/2017"));
-        this.yearChoiceBox.setValue("Jaar");
-        this.yearChoiceBox.setPrefWidth(150);
-        this.yearChoiceBox.setPrefHeight(30);
-        //Dropdown voor school jaar
-        this.schoolYearChoiceBox = new ChoiceBox(
-                FXCollections.observableArrayList(
-                        "Leerjaar", new Separator(), "Jaar 1", "Jaar 2", "Jaar 3",
-                        "Jaar 4"));
-        this.schoolYearChoiceBox.setValue("Leerjaar");
-        this.schoolYearChoiceBox.setPrefWidth(150);
-        this.schoolYearChoiceBox.setPrefHeight(30);
-        //Dropdown voor periode
-        this.blockChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Periode", new Separator(), "Periode 1", "Periode 2", "Periode 3", 
-                "Periode 4", "Periode 5"));
-        this.blockChoiceBox.setValue("Periode");
-        this.blockChoiceBox.setPrefWidth(150);
-        this.blockChoiceBox.setPrefHeight(30);
-        //Dropdown voor module
-        this.courseChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Module", new Separator(), "placeholder"));
-        this.courseChoiceBox.setValue("Module");
-        this.courseChoiceBox.setPrefWidth(150);
-        this.courseChoiceBox.setPrefHeight(30);
-        //Dropdown voor toetsvorm
-        this.typeChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Toetsvorm", new Separator(), "Theorietoets", "Praktijktoets", 
-                "Logboek", "Aanwezigheid", "Project"));
-        this.typeChoiceBox.setValue("Toetsvorm");
-        this.typeChoiceBox.setPrefWidth(150);
-        this.typeChoiceBox.setPrefHeight(30);
-        //Dropdown voor gelegenheid
-        this.attemptChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                "Gelegenheid", new Separator(), "1e kans", "2e kans"));
-        this.attemptChoiceBox.setValue("Gelegenheid");
-        this.attemptChoiceBox.setPrefWidth(150);
-        this.attemptChoiceBox.setPrefHeight(30);
-        //leege ruimte
+        choiceMenu = new Keuzemenu();
+
+        //lege ruimte
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);
         //laad knop
@@ -157,9 +112,7 @@ public class ViewScreen extends StackPane{
 
         this.loadBtn.setPrefWidth(150);
         this.loadBtn.setPrefHeight(30);
-        return new VBox(label, this.yearChoiceBox, 
-                this.schoolYearChoiceBox,this.blockChoiceBox, 
-                this.courseChoiceBox, this.typeChoiceBox, this.attemptChoiceBox,
+        return new VBox(label, choiceMenu.getChoiceMenuBox(),
                 fill, this.loadBtn);
     }
     
