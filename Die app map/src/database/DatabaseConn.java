@@ -108,6 +108,17 @@ public class DatabaseConn {
             " WHERE VRAAG.ToetsID=%s;" +
             " DELETE FROM VRAAG" +
             " WHERE ToetsID=%s;";
+    private final String JAARTALLENSQL = "SELECT Jaar FROM TOETS ORDER BY Jaar;";
+    private final String SCHOOLJAARSQL = "SELECT Schooljaar FROM TOETS" +
+            " WHERE TOETS.Jaar='%s';";
+    private final String PERIODESQL = "SELECT Periode FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s';";
+    private final String MODULESSQL = "SELECT ModuleCode FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s';";
+    private final String TYPESQL = "SELECT Toetsvorm FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s';";
+    private final String CHANCESQL = "SELECT Gelegenheid FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -139,18 +150,8 @@ public class DatabaseConn {
             this.statement = this.connection.createStatement();
             System.out.println("Opened database successfully");
 
-            DatabaseMetaData metaData = this.connection.getMetaData();
-            ResultSet resultSet = metaData.getTables(
-                    this.connection.getCatalog(), null,
-                    "%", new String[]{"TABLE"});
-            while (resultSet.next()) {
-                this.tablesPresent.add(resultSet.getString(3));
-            }
-            for (String table : TABLES) {
-                if (!this.tablesPresent.contains(table)) {
-                    MakeTable(statement, table);
-                }
-            }
+
+            MakeTables();
             this.statement.close();
             inputModule = new InputModule(connection);
             inputToets = new InputToets(connection);
@@ -162,8 +163,8 @@ public class DatabaseConn {
         }
     }
 
-    private void MakeTable(Statement statement, String table) {
-        /* Deze methode zorgt voor het aanmaken van een tabel.
+    private void MakeTables() {
+        /* Deze methode zorgt voor het aanmaken van de tabellen.
          * Er wordt een tabelnaam meegegeven welke in de switch-case
          * gaat. Per tabel wordt er dan een specifieke SQL query
          * Aangeroepen dat zorgt voor de aanmaak van die tabel
@@ -172,15 +173,38 @@ public class DatabaseConn {
          * Wederom staat hier de try-catch, zoals eerder beschreven.
          */
         try {
-            switch (table) {
-                case "student": statement.executeUpdate(STUDENTSQL); break;
-                case "score": statement.executeUpdate(SCORESQL); break;
-                case "vraag": statement.executeUpdate(VRAAGSQL); break;
-                case "toets": statement.executeUpdate(TOETSSQL); break;
-                case "module": statement.executeUpdate(MODULESQL); break;
-                default: break;
+            this.tablesPresent = new HashSet<>();
+            DatabaseMetaData metaData = this.connection.getMetaData();
+            ResultSet resultSet = metaData.getTables(
+                    this.connection.getCatalog(), null,
+                    "%", new String[]{"TABLE"});
+            while (resultSet.next()) {
+                this.tablesPresent.add(resultSet.getString(3));
             }
-            System.out.printf("Table: %s is made.\n", table);
+            for (String table : this.TABLES) {
+                if (!this.tablesPresent.contains(table)) {
+                    switch (table) {
+                        case "student":
+                            this.statement.executeUpdate(STUDENTSQL);
+                            break;
+                        case "score":
+                            this.statement.executeUpdate(SCORESQL);
+                            break;
+                        case "vraag":
+                            this.statement.executeUpdate(VRAAGSQL);
+                            break;
+                        case "toets":
+                            this.statement.executeUpdate(TOETSSQL);
+                            break;
+                        case "module":
+                            this.statement.executeUpdate(MODULESQL);
+                            break;
+                        default:
+                            break;
+                    }
+                    System.out.printf("Table: %s is made.\n", table);
+                }
+            }
         } catch (Exception e) {
             System.err.println(e.getClass().getName()+": "+e.getMessage());
         }
@@ -391,7 +415,18 @@ public class DatabaseConn {
     }
 
     public String[][] GetTable(String tableName) {
-        /*
+        /* Deze methode zorgt voor het returnen van een tabel.
+         * Omdat de output variabel van grootte kan zijn wordt een
+         * arraylist aangemaakt.
+         * Dan wordt een statement aangemaakt, waarna de query
+         * uitgevoerd wordt en opgeslagen in een resultset.
+         * Er wordt door de rijen van de resultset heen geloopt,
+         * waarna bij elke rij elk element wordt opgeslagen in een
+         * 2e arraylist. Deze arraylist wordt elke keer opgeslagen in
+         * de eerste arraylist.
+         * De statement wordt hierna gesloten.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
          */
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
@@ -415,6 +450,20 @@ public class DatabaseConn {
     }
 
     public String[][] GetTable(String tableName, String whereClause) {
+        /* Deze methode zorgt voor het returnen van een tabel, waarbij
+         * een where clause wordt gebruikt.
+         * Omdat de output variabel van grootte kan zijn wordt een
+         * arraylist aangemaakt.
+         * Dan wordt een statement aangemaakt, waarna de query
+         * uitgevoerd wordt en opgeslagen in een resultset.
+         * Er wordt door de rijen van de resultset heen geloopt,
+         * waarna bij elke rij elk element wordt opgeslagen in een
+         * 2e arraylist. Deze arraylist wordt elke keer opgeslagen in
+         * de eerste arraylist.
+         * De statement wordt hierna gesloten.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
@@ -437,6 +486,19 @@ public class DatabaseConn {
     }
 
     public String[][] GetAllJoined() {
+        /* Deze methode zorgt voor het returnen van alle tabellen
+         * gejoined met elkaar.
+         * Eerst maakt het een nieuwe arraylist in arraylist aan,
+         * omdat de output van variabele grootte kan zijn. Vervolgens
+         * wordt een statement aangemaakt en een resultset aan de hand
+         * van de query.
+         * Door deze resultset wordt geloopt, waarbij elk element van
+         * een rij wordt opgeslagen in een arraylist in een loop. Elke
+         * rij wordt vervolgens opgeslagen in de hoofd arraylist.
+         * Aan het einde wordt de statement weer gesloten.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
@@ -655,13 +717,139 @@ public class DatabaseConn {
             }
             this.statement.close();
         } catch (Exception e) {
-            System.out.println(e);
             throw new EmptyStackException();
         }
         return ConvertArrayMixTable(table);
     }
+    public List<String> getYears() {
+        List<String> years;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.JAARTALLENSQL
+            ));
+            years = new ArrayList<String>();
+            while (resultSet.next()) {
+                if (!years.contains(resultSet.getString("Jaar"))) {
+                    years.add(resultSet.getString("Jaar"));
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return years;
+    }
 
-    public void DeleteTables(){
+    public List<String> getSchoolYears(String selectedYear) {
+        List<String> schoolYears;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.SCHOOLJAARSQL, selectedYear
+            ));
+            schoolYears = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Schooljaar");
+                if (!schoolYears.contains(result)) {
+                    schoolYears.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return schoolYears;
+    }
+
+    public List<String> getBlocks(String selectedYear, String selectedStudyYear) {
+        List<String> blocks;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.PERIODESQL, selectedYear, selectedStudyYear
+            ));
+            blocks = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Periode");
+                if (!blocks.contains(result)) {
+                    blocks.add(result);
+                }
+            }
+            Collections.sort(blocks);
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return blocks;
+    }
+
+    public List<String> getCourses(String selectedYear, String selectedSchoolYear, String selectedBlock) {
+        List<String> courses;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.MODULESSQL, selectedYear, selectedSchoolYear, selectedBlock
+            ));
+            courses = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("ModuleCode");
+                if (!courses.contains(result)) {
+                    courses.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return courses;
+    }
+
+    public List<String> getTypes(String selectedYear, String selectedSchoolYear, String selectedBlock, String selectedCourse) {
+        List<String> types;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.TYPESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse
+            ));
+            types = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Toetsvorm");
+                if (!types.contains(result)) {
+                    types.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return types;
+    }
+
+    public List<String> getAttempts(String selectedYear, String selectedSchoolYear, String selectedBlock, String selectedCourse, String selectedType) {
+        List<String> attempts;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.CHANCESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType
+            ));
+            attempts = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Gelegenheid");
+                if (!attempts.contains(result)) {
+                    attempts.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return attempts;
+    }
+
+    public void ResetTables(){
+        /* Deze methode zorgt voor het legen van de hele database.
+         * Eerst gaat het alle tabellen langs en delete het elke
+         * tabel in een loop. Vervolgens roept het de functie
+         * MakeTables() aan, zodat weer nieuwe lege tabellen worden
+         * aangemaakt.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
         try {
             this.statement = this.connection.createStatement();
             for (String tabel : this.TABLES) {
@@ -669,9 +857,9 @@ public class DatabaseConn {
                         "DROP TABLE %s CASCADE;", tabel
                 ));
             }
+            MakeTables();
             this.statement.close();
         } catch (Exception e) {
-            System.out.println(e);
             throw new EmptyStackException();
         }
     }

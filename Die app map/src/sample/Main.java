@@ -124,7 +124,7 @@ public class Main extends Application {
     }
     
     private void warning() {
-        Alert alert = new Alert(AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Niet alles is ingevoerd!");
                 alert.setContentText("Voer de niet gevoerde keuzes in het "

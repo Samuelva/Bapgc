@@ -25,9 +25,9 @@ public class Vergelijken extends StackPane {
     private HBox periodTabBox; // Box met inhoud voor periodetab
 
     // Instanties voor de keuzemenu's voor elke tab
-    public Keuzemenu testChoiceMenu;
-    public Keuzemenu moduleChoiceMenu;
-    public Keuzemenu periodChoiceMenu;
+    public VergelijkKeuzemenu testChoiceMenu;
+    public VergelijkKeuzemenu moduleChoiceMenu;
+    public VergelijkKeuzemenu periodChoiceMenu;
 
     // Instanties voor de statistieken voor elke tab
     public Statistiek testStatistics;
@@ -119,9 +119,9 @@ public class Vergelijken extends StackPane {
         /**
          * Initieerd instanties voor het keuzemenu
          */
-        testChoiceMenu = new Keuzemenu();
-        moduleChoiceMenu = new Keuzemenu();
-        periodChoiceMenu = new Keuzemenu();
+        testChoiceMenu = new VergelijkKeuzemenu();
+        moduleChoiceMenu = new VergelijkKeuzemenu();
+        periodChoiceMenu = new VergelijkKeuzemenu();
     }
 
     private void createStatistics() {
