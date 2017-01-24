@@ -319,7 +319,7 @@ final class Invoeren extends StackPane {
         
         VBox vbox2 = new VBox();
 
-        vbox2.getChildren().addAll(lbl1, choiceMenu.getChoiceMenuBox(), fill, btn1);
+        vbox2.getChildren().addAll(lbl1, choiceMenu.getChoiceMenuBox());
         
         vbox2.setSpacing(20);
         return vbox2;   

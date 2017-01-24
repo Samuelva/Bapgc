@@ -283,13 +283,11 @@ public class Toevoegen extends TabPane{
              * en de spacer wordt zo ingesteld dat ie de knoppen helemaal onder
              * aan het scherm zet.
              */
-            selectionMenu = new VBox();
-            Region spacer = new Region();
-            selectionMenu.getChildren().addAll(
-                    getChoiceBoxesSelectionMenu(),
-                    spacer,
-                    showExamBtn);
-            selectionMenu.setVgrow(spacer, Priority.ALWAYS);
+            selectionMenu = getChoiceBoxesSelectionMenu();
+//            Region spacer = new Region();
+//            selectionMenu.getChildren().addAll(
+//                    getChoiceBoxesSelectionMenu());
+//            selectionMenu.setVgrow(spacer, Priority.ALWAYS);
         }
 
         private VBox getChoiceBoxesSelectionMenu() {

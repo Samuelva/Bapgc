@@ -112,8 +112,7 @@ public class ViewScreen extends StackPane{
 
         this.loadBtn.setPrefWidth(150);
         this.loadBtn.setPrefHeight(30);
-        return new VBox(label, choiceMenu.getChoiceMenuBox(),
-                fill, this.loadBtn);
+        return new VBox(label, choiceMenu.getChoiceMenuBox());
     }
     
     /* Deze functie maakt de HBox waarin het percentiel gekozen kan worden.

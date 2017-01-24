@@ -2,28 +2,33 @@ package sample;
 
 import database.DatabaseConn;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by Samuel on 23-1-2017.
  */
 public class KeuzemenuDBVerbind {
-    DatabaseConn db;
+    protected DatabaseConn db;
 
-    List<String> year;
-    List<String> schoolYear;
-    List<String> block;
-    List<String> course;
-    List<String> type;
-    List<String> attempt;
+    protected List<String> year;
+    protected List<String> schoolYear;
+    protected List<String> block;
+    protected List<String> course;
+    protected List<String> type;
+    protected List<String> attempt;
 
     //
-    String selectedYear;
-    String selectedSchoolYear;
-    String selectedBlock;
-    String selectedCourse;
-    String selectedType;
-    String selectedAttempt;
+    protected String selectedYear;
+    protected String selectedSchoolYear;
+    protected String selectedBlock;
+    protected String selectedCourse;
+    protected String selectedType;
+    protected String selectedAttempt;
+
+    protected List<String> selection;
 
     public KeuzemenuDBVerbind() {
         db = new DatabaseConn();
@@ -83,4 +88,9 @@ public class KeuzemenuDBVerbind {
         selectedAttempt = selectedAttemptI;
     }
 
+    public List<String> getSelection() {
+        selection = new ArrayList<String>();
+        selection.addAll(Arrays.asList(selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType, selectedAttempt));
+        return selection;
+    }
 }

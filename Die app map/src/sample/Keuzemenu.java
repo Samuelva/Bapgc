@@ -2,8 +2,15 @@ package sample;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Samuel on 24-1-2017.
@@ -15,7 +22,9 @@ public class Keuzemenu {
     protected ComboBox courseChoiceBox;
     protected ComboBox typeChoiceBox;
     protected ComboBox attemptChoiceBox;
+    public Button examLoadButton;
     protected KeuzemenuDBVerbind choiceMenuDB;
+    protected List<String> selection;
 
     protected VBox choiceMenuBox;
 
@@ -27,8 +36,8 @@ public class Keuzemenu {
     private void createButtons() {
         yearChoiceBox = new ComboBox();
         yearChoiceBox.setPromptText("Jaar");
-        yearChoiceBox.setPrefWidth(150);
-        yearChoiceBox.setPrefHeight(30);
+        yearChoiceBox.setMinWidth(150);
+        yearChoiceBox.setMinHeight(30);
         yearChoiceBox.setOnMouseClicked(event -> {
             boxClickEvent(yearChoiceBox);
         });
@@ -38,8 +47,8 @@ public class Keuzemenu {
 
         schoolYearChoiceBox = new ComboBox();
         schoolYearChoiceBox.setPromptText("Leerjaar");
-        schoolYearChoiceBox.setPrefWidth(150);
-        schoolYearChoiceBox.setPrefHeight(30);
+        schoolYearChoiceBox.setMinWidth(150);
+        schoolYearChoiceBox.setMinHeight(30);
         schoolYearChoiceBox.setDisable(true);
         schoolYearChoiceBox.setOnMouseClicked(event -> {
             boxClickEvent(schoolYearChoiceBox);
@@ -50,8 +59,8 @@ public class Keuzemenu {
 
         blockChoiceBox = new ComboBox();
         blockChoiceBox.setPromptText("Periode");
-        blockChoiceBox.setPrefWidth(150);
-        blockChoiceBox.setPrefHeight(30);
+        blockChoiceBox.setMinWidth(150);
+        blockChoiceBox.setMinHeight(30);
         blockChoiceBox.setDisable(true);
         blockChoiceBox.setOnMouseClicked(event -> {
             boxClickEvent(blockChoiceBox);
@@ -62,8 +71,8 @@ public class Keuzemenu {
 
         courseChoiceBox = new ComboBox();
         courseChoiceBox.setPromptText("Module");
-        courseChoiceBox.setPrefWidth(150);
-        courseChoiceBox.setPrefHeight(30);
+        courseChoiceBox.setMinWidth(150);
+        courseChoiceBox.setMinHeight(30);
         courseChoiceBox.setDisable(true);
         courseChoiceBox.setOnMouseClicked(event -> {
             boxClickEvent(courseChoiceBox);
@@ -74,8 +83,8 @@ public class Keuzemenu {
 
         typeChoiceBox = new ComboBox();
         typeChoiceBox.setPromptText("Toetsvorm");
-        typeChoiceBox.setPrefWidth(150);
-        typeChoiceBox.setPrefHeight(30);
+        typeChoiceBox.setMinWidth(150);
+        typeChoiceBox.setMinHeight(30);
         typeChoiceBox.setDisable(true);
         typeChoiceBox.setOnMouseClicked(event -> {
             boxClickEvent(typeChoiceBox);
@@ -86,8 +95,8 @@ public class Keuzemenu {
 
         attemptChoiceBox = new ComboBox();
         attemptChoiceBox.setPromptText("Gelegenheid");
-        attemptChoiceBox.setPrefWidth(150);
-        attemptChoiceBox.setPrefHeight(30);
+        attemptChoiceBox.setMinWidth(150);
+        attemptChoiceBox.setMinHeight(30);
         attemptChoiceBox.setDisable(true);
         attemptChoiceBox.setOnMouseClicked(event -> {
             boxClickEvent(attemptChoiceBox);
@@ -95,6 +104,11 @@ public class Keuzemenu {
         attemptChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             boxSelectedEvent(observable, attemptChoiceBox);
         });
+
+        examLoadButton = new Button("Toets weergeven");
+        examLoadButton.setMinWidth(150);
+        examLoadButton.setMinHeight(30);
+        examLoadButton.setDisable(true);
     }
 
     private void boxClickEvent(ComboBox comboBox) {
@@ -127,43 +141,45 @@ public class Keuzemenu {
             switch (comboBox.getPromptText()) {
                 case "Jaar":
                     choiceMenuDB.setYearSelection(observable.getValue().toString());
-                    disable(false, false, true, true, true, true);
+                    disable(false, false, true, true, true, true, true);
                     clearContent("Jaar");
                     break;
                 case "Leerjaar":
                     choiceMenuDB.setSchoolYearSeleciton(observable.getValue().toString());
-                    disable(false, false, false, true, true ,true);
+                    disable(false, false, false, true, true ,true, true);
                     clearContent("Leerjaar");
                     break;
                 case "Periode":
                     choiceMenuDB.setBlockSelection(observable.getValue().toString());
-                    disable(false, false, false, false, true, true);
+                    disable(false, false, false, false, true, true, true);
                     clearContent("Periode");
                     break;
                 case "Module":
                     choiceMenuDB.setCourseSelection(observable.getValue().toString());
-                    disable(false, false, false, false, false, true);
+                    disable(false, false, false, false, false, true, true);
                     clearContent("Module");
                     break;
                 case "Toetsvorm":
                     choiceMenuDB.setTypeSelection(observable.getValue().toString());
-                    disable(false, false, false, false, false, false);
+                    disable(false, false, false, false, false, false, true);
                     clearContent("Toetsvorm");
                     break;
                 case "Gelegenheid":
                     choiceMenuDB.setAttemptSelection(observable.getValue().toString());
+                    disable(false, false, false, false, false, false, false);
                     break;
             }
         }
     }
 
-    private void disable(boolean bool1, boolean bool2, boolean bool3, boolean bool4, boolean bool5, boolean bool6) {
+    private void disable(boolean bool1, boolean bool2, boolean bool3, boolean bool4, boolean bool5, boolean bool6, boolean bool7) {
         yearChoiceBox.setDisable(bool1);
         schoolYearChoiceBox.setDisable(bool2);
         blockChoiceBox.setDisable(bool3);
         courseChoiceBox.setDisable(bool4);
         typeChoiceBox.setDisable(bool5);
         attemptChoiceBox.setDisable(bool6);
+        examLoadButton.setDisable(bool7);
     }
 
     private void clearContent(String selectedBox) {
@@ -197,11 +213,18 @@ public class Keuzemenu {
     }
 
     public VBox getChoiceMenuBox() {
+        VBox fillBox = new VBox();
+        VBox.setVgrow(fillBox, Priority.ALWAYS);
+
         choiceMenuBox = new VBox();
-        choiceMenuBox.getChildren().addAll(yearChoiceBox, schoolYearChoiceBox, blockChoiceBox, courseChoiceBox, typeChoiceBox, attemptChoiceBox);
+        choiceMenuBox.getChildren().addAll(yearChoiceBox, schoolYearChoiceBox, blockChoiceBox, courseChoiceBox, typeChoiceBox, attemptChoiceBox, fillBox, examLoadButton);
         choiceMenuBox.setSpacing(20);
+        VBox.setVgrow(choiceMenuBox, Priority.ALWAYS);
         return choiceMenuBox;
     }
 
-
+    public List<String> getSelection() {
+        selection = choiceMenuDB.getSelection();
+        return selection;
+    }
 }
