@@ -4,7 +4,6 @@ import database.DatabaseConn;
 import database.ModuleReader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -51,32 +50,26 @@ public class Toevoegen extends TabPane{
      * worden aangepast. Deze staan in choiceboxes.
      */
     //SELECTION MENU
-    public ChoiceBoxes yearExamChoiceBox; //Jaartal
-    public ChoiceBoxes schoolYearExamChoiceBox; //Schooljaar
-    public ChoiceBoxes blockExamChoiceBox; //Periode
-    public ChoiceBoxes courseExamChoiceBox; //Modules
-    public ChoiceBoxes typeExamChoiceBox; //Toetsvorm
-    public ChoiceBoxes attemptExamChoiceBox; //Gelgeheid
-    public ScreenButtons showExamBtn;
+    public Keuzemenu choiceMenu;
 
+    public ScreenButtons showExamBtn;
     public ScreenButtons saveExamBtn;
+
     //EXAM PROPERTIES
     public CheckBox questionPropertyCheckBox;
-
     public TextField thresholdTextfield;
     public TextField chanceByGamblingTextfield;
+
     public ExamTab examTab;
 
     public ModuleTab moduleTab;
-
     private  Button emptyButton;
     private  Button saveButton;
+
     private  Button importCSV;
-
     private TableView pointsTable;
-    public Integer examID;
 
-    private Keuzemenu choiceMenu;
+    public Integer examID;
 
 
     public Toevoegen() {
@@ -167,47 +160,11 @@ public class Toevoegen extends TabPane{
          * aanwezig zijn voor het selecteren. Maar ook de knoppen die van
          * belang zijn voor het inladen of het aanmaken van een nieuwe toets
          */
-        createSelectionMenuChoiceBoxes();
         createSelectionMenuButtons();
     }
 
-    private void createSelectionMenuChoiceBoxes() {
-        /**
-         * Creeeren van choiceboxes voor de selectie menu.
-         */
-        DatabaseConn databaseConn = new DatabaseConn();
-        yearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Jaar", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010")));
-        schoolYearExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Leerjaar", "Jaar 1", "Jaar 2", "Jaar 3", "Jaar 4")));
-        blockExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Periode", "Periode 1", "Periode 2", "Periode 3", "Periode 4", "Periode 5")));
-        courseExamChoiceBox = new ChoiceBoxes(new ArrayList<>(createModuleList(databaseConn.GetTable("module"))));
-        typeExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Toetsvorm",  "Theorietoets", "Praktijktoets", "Logboek", "Aanwezigheid", "Project")));
-        attemptExamChoiceBox = new ChoiceBoxes(new ArrayList<>(Arrays.asList("Gelegenheid", "1e kans", "2e kans", "3e kans")));
-        databaseConn.CloseConnection();
-    }
-    public void setSelection(String[] selection) {
-        courseExamChoiceBox.setValue(selection[0]);
-        yearExamChoiceBox.setValue(selection[1]);
-        schoolYearExamChoiceBox.setValue(selection[2]);
-        blockExamChoiceBox.setValue(selection[3]);
-        typeExamChoiceBox.setValue(selection[4]);
-        attemptExamChoiceBox.setValue(selection[5]);
-    }
 
-    private List createModuleList(String[][] modules) {
-        /**
-         * Aanmaken van een module lijst voor het inladen van
-         * vanuit de database
-         *
-         * Looped over de 2d array en voegd de eerste waarde toe
-         * aan een lijst die word teruggestuurd.
-         */
-        ObservableList<String> choices = FXCollections.observableArrayList();
-        choices.add("Module");
-        for (String[] module : modules) {
-            choices.add(module[0]);
-        }
-        return choices;
-    }
+
 
     private void createSelectionMenuButtons() {
         /**
@@ -217,6 +174,8 @@ public class Toevoegen extends TabPane{
         saveExamBtn = new ScreenButtons("Toets opslaan");
     }
 
+    public void setSelection(String[] selection) {
+    }
 
 
     public class ExamTab extends Tab {
@@ -539,7 +498,7 @@ public class Toevoegen extends TabPane{
             }
             VBox vbox2 = new VBox();
             questionPropertyCheckBox.setSelected(true);
-            setQuestionPropertyEvent();
+            showQuestionPropertiesCheckBoxEvent();
             vbox2.getChildren().addAll(questionPropertyCheckBox, thresholdTextfield, chanceByGamblingTextfield);
             thresholdTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -569,6 +528,7 @@ public class Toevoegen extends TabPane{
             databaseConn.CloseConnection();
             return vbox2;
         }
+
         private VBox getGradePropertyLabels() {
             /**
              * VBOX met labels over de 2 eigenschappen beheersgraad en
@@ -586,7 +546,7 @@ public class Toevoegen extends TabPane{
             return vbox1;
         }
 
-        private void setQuestionPropertyEvent() {
+        private void showQuestionPropertiesCheckBoxEvent() {
             /**
              * Funtionaliteit aan checkbox gegeven.
              *
@@ -656,18 +616,6 @@ public class Toevoegen extends TabPane{
         }
     }
 
-    private class ChoiceBoxes extends ChoiceBox<String> {
-        /**
-         * Inner klasse voor het aanmaken van choiceboxes met de juistte
-         * layout
-         * @param items: Mogelijkheden die zich in de choicebox bevinden
-         */
-        public ChoiceBoxes(ArrayList<String> items) {
-            this.setItems(FXCollections.observableArrayList(items));
-            this.setPrefSize(150, 30);
-            this.setValue(items.get(0));
-        }
-    }
 
     private class BoxHeaders extends Label {
         /**
@@ -696,31 +644,7 @@ public class Toevoegen extends TabPane{
         }
 
         public String[] getSelectionProperties() {
-            String[] properties = new String[6];
-
-
-            if (yearExamChoiceBox.getValue().equals("Jaar"))
-                return null;
-            if (schoolYearExamChoiceBox.getValue().equals("Leerjaar"))
-                return null;
-            if (blockExamChoiceBox.getValue().equals("Periode"))
-                return null;
-            if (courseExamChoiceBox.getValue().equals("Module"))
-                return null;
-            if (typeExamChoiceBox.getValue().equals("Toetsvorm"))
-                return null;
-            if (attemptExamChoiceBox.getValue().equals("Gelegenheid"))
-                return null;
-
-            properties[0] = courseExamChoiceBox.getValue();
-            properties[1] = yearExamChoiceBox.getValue();
-            properties[2] = schoolYearExamChoiceBox.getValue().split(" ")[1];
-            properties[3] = blockExamChoiceBox.getValue().split(" ")[1];
-            properties[4] = attemptExamChoiceBox.getValue().split("")[0];
-            properties[5] = typeExamChoiceBox.getValue();
-
-
-            return properties;
+            return new String[0];
         }
     }
 
