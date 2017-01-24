@@ -41,15 +41,13 @@ public class Statistiek {
 
     public ComboBox graphButton;
     private Button saveButton;
-    private ImageView graph;  // Container met grafiek foto
 
     private Lijngrafiek lineChart;
     private Histogram barChart;
-    private Cirkeldiagram pieChart;
     private Boxplot boxplot;
     private WritableImage graphImage;
 
-    public int activeGraphInt;
+    public int activeGraphInt; // Geeft aan welke grafiek geselecteerd is. 1 = histogram, 2 = lijngrafiek, 3 = boxplot.
 
     TableView<TestRow> table;
     TableColumn testCol;
@@ -60,28 +58,6 @@ public class Statistiek {
     TableColumn failedCol;
     TableColumn passedCol;
     TableColumn passRateCol;
-
-    public final ObservableList testData = FXCollections.observableArrayList(
-            new TestRow("Binp 2018 Opdracht 1", 7, 6, 4, 9, 2),
-            new TestRow("Binp 2017 Opdracht 1", 3, 9, 4, 7, 4),
-            new TestRow("Binp 2016 Opdracht 1", 7, 6, 7, 6, 3),
-            new TestRow("Binp 2015 Opdracht 1", 5, 4, 0, 4, 6),
-            new TestRow("Binp 2014 Opdracht 1", 4, 3, 5, 9, 8),
-            new TestRow("Binp 2013 Opdracht 1", 6, 8, 7, 7, 5),
-            new TestRow("Binp 2012 Opdracht 1", 8, 5, 8, 6, 4),
-            new TestRow("Binp 2011 Opdracht 1", 4, 8, 9, 5, 6)
-    );
-
-    public final ObservableList moduleData = FXCollections.observableArrayList(
-            new Row("Binp 2018", 6, 4, 9, 2),
-            new Row("Binp 2017", 9, 4, 7, 4),
-            new Row("Binp 2016", 6, 7, 6, 3),
-            new Row("Binp 2015", 4, 0, 4, 6),
-            new Row("Binp 2014", 3, 5, 9, 8),
-            new Row("Binp 2013", 8, 7, 7, 5),
-            new Row("Binp 2012", 5, 8, 6, 4),
-            new Row("Binp 2011", 8, 9, 5, 6)
-    );
 
     public Statistiek(Integer instanceI) {
         /**
@@ -106,14 +82,16 @@ public class Statistiek {
             if (newValue.getTableColumn() != null) {
                 table.getSelectionModel().selectRange(0, newValue.getTableColumn(),
                         table.getItems().size(), newValue.getTableColumn());
-                if (instance == 1) {
-                    fillGraph(newValue, testCol, " per toets");
-                }
-                else if (instance == 2) {
-                    fillGraph(newValue, moduleCol, " per module");
-                }
-                else if (instance == 3) {
-                    fillGraph(newValue, periodCol, " per periode");
+                switch (instance) {
+                    case 1:
+                        fillGraph(newValue, testCol, " per toets");
+                        break;
+                    case 2:
+                        fillGraph(newValue, moduleCol, " per module");
+                        break;
+                    case 3:
+                        fillGraph(newValue, periodCol, " per periode");
+                        break;
                 }
             }
         });
@@ -155,6 +133,19 @@ public class Statistiek {
         graphButton.setMinHeight(30);
         graphButton.setPromptText("Grafiek");
         graphButton.getItems().addAll("Histogram", "Lijngrafiek", "Boxplot"); // Inhoud comboBox
+        graphButton.setOnAction(event -> {
+           switch (graphButton.getValue().toString()) {
+               case "Histogram":
+                   activeGraphInt = 1;
+                   break;
+               case "Lijngrafiek":
+                   activeGraphInt = 2;
+                   break;
+               case "Boxplot":
+                   activeGraphInt = 3;
+                   break;
+           }
+        });
 
         saveButton = new Button("Afbeelding opslaan");
         saveButton.setPrefWidth(150);
@@ -225,30 +216,24 @@ public class Statistiek {
         table.getColumns().addAll(periodCol, participantsCol, failedCol, passedCol, passRateCol);
     }
 
-    public void setGraph(VBox graphBox) {
-        /**
-         * Input is een link/path naar de grafiek
-         */
-
-        graphPane.getChildren().add(graphBox);
-    }
-
     public void fillGraph(TablePosition newValue, TableColumn column, String title) {
-        if (activeGraphInt == 1) {
-            setBarChart(column.getText(), newValue.getTableColumn().getText(), newValue.getTableColumn().getText() + title, newValue.getTableColumn().getText());
-            for (int i = 0; i < table.getItems().size(); i++) {
-                barChart.addBar(column.getCellObservableValue(i).getValue().toString(), (int) newValue.getTableColumn().getCellObservableValue(i).getValue());
-            }
-        }
-        else if (activeGraphInt == 2) {
-            setLineChart(column.getText(), newValue.getTableColumn().getText(), newValue.getTableColumn().getText() + title);
-            String[] xValues = new String[table.getItems().size()];
-            int[] yValues = new int[table.getItems().size()];
-            for (int i = 0; i < table.getItems().size(); i++) {
-                xValues[i] = column.getCellObservableValue(i).getValue().toString();
-                yValues[i] = (int) newValue.getTableColumn().getCellObservableValue(i).getValue();
-            };
-            addLineChartLine(xValues, yValues, newValue.getTableColumn().getText());
+        switch (activeGraphInt) {
+            case 1:
+                setBarChart(column.getText(), newValue.getTableColumn().getText(), newValue.getTableColumn().getText() + title, newValue.getTableColumn().getText());
+                for (int i = 0; i < table.getItems().size(); i++) {
+                    barChart.addBar(column.getCellObservableValue(i).getValue().toString(), (int) newValue.getTableColumn().getCellObservableValue(i).getValue());
+                }
+                break;
+            case 2:
+                setLineChart(column.getText(), newValue.getTableColumn().getText(), newValue.getTableColumn().getText() + title);
+                String[] xValues = new String[table.getItems().size()];
+                int[] yValues = new int[table.getItems().size()];
+                for (int i = 0; i < table.getItems().size(); i++) {
+                    xValues[i] = column.getCellObservableValue(i).getValue().toString();
+                    yValues[i] = (int) newValue.getTableColumn().getCellObservableValue(i).getValue();
+                };
+                addLineChartLine(xValues, yValues, newValue.getTableColumn().getText());
+                break;
         }
     }
 
@@ -287,7 +272,6 @@ public class Statistiek {
         graphPane.getChildren().clear();
         graphPane.getChildren().add(barChart.getBarChartBox());
     }
-
 
     public void setBoxPlot() {
         boxplot = new Boxplot();

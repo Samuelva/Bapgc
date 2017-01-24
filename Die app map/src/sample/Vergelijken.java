@@ -2,7 +2,9 @@ package sample;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
@@ -55,17 +57,36 @@ public class Vergelijken extends StackPane {
         moduleChoiceMenu.setSelectionMenuItems("Binp 2016", "Binp 2015", "Binp 2014", "Binp 2013", "Binp 2012");
         periodChoiceMenu.setSelectionMenuItems("1", "2", "3", "4");
 
-        testStatistics.setTestTableContent(testStatistics.testData);
-        moduleStatistics.setModuleTableContent(moduleStatistics.moduleData);
-        periodStatistics.setPeriodTableContent(moduleStatistics.moduleData);
-
         // Voeg zo statistieken toe
+        testStatistics.setTestTableContent(FXCollections.observableArrayList(
+                new TestRow("Binp 2018 Opdracht 1", 7, 6, 4, 9, 2),
+                new TestRow("Binp 2017 Opdracht 1", 3, 9, 4, 7, 4),
+                new TestRow("Binp 2016 Opdracht 1", 7, 6, 7, 6, 3),
+                new TestRow("Binp 2015 Opdracht 1", 5, 4, 0, 4, 6),
+                new TestRow("Binp 2014 Opdracht 1", 4, 3, 5, 9, 8),
+                new TestRow("Binp 2013 Opdracht 1", 6, 8, 7, 7, 5),
+                new TestRow("Binp 2012 Opdracht 1", 8, 5, 8, 6, 4),
+                new TestRow("Binp 2011 Opdracht 1", 4, 8, 9, 5, 6)
+        ));
 
-        // Voeg zo een grafiek toe
-        testGraphButtonEvent();
-        moduleGraphButtonEvent();
-        periodGraphButtonEvent();
+        moduleStatistics.setModuleTableContent(FXCollections.observableArrayList(
+                new Row("Binp 2018", 6, 4, 9, 2),
+                new Row("Binp 2017", 9, 4, 7, 4),
+                new Row("Binp 2016", 6, 7, 6, 3),
+                new Row("Binp 2015", 4, 0, 4, 6),
+                new Row("Binp 2014", 3, 5, 9, 8),
+                new Row("Binp 2013", 8, 7, 7, 5),
+                new Row("Binp 2012", 5, 8, 6, 4),
+                new Row("Binp 2011", 8, 9, 5, 6)
+        ));
 
+        periodStatistics.setPeriodTableContent(FXCollections.observableArrayList(
+                new Row("1", 6, 4, 9, 2),
+                new Row("2", 9, 4, 7, 4),
+                new Row("3", 6, 7, 6, 3),
+                new Row("4", 4, 0, 4, 6),
+                new Row("5", 3, 5, 9, 8)
+        ));
     }
 
     private void createTabs() {
@@ -131,50 +152,5 @@ public class Vergelijken extends StackPane {
         testTab.setContent(testTabBox);
         moduleTab.setContent(moduleTabBox);
         periodTab.setContent(periodTabBox);
-    }
-
-    public void testGraphButtonEvent() {
-        testStatistics.graphButton.setOnAction(event -> {
-            if (testStatistics.graphButton.getValue() == "Histogram") {
-//                testStatistics.setBarChart();
-                testStatistics.activeGraphInt = 1;
-            } else if (testStatistics.graphButton.getValue() == "Lijngrafiek") {
-//                testStatistics.setLineChart();
-                testStatistics.activeGraphInt = 2;
-            } else if (testStatistics.graphButton.getValue() == "Boxplot") {
-//                testStatistics.setBoxPlot();
-                testStatistics.activeGraphInt = 3;
-            }
-        });
-    }
-
-    public void moduleGraphButtonEvent() {
-        moduleStatistics.graphButton.setOnAction(event -> {
-            if (moduleStatistics.graphButton.getValue() == "Histogram") {
-//                moduleStatistics.setBarChart();
-                moduleStatistics.activeGraphInt = 1;
-            } else if (moduleStatistics.graphButton.getValue() == "Lijngrafiek") {
-//                moduleStatistics.setLineChart();
-                moduleStatistics.activeGraphInt = 2;
-            } else if (moduleStatistics.graphButton.getValue() == "Boxplot") {
-//                moduleStatistics.setBoxPlot();
-                moduleStatistics.activeGraphInt = 3;
-            }
-        });
-    }
-
-    public void periodGraphButtonEvent() {
-        periodStatistics.graphButton.setOnAction(event -> {
-            if (periodStatistics.graphButton.getValue() == "Histogram") {
-//                periodStatistics.setBarChart();
-                periodStatistics.activeGraphInt = 1;
-            } else if (periodStatistics.graphButton.getValue() == "Lijngrafiek") {
-//                periodStatistics.setLineChart();
-                periodStatistics.activeGraphInt = 2;
-            } else if (periodStatistics.graphButton.getValue() == "Boxplot") {
-//                periodStatistics.setBoxPlot();
-                periodStatistics.activeGraphInt = 3;
-            }
-        });
     }
 }
