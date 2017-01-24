@@ -1,12 +1,14 @@
 package sample;
 
-
+import database.DatabaseConn;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import database.DatabaseConn;
+import database.ModuleReader;
+import database.Reader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -76,7 +78,9 @@ final class Invoeren extends StackPane {
         VBox vbox2 = MenuMaken();
         makeTable();
         BoxenVullen(vbox2, hbox);
-        
+        DatabaseConn d = new DatabaseConn();
+
+
 
         btn4.setOnAction(e -> {
         	/*
@@ -85,7 +89,10 @@ final class Invoeren extends StackPane {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
-            if (file != null) {;
+            if (file != null) {
+                //String[] list = getSelectionProperties();
+                //Integer ToetsID = d.GetToetsID(list[0], list[2], list[1], list[3], list[5], list[4]);
+                //Object moduleReader = new Reader(file.toString(), ToetsID);
                 btn4.setDisable(true);
             }
         });
