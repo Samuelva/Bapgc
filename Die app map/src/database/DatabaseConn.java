@@ -438,7 +438,7 @@ public class DatabaseConn {
                     this.GETSQL, tableName, ""
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<String>();
+                ArrayList<String> row = new ArrayList<>();
                 //opslaan
                 for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
                     row.add(resultSet.getString(i));
@@ -474,7 +474,7 @@ public class DatabaseConn {
                     this.GETSQL, tableName, " WHERE " + whereClause
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<String>();
+                ArrayList<String> row = new ArrayList<>();
                 //opslaan
                 for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
                     row.add(resultSet.getString(i));
@@ -510,7 +510,7 @@ public class DatabaseConn {
                     this.ALLJOINSQL, ""
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<String>();
+                ArrayList<String> row = new ArrayList<>();
                 //opslaan
                 for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
                     row.add(resultSet.getString(i));
@@ -548,7 +548,7 @@ public class DatabaseConn {
                     this.STUDENTSCORESQL, toetsID
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<String>();
+                ArrayList<String> row = new ArrayList<>();
                 row.add(resultSet.getString(1));
                 Integer[] scores = (Integer[]) resultSet.getArray(2).getArray();
                 for (Integer score : scores) {
@@ -651,7 +651,7 @@ public class DatabaseConn {
                     this.VRAAGNUMMERSSQL, toetsID
             ));
             while (resultSet.next()) {
-                ArrayList<Object> row = new ArrayList<Object>();
+                ArrayList<Object> row = new ArrayList<>();
                 row.add(resultSet.getInt(1));
                 row.add(resultSet.getString(2));
                 row.add(resultSet.getInt(3));
@@ -714,9 +714,7 @@ public class DatabaseConn {
                 ArrayList<Object> row = new ArrayList<>();
                 row.add(resultSet.getString(1));
                 Integer[] temp = (Integer[]) resultSet.getArray(2).getArray();
-                for (Integer x : temp) {
-                    row.add(x);
-                }
+                Collections.addAll(row, temp);
                 table.add(row);
             }
             this.statement.close();
@@ -730,10 +728,10 @@ public class DatabaseConn {
         List<String> years;
         try {
             this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery(String.format(
+            ResultSet resultSet = this.statement.executeQuery(
                     this.JAARTALLENSQL
-            ));
-            years = new ArrayList<String>();
+            );
+            years = new ArrayList<>();
             while (resultSet.next()) {
                 if (!years.contains(resultSet.getString("Jaar"))) {
                     years.add(resultSet.getString("Jaar"));
@@ -752,7 +750,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.SCHOOLJAARSQL, selectedYear
             ));
-            schoolYears = new ArrayList<String>();
+            schoolYears = new ArrayList<>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Schooljaar");
                 if (!schoolYears.contains(result)) {
@@ -772,7 +770,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.PERIODESQL, selectedYear, selectedStudyYear
             ));
-            blocks = new ArrayList<String>();
+            blocks = new ArrayList<>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Periode");
                 if (!blocks.contains(result)) {
@@ -793,7 +791,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.MODULESSQL, selectedYear, selectedSchoolYear, selectedBlock
             ));
-            courses = new ArrayList<String>();
+            courses = new ArrayList<>();
             while (resultSet.next()) {
                 String result = resultSet.getString("ModuleCode");
                 if (!courses.contains(result)) {
@@ -813,7 +811,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.TYPESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse
             ));
-            types = new ArrayList<String>();
+            types = new ArrayList<>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Toetsvorm");
                 if (!types.contains(result)) {
@@ -833,7 +831,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.CHANCESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType
             ));
-            attempts = new ArrayList<String>();
+            attempts = new ArrayList<>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Gelegenheid");
                 if (!attempts.contains(result)) {
@@ -877,7 +875,7 @@ public class DatabaseConn {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(this.GETTOETSDATASQL);
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<String>();
+                ArrayList<String> row = new ArrayList<>();
                 //opslaan
                 for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
                     row.add(resultSet.getString(i));
