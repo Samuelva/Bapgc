@@ -108,6 +108,17 @@ public class DatabaseConn {
             " WHERE VRAAG.ToetsID=%s;" +
             " DELETE FROM VRAAG" +
             " WHERE ToetsID=%s;";
+    private final String JAARTALLENSQL = "SELECT Jaar FROM TOETS ORDER BY Jaar;";
+    private final String SCHOOLJAARSQL = "SELECT Schooljaar FROM TOETS" +
+            " WHERE TOETS.Jaar='%s';";
+    private final String PERIODESQL = "SELECT Periode FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s';";
+    private final String MODULESSQL = "SELECT ModuleCode FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s';";
+    private final String TYPESQL = "SELECT Toetsvorm FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s';";
+    private final String CHANCESQL = "SELECT Gelegenheid FROM TOETS" +
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -659,6 +670,125 @@ public class DatabaseConn {
             throw new EmptyStackException();
         }
         return ConvertArrayMixTable(table);
+    }
+    public List<String> getYears() {
+        List<String> years;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.JAARTALLENSQL
+            ));
+            years = new ArrayList<String>();
+            while (resultSet.next()) {
+                if (!years.contains(resultSet.getString("Jaar"))) {
+                    years.add(resultSet.getString("Jaar"));
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return years;
+    }
+
+    public List<String> getSchoolYears(String selectedYear) {
+        List<String> schoolYears;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.SCHOOLJAARSQL, selectedYear
+            ));
+            schoolYears = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Schooljaar");
+                if (!schoolYears.contains(result)) {
+                    schoolYears.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return schoolYears;
+    }
+
+    public List<String> getBlocks(String selectedYear, String selectedStudyYear) {
+        List<String> blocks;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.PERIODESQL, selectedYear, selectedStudyYear
+            ));
+            blocks = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Periode");
+                if (!blocks.contains(result)) {
+                    blocks.add(result);
+                }
+            }
+            Collections.sort(blocks);
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return blocks;
+    }
+
+    public List<String> getCourses(String selectedYear, String selectedSchoolYear, String selectedBlock) {
+        List<String> courses;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.MODULESSQL, selectedYear, selectedSchoolYear, selectedBlock
+            ));
+            courses = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("ModuleCode");
+                if (!courses.contains(result)) {
+                    courses.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return courses;
+    }
+
+    public List<String> getTypes(String selectedYear, String selectedSchoolYear, String selectedBlock, String selectedCourse) {
+        List<String> types;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.TYPESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse
+            ));
+            types = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Toetsvorm");
+                if (!types.contains(result)) {
+                    types.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return types;
+    }
+
+    public List<String> getAttempts(String selectedYear, String selectedSchoolYear, String selectedBlock, String selectedCourse, String selectedType) {
+        List<String> attempts;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(
+                    this.CHANCESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType
+            ));
+            attempts = new ArrayList<String>();
+            while (resultSet.next()) {
+                String result = resultSet.getString("Gelegenheid");
+                if (!attempts.contains(result)) {
+                    attempts.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return attempts;
     }
 
     public void DeleteTables(){
