@@ -1,6 +1,7 @@
 package sample;
 
 import database.DatabaseConn;
+import database.ModuleReader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -94,6 +95,8 @@ public class Toevoegen extends TabPane{
         moduleTab = new ModuleTab("Modulen");
         this.getTabs().add(moduleTab);
         this.getTabs().add(examTab);
+
+
     }
 
     public String[][] getQuestionInfo() {
@@ -321,6 +324,7 @@ public class Toevoegen extends TabPane{
                 importCsvButton.setDisable(true);
                 resetPointDistributionButton.setDisable(false);
             });
+
         }
 
         private void importQuestionsFromCSV() {
@@ -799,6 +803,15 @@ public class Toevoegen extends TabPane{
 
             this.setContent(vbox);
 
+            importCSV.setOnAction( e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open Toets Bestand");
+                File file = fileChooser.showOpenDialog(new Stage());
+                if (file != null) {
+                    System.out.println(file);
+                    Object moduleReader = new ModuleReader(file.toString());
+                }
+            });
         }
     }
 }
