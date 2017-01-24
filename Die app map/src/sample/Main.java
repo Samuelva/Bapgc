@@ -9,9 +9,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 import java.util.EmptyStackException;
-//import javafx.scene.control.Alert;
-//import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 
 public class Main extends Application {
@@ -52,17 +53,17 @@ public class Main extends Application {
 
     private void events() {
         toevoeg.examTab.resetPointDistributionButton.setOnAction(event -> {
-            warning();
-            System.out.println("Punten worden verwijderd!");
-            DatabaseConn databaseConn = new DatabaseConn();
-            databaseConn.DeleteVragenToets(toevoeg.examID);
-            toevoeg.examTab.resetPointDistributionButton.setDisable(true);
-            toevoeg.examTab.importCsvButton.setDisable(false);
-            databaseConn.CloseConnection();
+            toevoeg.resetWarning();
         });
         toevoeg.saveExamBtn.setOnAction(event -> {
             DatabaseConn databaseConn = new DatabaseConn();
             databaseConn.UpdateCesuurGok(toevoeg.examID,Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
+            if (toevoeg.questionPropertyCheckBox.isSelected()) {
+                for (String[] questionInfoArray: toevoeg.getQuestionInfo()) {
+                    System.out.println(Arrays.toString(questionInfoArray));
+                    databaseConn.InputVraag(questionInfoArray[0], Integer.parseInt(questionInfoArray[1]), toevoeg.examID, questionInfoArray[2].equals("true") ? true : false);
+                }
+            }
             databaseConn.CloseConnection();
         });
         toevoeg.showExamBtn.setOnAction(event -> {
@@ -80,7 +81,7 @@ public class Main extends Application {
                     toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
                     databaseConn.CloseConnection();
                 } catch (EmptyStackException e) {
-                    System.out.println("Database leeg");
+                    warning("Er zijn geen toetsgegevens gevonden!", "Kies de juistte gegevens");
                 }
             }
         });
@@ -112,6 +113,14 @@ public class Main extends Application {
                 view.updateQualityStats();
             }
         });
+    }
+
+    private void warning(String header, String text) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(header);
+        alert.setContentText(text);
+        alert.showAndWait();
     }
     
     private void warning() {

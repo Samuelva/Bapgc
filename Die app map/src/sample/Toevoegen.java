@@ -17,10 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 /**
@@ -101,11 +98,62 @@ public class Toevoegen extends TabPane{
 
     private void warning() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Waarschuwing!");
-                alert.setHeaderText("Niet alles is ingevoerd!");
-                alert.setContentText("Voer de niet gevoerde keuzes in het "
-                        + "keuzemenu in om verder te gaan.");
-                alert.showAndWait();
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Niet alles is ingevoerd!");
+        alert.setContentText("Voer de niet gevoerde keuzes in het "
+                + "keuzemenu in om verder te gaan.");
+        alert.showAndWait();
+    }
+
+    public String[][] getQuestionInfo() {
+        String[][] questionInformation = new String[examTab.questionAndCheckboxes.getChildren().size()][];
+        ObservableList<Node> childsVB = examTab.questionAndCheckboxes.getChildren();
+
+        for (int i = 0; i < childsVB.size() ; i++) {
+            HBox hb = (HBox)childsVB.get(i);
+
+            ObservableList<Node> childsHB = hb.getChildren();
+
+            Label question = (Label)childsHB.get(0);
+            CheckBox accountable = (CheckBox)childsHB.get(2);
+
+            System.out.println(question.getText().split(" ")[1].replace(":", ""));
+            System.out.println(question.getText().split(" ")[2]);
+            System.out.println(accountable.isSelected());
+
+            String[] info = new String[]{question.getText().split(" ")[1].replace(":", ""), question.getText().split(" ")[2],String.valueOf(accountable.isSelected())};
+            questionInformation[i] = info;
+        }
+        for (String[] info: questionInformation) {
+            System.out.println(Arrays.asList(info));
+        }
+        return  questionInformation;
+    }
+
+    public void resetWarning() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Met deze actie worden alle vragen verwijderd! Ook uit de database als ze er al in stonden.");
+        alert.setContentText("Gaat u akkoord?");
+
+        ButtonType buttonTypeOne = new ButtonType("Ja");
+        ButtonType buttonTypeCancel = new ButtonType("Nee", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeOne){
+            examTab.questionAndCheckboxes.getChildren().clear();
+            examTab.pointDistributionBox.getChildren().remove(examTab.questionAndCheckBoxesScrollpane);
+            DatabaseConn databaseConn = new DatabaseConn();
+            databaseConn.DeleteVragenToets(examID);
+            databaseConn.CloseConnection();
+            examTab.importCsvButton.setDisable(false);
+            examTab.resetPointDistributionButton.setDisable(true);
+
+        } else {
+            // ... user chose CANCEL or closed the dialog
+        }
     }
 
 
@@ -278,13 +326,6 @@ public class Toevoegen extends TabPane{
                 importCsvButton.setDisable(true);
                 resetPointDistributionButton.setDisable(false);
             });
-            resetPointDistributionButton.setOnAction( event -> {
-                warning();
-                questionAndCheckboxes.getChildren().clear();
-                pointDistributionBox.getChildren().remove(questionAndCheckBoxesScrollpane);
-                importCsvButton.setDisable(false);
-                resetPointDistributionButton.setDisable(true);
-            });
         }
 
         private void importQuestionsFromCSV() {
@@ -358,12 +399,12 @@ public class Toevoegen extends TabPane{
                         if (questions[index].length() != 0) {
                             currentQuestion = questions[index];
                         }
-                        questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(String.valueOf(currentQuestion) + subQuestions[index], subQuestionsPoints[index], "true"));
+                        questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(String.valueOf(currentQuestion) + "." + subQuestions[index], subQuestionsPoints[index], "true"));
                         index++;
                     }
                 }
             }
-            questionAndCheckBoxesScrollpane.setMaxHeight(Double.MAX_VALUE);
+            questionAndCheckboxes.setMaxHeight(250);
             questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
             questionAndCheckboxes.setVgap(4);
             questionAndCheckboxes.setHgap(10);
@@ -393,13 +434,17 @@ public class Toevoegen extends TabPane{
             pointDistributionBox = new VBox();
             pointDistributionBox.getChildren().addAll(new BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
             try {
-                questionAndCheckboxes = new FlowPane();
                 DatabaseConn databaseConn = new DatabaseConn();
                 String[][] questionInfo  = databaseConn.GetTable("vraag", "toetsid = " + databaseConn.GetToetsID(examProperties[0],examProperties[1], examProperties[2], examProperties[3], examProperties[4], examProperties[5]));
+                if (questionInfo.length == 0) {
+                    throw new EmptyStackException();
+                }
+                questionAndCheckboxes = new FlowPane();
                 for (String[] info: questionInfo) {
                     questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(info[1], info[2],info[4]));
                 }
                 questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
+                questionAndCheckboxes.setMaxHeight(250);
                 questionAndCheckboxes.setVgap(4);
                 questionAndCheckboxes.setHgap(10);
                 databaseConn.CloseConnection();
@@ -408,8 +453,9 @@ public class Toevoegen extends TabPane{
                 questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
                 pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
 
-            } catch (Exception e) {
-                System.out.println(e);
+            } catch (EmptyStackException e) {
+                importCsvButton.setDisable(false);
+                resetPointDistributionButton.setDisable(true);
             }
             return pointDistributionBox;
         }
@@ -436,7 +482,7 @@ public class Toevoegen extends TabPane{
              * en een textfield die van belang is voor de beheersgraad.
              */
             HBox hbox = new HBox();
-            hbox.getChildren().addAll(createExamData(examProperties), getExamGrader(examID));
+            hbox.getChildren().addAll(createExamData(examProperties), getExamGrader());
             hbox.setHgrow(hbox.getChildren().get(0), Priority.ALWAYS);
             hbox.setHgrow(hbox.getChildren().get(1), Priority.ALWAYS);
             hbox.setPadding(new Insets(0, 0, 0, 5));
@@ -444,29 +490,29 @@ public class Toevoegen extends TabPane{
             return hbox;
         }
 
-        private Node getExamGrader(Integer examID) {
+        private Node getExamGrader() {
             /**
              * Een VBOX met informatie over de cijfer gegevens.
              */
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"), getGradeData(examID));
+            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"), getGradeData());
             vbox.setSpacing(20);
             return vbox;
         }
 
-        private HBox getGradeData(Integer examID) {
+        private HBox getGradeData() {
             /**
              * HBOX die informatie bevat over de beheersgraad en of er
              * wel vragen aanwezig zijn bij de toets.
              */
             HBox hbox = new HBox();
             VBox vbox1 = getGradePropertyLabels();
-            VBox vbox2 = getGradePropertyInputFields(examID);
+            VBox vbox2 = getGradePropertyInputFields();
             hbox.getChildren().addAll(vbox1, vbox2);
             return hbox;
         }
 
-        private VBox getGradePropertyInputFields(Integer examID) {
+        private VBox getGradePropertyInputFields() {
             /**
              * VBOX met elementen die informatie bevattene over de toets.
              * Er wordt een textfield toegevoegd die informatie bevat over de
