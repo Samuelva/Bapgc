@@ -11,6 +11,8 @@ import javafx.stage.Stage;
 
 import java.util.Arrays;
 import java.util.EmptyStackException;
+import java.util.List;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
@@ -66,13 +68,15 @@ public class Main extends Application {
             }
             databaseConn.CloseConnection();
         });
-        toevoeg.showExamBtn.setOnAction(event -> {
-//                    DatabaseConn databaseConn = new DatabaseConn();
-//                    Integer examID = databaseConn.GetToetsID();
-//                    toevoeg.examID = examID;
-//                    toevoeg.examTab.setExamPropertiesScreen();
-//                    databaseConn.CloseConnection();
+        toevoeg.choiceMenu.examLoadButton.setOnAction(event -> {
+            DatabaseConn databaseConn = new DatabaseConn();
+            List<String> selection = toevoeg.choiceMenu.getSelection();
+            Integer examID = databaseConn.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3), selection.get(4), selection.get(5));
+            toevoeg.examID = examID;
+            toevoeg.examTab.setExamPropertiesScreen(selection.toArray(new String[0]));
+            databaseConn.CloseConnection();
         });
+
 
         invoer.btn1.setOnAction(event -> {
             String[] searchOnProperties = invoer.getSelectionProperties();

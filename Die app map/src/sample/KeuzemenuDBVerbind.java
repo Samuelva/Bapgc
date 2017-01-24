@@ -90,7 +90,7 @@ public class KeuzemenuDBVerbind {
 
     public List<String> getSelection() {
         selection = new ArrayList<String>();
-        selection.addAll(Arrays.asList(selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType, selectedAttempt));
+        selection.addAll(Arrays.asList(selectedCourse, selectedYear, selectedSchoolYear, selectedBlock,selectedAttempt, selectedType));
         return selection;
     }
 }
