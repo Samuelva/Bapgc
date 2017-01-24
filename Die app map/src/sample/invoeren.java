@@ -119,7 +119,8 @@ final class Invoeren extends StackPane {
         	Optional<ButtonType> result = alert.showAndWait();
         	
         	if (result.get() == OK){
-        		System.out.println("Alles wordt gewist");
+                this.pointsTable.getItems().clear();
+                this.pointsTable.getColumns().clear();
         	} else {
         	    alert.close();
         	}
