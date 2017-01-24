@@ -52,17 +52,18 @@ final class Invoeren extends StackPane {
     protected Label lbl2;
     protected Button btn5;
     protected TableView pointsTable;
-    protected ChoiceBox year;
-    protected ChoiceBox studyyear;
-    protected ChoiceBox period;
-    protected ChoiceBox module;
-    protected ChoiceBox type;
-    protected ChoiceBox chance;
+    protected ComboBox yearChoiceBox;
+    protected ComboBox schoolYearChoiceBox;
+    protected ComboBox blockChoiceBox;
+    protected ComboBox courseChoiceBox;
+    protected ComboBox typeChoiceBox;
+    protected ComboBox attemptChoiceBox;
+
+    protected Keuzemenu choiceMenu;
 
     private String[] questionLabels;
     private String[][] pointsArray;
     private int[] questionIDs;
-
 
     public Invoeren() {
         /*
@@ -71,7 +72,6 @@ final class Invoeren extends StackPane {
         De methode MenuMaken wordt aangeroepen, deze maakt het keuzemenu aan.
         BozenVullen zet vervolgens het scherm in elkaar.
         */
-        
         HBox hbox = menuUnder();
         VBox vbox2 = MenuMaken();
         makeTable();
@@ -307,39 +307,9 @@ final class Invoeren extends StackPane {
         */
         lbl1 = maakObject(new Label(), "Keuzemenu");
         lbl1.setPrefWidth(150);
-        year = new ChoiceBox(FXCollections.observableArrayList("Jaartal", 
-                new Separator(), "2016/2017"));
-        year.setValue("Jaartal");
-        year.setPrefWidth(150);
-        year.setPrefHeight(30);
-        studyyear = new ChoiceBox(FXCollections.observableArrayList("Leerjaar", 
-                new Separator(), "Leerjaar 1", "Leerjaar 2", "Leerjaar 3", 
-                "Leerjaar 4"));
-        studyyear.setValue("Leerjaar");
-        studyyear.setPrefWidth(150);
-        studyyear.setPrefHeight(30);
-        period = new ChoiceBox(FXCollections.observableArrayList("Periode",
-                new Separator(), "Periode 1", "Periode 2", "Periode 3", 
-                "Periode 4"));
-        period.setValue("Periode");
-        period.setPrefWidth(150);
-        period.setPrefHeight(30);
-        module = new ChoiceBox(FXCollections.observableArrayList("Module", 
-                new Separator(), "placeholder"));
-        module.setValue("Module");
-        module.setPrefWidth(150);
-        module.setPrefHeight(30);
-        type = new ChoiceBox(FXCollections.observableArrayList("Toetsvorm", 
-                new Separator(), "Theorietoets", "Praktijktoets", "Opdracht",
-                "Aanwezigheid", "Logboek", "Project"));
-        type.setValue("Toetsvorm");
-        type.setPrefWidth(150);
-        type.setPrefHeight(30);
-        chance = new ChoiceBox(FXCollections.observableArrayList("Gelegenheid",
-                new Separator(), "1e kans", "2e kans"));     
-        chance.setValue("Gelegenheid");
-        chance.setPrefWidth(150);
-        chance.setPrefHeight(30);
+
+        choiceMenu = new Keuzemenu();
+
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);
         
@@ -348,14 +318,13 @@ final class Invoeren extends StackPane {
         
         VBox vbox2 = new VBox();
 
-        vbox2.getChildren().addAll(lbl1, year, studyyear, period, module, 
-                type, chance, fill, btn1);
+        vbox2.getChildren().addAll(lbl1, choiceMenu.getChoiceMenuBox(), fill, btn1);
         
         vbox2.setSpacing(20);
         return vbox2;   
         
     }
-    
+
 
     public void BoxenVullen(VBox vbox2, HBox hbox){
         /*
@@ -414,37 +383,37 @@ final class Invoeren extends StackPane {
             String[] properties = new String[6];
 
 
-            if (year.getValue().equals("Jaartal"))
+            if (schoolYearChoiceBox.getValue().equals("Jaartal"))
                 return null;
-            if (studyyear.getValue().equals("Leerjaar"))
+            if (yearChoiceBox.getValue().equals("Leerjaar"))
                 return null;
-            if (period.getValue().equals("Periode"))
+            if (blockChoiceBox.getValue().equals("Periode"))
                 return null;
-            if (module.getValue().equals("Module"))
+            if (courseChoiceBox.getValue().equals("Module"))
                 return null;
-            if (type.getValue().equals("Toetsvorm"))
+            if (typeChoiceBox.getValue().equals("Toetsvorm"))
                 return null;
-            if (chance.getValue().equals("Gelegenheid"))
+            if (attemptChoiceBox.getValue().equals("Gelegenheid"))
                 return null;
 
-            properties[0] = (String) module.getValue();
-            properties[1] = (String) year.getValue();
-            properties[2] = (String) studyyear.getValue();
-            properties[3] = (String) period.getValue();
-            properties[4] = (String) type.getValue();
-            properties[5] = (String) chance.getValue();
+            properties[0] = (String) courseChoiceBox.getValue();
+            properties[1] = (String) schoolYearChoiceBox.getValue();
+            properties[2] = (String) yearChoiceBox.getValue();
+            properties[3] = (String) blockChoiceBox.getValue();
+            properties[4] = (String) typeChoiceBox.getValue();
+            properties[5] = (String) attemptChoiceBox.getValue();
 
 
             return properties;
         }
     
     public void setSelection(String[] selection) {
-        module.setValue(selection[0]);
-        year.setValue(selection[1]);
-        studyyear.setValue(selection[2]);
-        period.setValue(selection[3]);
-        type.setValue(selection[4]);
-        chance.setValue(selection[5]);        
+        courseChoiceBox.setValue(selection[0]);
+        schoolYearChoiceBox.setValue(selection[1]);
+        yearChoiceBox.setValue(selection[2]);
+        blockChoiceBox.setValue(selection[3]);
+        typeChoiceBox.setValue(selection[4]);
+        attemptChoiceBox.setValue(selection[5]);
     }
 
 

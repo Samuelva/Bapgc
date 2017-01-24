@@ -76,7 +76,7 @@ public class Toevoegen extends TabPane{
     private TableView pointsTable;
     public Integer examID;
 
-
+    private Keuzemenu choiceMenu;
 
 
     public Toevoegen() {
@@ -97,6 +97,15 @@ public class Toevoegen extends TabPane{
         this.getTabs().add(examTab);
 
 
+    }
+
+    private void warning() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Niet alles is ingevoerd!");
+        alert.setContentText("Voer de niet gevoerde keuzes in het "
+                + "keuzemenu in om verder te gaan.");
+        alert.showAndWait();
     }
 
     public String[][] getQuestionInfo() {
@@ -288,15 +297,11 @@ public class Toevoegen extends TabPane{
              * Volgt eene layout stap met spacing waarna de VBOX teruggestuurd
              * wordt.
              */
+            choiceMenu = new Keuzemenu();
             VBox labelAndChoiceBoxesBox = new VBox();
             labelAndChoiceBoxesBox.getChildren().addAll(
                     new BoxHeaders("Keuzemenu"),
-                    yearExamChoiceBox,
-                    schoolYearExamChoiceBox,
-                    blockExamChoiceBox,
-                    courseExamChoiceBox,
-                    typeExamChoiceBox,
-                    attemptExamChoiceBox
+                    choiceMenu.getChoiceMenuBox()
             );
             labelAndChoiceBoxesBox.setSpacing(20);
             return labelAndChoiceBoxesBox;
