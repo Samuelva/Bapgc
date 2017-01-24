@@ -93,7 +93,7 @@ public class DatabaseConn {
             " WHERE ToetsID=%s;";
     private final String VRAAGNUMMERSSQL = "SELECT VraagID, vraagnummer," +
             " maxscore, meerekenen" +
-            " FROM VRAAG" +
+            " FROM VRAAG"+
             " WHERE toetsID=%s" +
             " ORDER BY vraagnummer;";
     private final String MODULEPERIODESQL = "SELECT array_agg(ModuleCode)" +
@@ -119,8 +119,6 @@ public class DatabaseConn {
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s';";
     private final String CHANCESQL = "SELECT Gelegenheid FROM TOETS" +
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
-    private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar, Periode, Schooljaar" +
-            " FROM Toets;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -161,7 +159,7 @@ public class DatabaseConn {
             inputStudent = new InputStudent(connection);
             inputScore = new InputScore(connection);
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
         }
     }
 
@@ -208,7 +206,7 @@ public class DatabaseConn {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
         }
     }
 
@@ -225,7 +223,7 @@ public class DatabaseConn {
         try {
             this.connection.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.err.println(e.getClass().getName()+": "+e.getMessage());
         }
     }
 
@@ -243,7 +241,6 @@ public class DatabaseConn {
                 ec
         );
     }
-
     public void InputToets(String jaar, String schooljaar,
                            String periode, String moduleCode, String toetsvorm,
                            String gelegenheid, Integer cesuur,
@@ -323,7 +320,7 @@ public class DatabaseConn {
         );
     }
 
-    private String[][] ConvertArrayListTable(ArrayList<ArrayList<String>> table) {
+    private String[][] ConvertArrayListTable(ArrayList<ArrayList<String>> table){
         /* Deze methode zorgt voor het converteren van een 2D
          * arrayList naar een 2D string array.
          * Eerst maakt het de 2D string array aan. Dan wordt geloopt
@@ -332,14 +329,14 @@ public class DatabaseConn {
          * Na de loop wordt de 2D array gereturned.
          */
         String[][] tableArray = new String[table.size()][];
-        for (int i = 0; i < table.size(); i++) {
+        for (int i=0; i< table.size(); i++){
             ArrayList<String> row = table.get(i);
             tableArray[i] = row.toArray(new String[row.size()]);
         }
         return tableArray;
     }
 
-    private Object[][] ConvertArrayMixTable(ArrayList<ArrayList<Object>> table) {
+    private Object[][] ConvertArrayMixTable(ArrayList<ArrayList<Object>> table){
         /* Deze methode zorgt voor het converteren van een 2D
          * arrayList naar een 2D object array.
          * Eerst maakt het de 2D objectt array aan. Dan wordt geloopt
@@ -348,7 +345,7 @@ public class DatabaseConn {
          * Na de loop wordt de 2D array gereturned.
          */
         Object[][] tableArray = new Object[table.size()][];
-        for (int i = 0; i < table.size(); i++) {
+        for (int i=0; i< table.size(); i++){
             ArrayList<Object> row = table.get(i);
             tableArray[i] = row.toArray(new Object[row.size()]);
         }
@@ -357,7 +354,7 @@ public class DatabaseConn {
 
     public Integer GetToetsID(
             String moduleCode, String jaar, String schoolJaar,
-            String periode, String gelegenheid, String toetsVorm) {
+            String periode, String gelegenheid, String toetsVorm){
         /* Deze methode geeft een id van een toets terug als de
          * gegevens van die toets worden meegegeven.
          * Eerst opent het de connectie met de database. Dan maakt
@@ -388,7 +385,7 @@ public class DatabaseConn {
     }
 
     public Integer GetVraagID(
-            String vraagnummer, int toetsID) {
+            String vraagnummer, int toetsID){
         /* Deze methode geeft een id van een vraag terug als de
          * gegevens van die vraag worden meegegeven.
          * Eerst opent het de connectie met de database. Dan maakt
@@ -438,9 +435,9 @@ public class DatabaseConn {
                     this.GETSQL, tableName, ""
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<>();
+                ArrayList<String> row = new ArrayList<String>();
                 //opslaan
-                for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -474,9 +471,9 @@ public class DatabaseConn {
                     this.GETSQL, tableName, " WHERE " + whereClause
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<>();
+                ArrayList<String> row = new ArrayList<String>();
                 //opslaan
-                for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -487,7 +484,6 @@ public class DatabaseConn {
         }
         return ConvertArrayListTable(table);
     }
-
 
     public String[][] GetAllJoined() {
         /* Deze methode zorgt voor het returnen van alle tabellen
@@ -510,9 +506,9 @@ public class DatabaseConn {
                     this.ALLJOINSQL, ""
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<>();
+                ArrayList<String> row = new ArrayList<String>();
                 //opslaan
-                for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -548,9 +544,9 @@ public class DatabaseConn {
                     this.STUDENTSCORESQL, toetsID
             ));
             while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<>();
+                ArrayList<String> row = new ArrayList<String>();
                 row.add(resultSet.getString(1));
-                Integer[] scores = (Integer[]) resultSet.getArray(2).getArray();
+                Integer[] scores = (Integer[])resultSet.getArray(2).getArray();
                 for (Integer score : scores) {
                     row.add(String.valueOf(score));
                 }
@@ -591,7 +587,7 @@ public class DatabaseConn {
     }
 
     public void UpdateCesuurGok(Integer toetsID, Integer cesuur,
-                                Integer gokpunten) {
+                                Integer gokpunten){
         /* Deze methode zorgt voor het updaten van de cesuur en het
          * aantal gokpunten voor een toets.
          * Met behulp van de CESUURGOKUPDATE sql en de meegegeven
@@ -611,7 +607,7 @@ public class DatabaseConn {
         }
     }
 
-    public void DeleteVragenToets(Integer toetsID) {
+    public void DeleteVragenToets(Integer toetsID){
         /* Deze methode zorgt voor het deleten van alle vragen
          * en bijbehorende scores uit de database aan de and van
          * de meegegeven toetsID.
@@ -629,7 +625,7 @@ public class DatabaseConn {
         }
     }
 
-    public Object[][] GetVragenVanToets(Integer toetsID) {
+    public Object[][] GetVragenVanToets(Integer toetsID){
         /* Deze methode zorgt voor het terugkeren van de vragen
          * van een specifieke toets.
          * De volgorde van de arrays is als volgt:
@@ -651,7 +647,7 @@ public class DatabaseConn {
                     this.VRAAGNUMMERSSQL, toetsID
             ));
             while (resultSet.next()) {
-                ArrayList<Object> row = new ArrayList<>();
+                ArrayList<Object> row = new ArrayList<Object>();
                 row.add(resultSet.getInt(1));
                 row.add(resultSet.getString(2));
                 row.add(resultSet.getInt(3));
@@ -665,7 +661,7 @@ public class DatabaseConn {
         return ConvertArrayMixTable(table);
     }
 
-    public String[] GetModulecodesPerPeriode(char periode) {
+    public String[] GetModulecodesPerPeriode(char periode){
         /* Deze methode returned een array met alle modulecodes voor een
          * opgegeven periode.
          * Eerst voert het de query uit, waarna het de array extract.
@@ -680,7 +676,7 @@ public class DatabaseConn {
                     this.MODULEPERIODESQL, periode
             ));
             resultSet.next();
-            array = (String[]) resultSet.getArray(1).getArray();
+            array = (String[])resultSet.getArray(1).getArray();
             this.statement.close();
             return array;
         } catch (Exception e) {
@@ -688,7 +684,7 @@ public class DatabaseConn {
         }
     }
 
-    public Object[][] GetToetsKansen(String modulecode) {
+    public Object[][] GetToetsKansen(String modulecode){
         /* Deze methode returned een tabel waarin per toetsvorm staat:
          * - Toetsvorm
          * - Toets ID van kans1 (als aanwezig)
@@ -713,8 +709,10 @@ public class DatabaseConn {
             while (resultSet.next()) {
                 ArrayList<Object> row = new ArrayList<>();
                 row.add(resultSet.getString(1));
-                Integer[] temp = (Integer[]) resultSet.getArray(2).getArray();
-                Collections.addAll(row, temp);
+                Integer[] temp = (Integer[])resultSet.getArray(2).getArray();
+                for(Integer x : temp) {
+                    row.add(x);
+                }
                 table.add(row);
             }
             this.statement.close();
@@ -723,15 +721,14 @@ public class DatabaseConn {
         }
         return ConvertArrayMixTable(table);
     }
-
     public List<String> getYears() {
         List<String> years;
         try {
             this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery(
+            ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.JAARTALLENSQL
-            );
-            years = new ArrayList<>();
+            ));
+            years = new ArrayList<String>();
             while (resultSet.next()) {
                 if (!years.contains(resultSet.getString("Jaar"))) {
                     years.add(resultSet.getString("Jaar"));
@@ -750,7 +747,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.SCHOOLJAARSQL, selectedYear
             ));
-            schoolYears = new ArrayList<>();
+            schoolYears = new ArrayList<String>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Schooljaar");
                 if (!schoolYears.contains(result)) {
@@ -770,7 +767,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.PERIODESQL, selectedYear, selectedStudyYear
             ));
-            blocks = new ArrayList<>();
+            blocks = new ArrayList<String>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Periode");
                 if (!blocks.contains(result)) {
@@ -791,7 +788,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.MODULESSQL, selectedYear, selectedSchoolYear, selectedBlock
             ));
-            courses = new ArrayList<>();
+            courses = new ArrayList<String>();
             while (resultSet.next()) {
                 String result = resultSet.getString("ModuleCode");
                 if (!courses.contains(result)) {
@@ -811,7 +808,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.TYPESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse
             ));
-            types = new ArrayList<>();
+            types = new ArrayList<String>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Toetsvorm");
                 if (!types.contains(result)) {
@@ -831,7 +828,7 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(String.format(
                     this.CHANCESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType
             ));
-            attempts = new ArrayList<>();
+            attempts = new ArrayList<String>();
             while (resultSet.next()) {
                 String result = resultSet.getString("Gelegenheid");
                 if (!attempts.contains(result)) {
@@ -844,7 +841,7 @@ public class DatabaseConn {
         return attempts;
     }
 
-    public void ResetTables() {
+    public void ResetTables(){
         /* Deze methode zorgt voor het legen van de hele database.
          * Eerst gaat het alle tabellen langs en delete het elke
          * tabel in een loop. Vervolgens roept het de functie
@@ -865,28 +862,5 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
-    }
-
-    public String[][] GetToetsData() {
-        /*
-         */
-        ArrayList<ArrayList<String>> table = new ArrayList<>();
-        try {
-            this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery(this.GETTOETSDATASQL);
-            while (resultSet.next()) {
-                ArrayList<String> row = new ArrayList<>();
-                //opslaan
-                for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
-                    row.add(resultSet.getString(i));
-                }
-                table.add(row);
-            }
-            this.statement.close();
-        } catch (Exception e) {
-            System.out.println(e);
-            throw new EmptyStackException();
-        }
-        return ConvertArrayListTable(table);
     }
 }

@@ -4,13 +4,13 @@ import database.DatabaseConn;
 import database.ModuleReader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -51,7 +51,6 @@ public class Toevoegen extends TabPane{
      * worden aangepast. Deze staan in choiceboxes.
      */
     //SELECTION MENU
-<<<<<<< HEAD
     public sample.Toevoegen.ChoiceBoxes yearExamChoiceBox; //Jaartal
     public sample.Toevoegen.ChoiceBoxes schoolYearExamChoiceBox; //Schooljaar
     public sample.Toevoegen.ChoiceBoxes blockExamChoiceBox; //Periode
@@ -61,18 +60,11 @@ public class Toevoegen extends TabPane{
     public sample.Toevoegen.ScreenButtons showExamBtn;
 
     public sample.Toevoegen.ScreenButtons saveExamBtn;
-=======
-    public Keuzemenu choiceMenu;
-
-    public ScreenButtons showExamBtn;
-    public ScreenButtons saveExamBtn;
-
->>>>>>> master
     //EXAM PROPERTIES
     public CheckBox questionPropertyCheckBox;
+
     public TextField thresholdTextfield;
     public TextField chanceByGamblingTextfield;
-<<<<<<< HEAD
     public sample.Toevoegen.ExamTab examTab;
 
     public sample.Toevoegen.ModuleTab moduleTab;
@@ -80,19 +72,11 @@ public class Toevoegen extends TabPane{
     private  Button emptyButton;
     //private  Button saveButton;
     private  Button importCSV;
-=======
 
-    public ExamTab examTab;
-
-    public ModuleTab moduleTab;
-    private  Button emptyButton;
-    private  Button saveButton;
->>>>>>> master
-
-    private  Button importCSV;
     private TableView pointsTable;
-
     public Integer examID;
+
+    private Keuzemenu choiceMenu;
 
 
     public Toevoegen() {
@@ -183,10 +167,10 @@ public class Toevoegen extends TabPane{
          * aanwezig zijn voor het selecteren. Maar ook de knoppen die van
          * belang zijn voor het inladen of het aanmaken van een nieuwe toets
          */
+        createSelectionMenuChoiceBoxes();
         createSelectionMenuButtons();
     }
 
-<<<<<<< HEAD
     private void createSelectionMenuChoiceBoxes() {
         /**
          * Creeeren van choiceboxes voor de selectie menu.
@@ -208,10 +192,22 @@ public class Toevoegen extends TabPane{
         typeExamChoiceBox.setValue(selection[4]);
         attemptExamChoiceBox.setValue(selection[5]);
     }
-=======
->>>>>>> master
 
-
+    private List createModuleList(String[][] modules) {
+        /**
+         * Aanmaken van een module lijst voor het inladen van
+         * vanuit de database
+         *
+         * Looped over de 2d array en voegd de eerste waarde toe
+         * aan een lijst die word teruggestuurd.
+         */
+        ObservableList<String> choices = FXCollections.observableArrayList();
+        choices.add("Module");
+        for (String[] module : modules) {
+            choices.add(module[0]);
+        }
+        return choices;
+    }
 
 
 
@@ -223,8 +219,6 @@ public class Toevoegen extends TabPane{
         saveExamBtn = new sample.Toevoegen.ScreenButtons("Toets opslaan");
     }
 
-    public void setSelection(String[] selection) {
-    }
 
 
     public class ExamTab extends Tab {
@@ -549,7 +543,7 @@ public class Toevoegen extends TabPane{
             }
             VBox vbox2 = new VBox();
             questionPropertyCheckBox.setSelected(true);
-            showQuestionPropertiesCheckBoxEvent();
+            setQuestionPropertyEvent();
             vbox2.getChildren().addAll(questionPropertyCheckBox, thresholdTextfield, chanceByGamblingTextfield);
             thresholdTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -579,7 +573,6 @@ public class Toevoegen extends TabPane{
             databaseConn.CloseConnection();
             return vbox2;
         }
-
         private VBox getGradePropertyLabels() {
             /**
              * VBOX met labels over de 2 eigenschappen beheersgraad en
@@ -597,7 +590,7 @@ public class Toevoegen extends TabPane{
             return vbox1;
         }
 
-        private void showQuestionPropertiesCheckBoxEvent() {
+        private void setQuestionPropertyEvent() {
             /**
              * Funtionaliteit aan checkbox gegeven.
              *
@@ -667,6 +660,18 @@ public class Toevoegen extends TabPane{
         }
     }
 
+    private class ChoiceBoxes extends ChoiceBox<String> {
+        /**
+         * Inner klasse voor het aanmaken van choiceboxes met de juistte
+         * layout
+         * @param items: Mogelijkheden die zich in de choicebox bevinden
+         */
+        public ChoiceBoxes(ArrayList<String> items) {
+            this.setItems(FXCollections.observableArrayList(items));
+            this.setPrefSize(150, 30);
+            this.setValue(items.get(0));
+        }
+    }
 
     private class BoxHeaders extends Label {
         /**
@@ -695,7 +700,31 @@ public class Toevoegen extends TabPane{
         }
 
         public String[] getSelectionProperties() {
-            return new String[0];
+            String[] properties = new String[6];
+
+
+            if (yearExamChoiceBox.getValue().equals("Jaar"))
+                return null;
+            if (schoolYearExamChoiceBox.getValue().equals("Leerjaar"))
+                return null;
+            if (blockExamChoiceBox.getValue().equals("Periode"))
+                return null;
+            if (courseExamChoiceBox.getValue().equals("Module"))
+                return null;
+            if (typeExamChoiceBox.getValue().equals("Toetsvorm"))
+                return null;
+            if (attemptExamChoiceBox.getValue().equals("Gelegenheid"))
+                return null;
+
+            properties[0] = courseExamChoiceBox.getValue();
+            properties[1] = yearExamChoiceBox.getValue();
+            properties[2] = schoolYearExamChoiceBox.getValue().split(" ")[1];
+            properties[3] = blockExamChoiceBox.getValue().split(" ")[1];
+            properties[4] = attemptExamChoiceBox.getValue().split("")[0];
+            properties[5] = typeExamChoiceBox.getValue();
+
+
+            return properties;
         }
     }
 
@@ -772,9 +801,8 @@ public class Toevoegen extends TabPane{
             hbox.getChildren().addAll(rightFill, emptyButton, importCSV, leftFill);
             hbox.setSpacing(20);
 
-            pointsTable = new TableView<dataForTable>();
+            pointsTable = new TableView();
             VBox.setVgrow(pointsTable, Priority.ALWAYS);
-            fillTable();
 
             VBox vbox = new VBox();
 
@@ -794,33 +822,6 @@ public class Toevoegen extends TabPane{
                     Object moduleReader = new ModuleReader(file.toString());
                 }
             });
-        }
-
-        protected void fillTable(){
-            pointsTable.getItems().clear();
-            pointsTable.getColumns().clear();
-            makeColumn("Module Code", "code");
-            makeColumn("Jaar", "year");
-            makeColumn("Periode", "period");
-            makeColumn("Leer Jaar", "studyYear");
-            makeColumn("Toetsvorm", "type");
-            DatabaseConn d = new DatabaseConn();
-            String[][] list = d.GetToetsData();
-
-            dataForTable[] rows = new dataForTable[list.length];
-            for (int i = 0; i < list.length; ++i){
-                List<String> types = d.getTypes(list[i][1], list[i][3], list[i][2], list[i][0]);
-                rows[i] = new dataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
-            }
-            d.CloseConnection();
-            pointsTable.getItems().addAll(rows);
-        }
-
-        protected void makeColumn(String label, String value){
-            TableColumn column = new TableColumn(label);
-            column.setCellValueFactory(new PropertyValueFactory(value));
-            column.setEditable(false);
-            pointsTable.getColumns().add(column);
         }
     }
     private void emptyDatabasebutton(){

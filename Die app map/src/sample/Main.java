@@ -67,11 +67,23 @@ public class Main extends Application {
             databaseConn.CloseConnection();
         });
         toevoeg.showExamBtn.setOnAction(event -> {
-//                    DatabaseConn databaseConn = new DatabaseConn();
-//                    Integer examID = databaseConn.GetToetsID();
-//                    toevoeg.examID = examID;
-//                    toevoeg.examTab.setExamPropertiesScreen();
-//                    databaseConn.CloseConnection();
+            String[] searchOnProperties = toevoeg.showExamBtn.getSelectionProperties();
+            if (searchOnProperties == null) {
+                warning();
+            }
+            else {
+                try {
+                    invoer.setSelection(searchOnProperties);
+                    view.setSelection(searchOnProperties);
+                    DatabaseConn databaseConn = new DatabaseConn();
+                    Integer examID = databaseConn.GetToetsID(searchOnProperties[0], searchOnProperties[1], searchOnProperties[2], searchOnProperties[3], searchOnProperties[4], searchOnProperties[5]);
+                    toevoeg.examID = examID;
+                    toevoeg.examTab.setExamPropertiesScreen(searchOnProperties);
+                    databaseConn.CloseConnection();
+                } catch (EmptyStackException e) {
+                    warning("Er zijn geen toetsgegevens gevonden!", "Kies de juistte gegevens");
+                }
+            }
         });
 
         invoer.btn1.setOnAction(event -> {
