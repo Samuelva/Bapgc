@@ -119,6 +119,8 @@ public class DatabaseConn {
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s';";
     private final String CHANCESQL = "SELECT Gelegenheid FROM TOETS" +
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
+    private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar, Periode, Schooljaar" +
+            " FROM Toets;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -862,5 +864,24 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
+    }
+
+    public String[][] GetToetsData() {
+        ArrayList<ArrayList<String>> table = new ArrayList<>();
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(this.GETTOETSDATASQL);
+            while (resultSet.next()) {
+                ArrayList<String> row = new ArrayList<String>();
+                for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
+                    row.add(resultSet.getString(i));
+                }
+                table.add(row);
+            }
+            this.statement.close();
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return ConvertArrayListTable(table);
     }
 }

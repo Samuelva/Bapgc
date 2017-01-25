@@ -44,7 +44,7 @@ public class VergelijkKeuzemenu {
         /**
          * Hoofd functies roept subfuncties aan om keuzemenu onderdelen te maken.
          */
-        test();
+        //test();
         setComboBox();
         setChoiceMenuButtonBox();
     }

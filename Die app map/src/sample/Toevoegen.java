@@ -10,6 +10,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -717,6 +718,7 @@ public class Toevoegen extends TabPane{
 
             pointsTable = new TableView();
             VBox.setVgrow(pointsTable, Priority.ALWAYS);
+            fillTable();
 
             VBox vbox = new VBox();
 
@@ -735,6 +737,32 @@ public class Toevoegen extends TabPane{
                     Object moduleReader = new ModuleReader(file.toString());
                 }
             });
+        }
+
+        protected void fillTable(){
+            pointsTable.getItems().clear();
+            pointsTable.getColumns().clear();
+            makeColumn("Module Code", "code");
+            makeColumn("Jaar", "year");
+            makeColumn("Periode", "period");
+            makeColumn("Leer Jaar", "studyYear");
+            makeColumn("Toetsvorm", "type");
+            DatabaseConn d = new DatabaseConn();
+            String[][] list = d.GetToetsData();
+            dataForTable[] rows = new dataForTable[list.length];
+            for (int i = 0; i < list.length; ++i){
+                List<String> types = d.getTypes(list[i][1], list[i][3], list[i][2], list[i][0]);
+                rows[i] = new dataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
+            }
+            d.CloseConnection();
+            pointsTable.getItems().addAll(rows);
+        }
+
+        protected void makeColumn(String label, String value){
+            TableColumn column = new TableColumn(label);
+            column.setCellValueFactory(new PropertyValueFactory(value));
+            column.setEditable(false);
+            pointsTable.getColumns().add(column);
         }
     }
 }
