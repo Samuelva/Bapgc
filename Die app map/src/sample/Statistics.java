@@ -1,6 +1,8 @@
 package sample;
 
 
+import database.DatabaseConn;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -393,22 +395,18 @@ public class Statistics {
         if (values1.length != values2.length){
             throw new IllegalArgumentException("Arrays zhould be of equal size.");
         }
-
         double sum1 = sum(values1);
         double sum2 = sum(values2);
         double sum11 = 0;
         double sum22 = 0;
         double sum12 = 0;
-
         for(int i = 0; i < values1.length; i++) {
             double val1 = values1[i];
             double val2 = values2[i];
-
             sum11 += val1 * val1;
             sum22 += val2 * val2;
             sum12 += val1 * val2;
         }
-
         double cov = sum12/values1.length - sum1*sum2/values1.length/values1.length;
         double error1 = Math.sqrt(sum11/values1.length -  sum1*sum1/values1.length/values1.length);
         double error2 = Math.sqrt(sum22/values1.length -  sum2*sum2/values1.length/values1.length);
@@ -439,6 +437,35 @@ public class Statistics {
         for (int i = 0; i < matrix.length; ++i){
             out[i] = matrix[i][index].toString();
         }
+        return out;
+    }
+
+    /* Bereken de statistieken voor een toets voor gebruik in het vergelijk scherm.
+     *
+     * Open een connectie met de database en haal de behaalde scores, cesuur en maximum van de
+     * meegegeven toets op. Sluit de connectie. Bereken de cijfer met behulp van de updateGradeTableArray
+     * functie en haal de cijfers eruit met behulp van de getColumn functie. Maak een Object array aan
+     * en vul deze met de volgende waardes:
+     *  - het gemiddelde cijfer, afgerond op twee plaatsen na de komma (double)
+     *  - het aantal deelnemers (int)
+     *  - het aantal onvoldoendes (int)
+     *  - het aantal voldoendes (int)
+     *  - het rendement, afgerond op twee plaatsen na de komma (double)
+     * Geef de Object array terug.
+     */
+    public static Object[] examStats(int examID){
+        DatabaseConn d = new DatabaseConn();
+        String[][] points = d.GetStudentScores(examID);
+        Integer[] thresholdMaxGeuss = d.GetCesuurMaxGok(examID);
+        d.CloseConnection();
+        String[][] gradesTable = updateGradeTableArray(points, thresholdMaxGeuss[0], thresholdMaxGeuss[1]);
+        double[] grades = stringToDoubleArray(getColumn(1, gradesTable),0);
+        Object[] out = new Object[5];
+        out[0] = round(mean(grades), 2); //gemiddelde cijfer
+        out[1] = grades.length; //aantal deelnemers
+        out[2] = getFails(grades); //aantal onvoldoendes
+        out[3] = getPasses(grades); //aamtal voldoendes
+        out[4] = round(percentage((int) out[3], (int) out[1]), 2); //rendement
         return out;
     }
 }
