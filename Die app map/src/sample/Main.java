@@ -34,7 +34,6 @@ public class Main extends Application {
 
     private static DatabaseConn databaseConn;
 
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -62,7 +61,7 @@ public class Main extends Application {
             databaseConn.UpdateCesuurGok(toevoeg.examID,Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
             if (toevoeg.questionPropertyCheckBox.isSelected()) {
                 for (String[] questionInfoArray: toevoeg.getQuestionInfo()) {
-                    System.out.println(Arrays.toString(questionInfoArray));
+                    databaseConn.DeleteVragenToets(toevoeg.examID);
                     databaseConn.InputVraag(questionInfoArray[0], Integer.parseInt(questionInfoArray[1]), toevoeg.examID, questionInfoArray[2].equals("true") ? true : false);
                 }
             }

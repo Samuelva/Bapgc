@@ -241,10 +241,6 @@ public class Toevoegen extends TabPane{
              * aan het scherm zet.
              */
             selectionMenu = getChoiceBoxesSelectionMenu();
-//            Region spacer = new Region();
-//            selectionMenu.getChildren().addAll(
-//                    getChoiceBoxesSelectionMenu());
-//            selectionMenu.setVgrow(spacer, Priority.ALWAYS);
         }
 
         private VBox getChoiceBoxesSelectionMenu() {
