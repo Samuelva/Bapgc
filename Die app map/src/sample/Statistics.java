@@ -446,7 +446,7 @@ public class Statistics {
      * meegegeven toets op. Sluit de connectie. Bereken de cijfer met behulp van de updateGradeTableArray
      * functie en haal de cijfers eruit met behulp van de getColumn functie. Maak een Object array aan
      * en vul deze met de volgende waardes:
-     *  - het gemiddelde cijfer, afgerond op twee plaatsen na de komma (double)
+     *  - het gemiddelde cijfer, afgerond op een plaats na de komma (double)
      *  - het aantal deelnemers (int)
      *  - het aantal onvoldoendes (int)
      *  - het aantal voldoendes (int)
@@ -461,11 +461,22 @@ public class Statistics {
         String[][] gradesTable = updateGradeTableArray(points, thresholdMaxGeuss[0], thresholdMaxGeuss[1]);
         double[] grades = stringToDoubleArray(getColumn(1, gradesTable),0);
         Object[] out = new Object[5];
-        out[0] = round(mean(grades), 2); //gemiddelde cijfer
+        out[0] = round(mean(grades), 1); //gemiddelde cijfer
         out[1] = grades.length; //aantal deelnemers
         out[2] = getFails(grades); //aantal onvoldoendes
         out[3] = getPasses(grades); //aamtal voldoendes
         out[4] = round(percentage((int) out[3], (int) out[1]), 2); //rendement
+        return out;
+    }
+
+    public static Object[] moduleStats(String moduleID){
+        ModuleStatsCalculator calc = new ModuleStatsCalculator(moduleID);
+        Object[] out = new Object[5];
+        out[0] = calc.getAverageGrade();
+        out[1] = calc.getParticipant().size();
+        out[3] = calc.getPasses().size();
+        out[2] = (int) out[1] - (int) out[3];
+        out[4] = round(percentage((int) out[3], (int) out[1]), 2);
         return out;
     }
 }
