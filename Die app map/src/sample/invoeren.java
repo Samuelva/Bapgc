@@ -194,17 +194,31 @@ final class Invoeren extends StackPane {
     protected void fillTable(int examID){
         DatabaseConn d = new DatabaseConn();
         Object[][] questionData = d.GetVragenVanToets(examID);
-        this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
-        this.questionLabels = Statistics.getColumn(1, questionData);
-        setupTable(this.questionLabels);
-        this.pointsArray = d.GetStudentScores(examID);
-        ObservableList<String[]> data = FXCollections.observableArrayList();
-        data.addAll(Arrays.asList(this.pointsArray));
-        this.pointsTable.setItems(data);
-        d.CloseConnection();
-
+        if (Arrays.deepToString(questionData).equals("[]")){
+            warnNoQuestions();
+        } else {
+            this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
+            this.questionLabels = Statistics.getColumn(1, questionData);
+            setupTable(this.questionLabels);
+            this.pointsArray = d.GetStudentScores(examID);
+            if (this.pointsArray[0][0] != null) {
+                System.out.println(Arrays.deepToString(this.pointsArray));
+                ObservableList<String[]> data = FXCollections.observableArrayList();
+                data.addAll(Arrays.asList(this.pointsArray));
+                this.pointsTable.setItems(data);
+            }
+            d.CloseConnection();
+        }
     }
-    
+
+    private void warnNoQuestions() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Er zijn geen vragen bekend voor deze toets!");
+        alert.setContentText("U kunt alleen scores invoeren voor toetsen die vragen bevatten.");
+        alert.showAndWait();
+    }
+
     public HBox menuUnder(){
         /*
         Er wordt een regio gemaakt voor centreren van de knoppen.

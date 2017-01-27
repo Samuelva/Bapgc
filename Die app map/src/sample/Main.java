@@ -83,27 +83,12 @@ public class Main extends Application {
                 warning();
             }
             else {
-                view.setSelection(searchOnProperties);
                 toevoeg.setSelection(searchOnProperties);
                 int examID = 1; //HIER MOET DE TOETS ID OPGEHAALD WORDEN MBV HET KEUZEMENU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 invoer.fillTable(examID);
             }
         });
-        
-        view.loadBtn.setOnAction(event -> {
-            String[] searchOnProperties = view.getSelectionProperties();
-            if (searchOnProperties == null) {
-                warning();
-            }
-            else {
-                invoer.setSelection(searchOnProperties);
-                toevoeg.setSelection(searchOnProperties);
-                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
-                view.fillTable(examID);
 
-                view.updateQualityStats();
-            }
-        });
     }
 
     private void warning(String header, String text) {

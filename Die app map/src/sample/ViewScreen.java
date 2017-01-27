@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.EmptyStackException;
+import java.util.List;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import database.DatabaseConn;
@@ -30,14 +32,7 @@ import javafx.util.Callback;
 /* Deze class maakt een StackPane dat het inzage scherm bevat.
  */
 public class ViewScreen extends StackPane{
-    protected ComboBox schoolYearChoiceBox;
-    protected ComboBox yearChoiceBox;
-    protected ComboBox blockChoiceBox;
-    protected ComboBox courseChoiceBox;
-    protected ComboBox typeChoiceBox;
-    protected ComboBox attemptChoiceBox;
     protected ChoiceBox plotChoiceBox;
-    protected Button loadBtn;
     protected Button calculateBtn;
     protected Button plotBtn;
     protected Button savePlotBtn;
@@ -56,10 +51,8 @@ public class ViewScreen extends StackPane{
 
     private String[][] gradeTable = null;
     private String[] questionLabels = null;
-    private int threshold;
-    private int maxPoints;
-    private int guessPoints;
     private Object[][] questionData;
+    private Integer[] examPoints;
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -78,6 +71,8 @@ public class ViewScreen extends StackPane{
 
         HBox mainBox = new HBox(selectionBox, rightBox);
         mainBox.setSpacing(20);
+
+        setLoadEvent();
         this.getChildren().add(mainBox);
     }
 
@@ -86,32 +81,13 @@ public class ViewScreen extends StackPane{
      * aangemaakt die gebruikt wordt voor het laden van een toets.
      */
     private VBox makeSelectionBox(){
-        //label
         Label label = new Label("Keuzemenu");
         label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(150);
         choiceMenu = new Keuzemenu();
-
-        //lege ruimte
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);
-        //laad knop
-        this.loadBtn = new Button("Laad toets");
-
-//        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
-//        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
-//                fillTable(examID);
-//
-//                updateQualityStats();
-//            }
-//        });
-
-        this.loadBtn.setPrefWidth(150);
-        this.loadBtn.setPrefHeight(30);
         return new VBox(label, choiceMenu.getChoiceMenuBox());
     }
     
@@ -372,11 +348,11 @@ public class ViewScreen extends StackPane{
         int fails = gradeTable.length - passes;
         double performance = Statistics.percentage(passes, gradeTable.length);
         updateStats(Integer.toString(questionLabels.length),
-                Integer.toString(maxPoints), Integer.toString(guessPoints),
-                Integer.toString(maxPoints-guessPoints),
-                Double.toString(Statistics.round(Statistics.percentage(threshold-guessPoints, maxPoints),
-                        2)),
-                Integer.toString(threshold), Integer.toString(gradeTable.length),
+                Integer.toString(this.examPoints[1]), Integer.toString(this.examPoints[2]),
+                Integer.toString(this.examPoints[1]-this.examPoints[2]),
+                Double.toString(Statistics.round(Statistics.percentage(examPoints[0]-this.examPoints[2],
+                        this.examPoints[1]),2)),
+                Integer.toString(examPoints[0]), Integer.toString(gradeTable.length),
                 Integer.toString(passes), Integer.toString(fails), Double.toString(performance),
                 Double.toString(Statistics.round(Statistics.mean(grades), 2)));
     }
@@ -444,7 +420,8 @@ public class ViewScreen extends StackPane{
             double percentilePoints = Statistics.kthPercentile(this.percentileSlider.getValue(), total);
             double average = Statistics.percentileMean(total, percentilePoints);
             double cohen = Statistics.cohen(average,
-                    Statistics.percentage(threshold - guessPoints, maxPoints) / 100, this.guessPoints);
+                    Statistics.percentage(this.examPoints[0] - this.examPoints[2],
+                            this.examPoints[1]) / 100, this.examPoints[2]);
             this.cohenText.setText("Punten percentiel: " + Statistics.round(percentilePoints, 2) +
                     "\nGemiddelde punten percentiel: " + Statistics.round(average, 2) +
                     "\nCohen-Schotanus censuur: " + Statistics.round(cohen, 2) + "\n");
@@ -487,18 +464,30 @@ public class ViewScreen extends StackPane{
      */
     protected void fillTable(int examID){
         DatabaseConn d = new DatabaseConn();
-        this.questionData = d.GetVragenVanToets(examID);
+        try {
+            this.questionData = d.GetVragenVanToets(examID);
+            this.examPoints = d.GetCesuurMaxGok(examID);
+            this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.examPoints[0],
+                    this.examPoints[1]);
+        } catch (EmptyStackException | NumberFormatException e) {
+            warnNoData();
+            return;
+        }
         this.questionLabels = Statistics.getColumn(1, questionData);
         setupTable(this.questionLabels);
-        Integer[] examPoints = d.GetCesuurMaxGok(examID);
-        this.threshold = examPoints[0];
-        this.maxPoints = examPoints[1];
-        this.guessPoints = examPoints[2];
-        this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.threshold, this.maxPoints);
         ObservableList<String[]> data = FXCollections.observableArrayList();
         data.addAll(Arrays.asList(this.gradeTable));
         this.pointsTable.setItems(data);
+        updateQualityStats();
         d.CloseConnection();
+    }
+
+    private void warnNoData() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Er is geen data bekend voor deze toets!");
+        alert.setContentText("U kunt alleen toetsen waarvoor scores bekend zijn inzien.");
+        alert.showAndWait();
     }
 
 
@@ -520,41 +509,18 @@ public class ViewScreen extends StackPane{
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
     }
-    
-    public String[] getSelectionProperties() {
-            String[] properties = new String[6];
 
 
-            if (yearChoiceBox.getValue().equals("Jaar"))
-                return null;
-            if (schoolYearChoiceBox.getValue().equals("Leerjaar"))
-                return null;
-            if (blockChoiceBox.getValue().equals("Periode"))
-                return null;
-            if (courseChoiceBox.getValue().equals("Module"))
-                return null;
-            if (typeChoiceBox.getValue().equals("Toetsvorm"))
-                return null;
-            if (attemptChoiceBox.getValue().equals("Gelegenheid"))
-                return null;
-
-            properties[0] = (String) courseChoiceBox.getValue();
-            properties[1] = (String) yearChoiceBox.getValue();
-            properties[2] = (String) schoolYearChoiceBox.getValue();
-            properties[3] = (String) blockChoiceBox.getValue();
-            properties[4] = (String) typeChoiceBox.getValue();
-            properties[5] = (String) attemptChoiceBox.getValue();
-
-
-            return properties;
-        }
-    
-    public void setSelection(String[] selection) {
-        courseChoiceBox.setValue(selection[0]);
-        yearChoiceBox.setValue(selection[1]);
-        schoolYearChoiceBox.setValue(selection[2]);
-        blockChoiceBox.setValue(selection[3]);
-        typeChoiceBox.setValue(selection[4]);
-        attemptChoiceBox.setValue(selection[5]);        
+    public void setLoadEvent(){
+        this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                DatabaseConn d = new DatabaseConn();
+                List<String> selection = choiceMenu.getSelection();
+                int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
+                        selection.get(4), selection.get(5));
+                fillTable(id);
+            }
+        });
     }
 }
