@@ -27,7 +27,7 @@ public class Lijngrafiek {
     public void makeLineChart() {
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
-        lineChart = new LineChart<String, Number>(xAxis, yAxis);
+        lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setTitle(title);
 
         xAxis.setLabel(xLabel);

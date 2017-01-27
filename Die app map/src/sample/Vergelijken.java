@@ -30,15 +30,16 @@ public class Vergelijken extends StackPane {
     public VergelijkKeuzemenu periodChoiceMenu;
 
     // Instanties voor de statistieken voor elke tab
-    public Statistiek testStatistics;
-    public Statistiek moduleStatistics;
-    public Statistiek periodStatistics;
+    public VergelijkStatistieken testStatistics;
+    public VergelijkStatistieken moduleStatistics;
+    public VergelijkStatistieken periodStatistics;
 
 
     public Vergelijken(){
         /**
          * Hoofdfunctie.
-         * Roept de functies aan om het tabmenu, keuzemenu en statistieken gedeelte aan te maken.
+         * Roept de functies aan om het tabmenu, keuzemenu en statistieken
+         * gedeelte aan te maken.
          */
         createTabs(); // Initieerd de tabs
         createChoiceMenus(); // Maakt instanties voor keuzemenu
@@ -48,16 +49,19 @@ public class Vergelijken extends StackPane {
         this.getChildren().add(tabPane);
 
         // Voeg zo inhoud toe aan de dropdown menu's
+        // gaat later weg
         testChoiceMenu.setYearContent("2016", "2017", "2018");
 //        testChoiceMenu.setModuleContent("Bapgc", "Bacf");
         moduleChoiceMenu.setYearContent("2016", "207");
 
         // Voeg zo items toe aan het menu in het keuzemenu
+        // gaat later weg
         testChoiceMenu.setSelectionMenuItems("Binp 2016 opdracht 1", "Binp 2016 opdracht 2", "Binp 2015 opdracht 1", "Binp 2015 odpracht 2", "Binp 2014 opdracht 1", "Binp 2014 opdracht 2", "Binp 2013 opdracht 1", "Binp 2013 opdracht 2");
         moduleChoiceMenu.setSelectionMenuItems("Binp 2016", "Binp 2015", "Binp 2014", "Binp 2013", "Binp 2012");
         periodChoiceMenu.setSelectionMenuItems("1", "2", "3", "4");
 
         // Voeg zo statistieken toe
+        // Gaat later weg
         testStatistics.setTestTableContent(FXCollections.observableArrayList(
                 new TestRow("Binp 2018 Opdracht 1", 7, 6, 4, 9, 2),
                 new TestRow("Binp 2017 Opdracht 1", 3, 9, 4, 7, 4),
@@ -109,8 +113,8 @@ public class Vergelijken extends StackPane {
         tabPane.setTabMinWidth(100);
 
         // Goedkope fix
-        // Vergelijkscherm past zich niet aan aan de veticale hoogte van de applet voor
-        // een of andere reden.
+        // Vergelijkscherm past zich niet aan aan de
+        // veticale hoogte van de applet voor een of andere reden.
         tabPane.setPrefHeight(1080);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
     }
@@ -128,9 +132,9 @@ public class Vergelijken extends StackPane {
         /**
          * Initieerd instanties voor het statistiek gedeelte
          */
-        testStatistics = new Statistiek(1);
-        moduleStatistics = new Statistiek(2);
-        periodStatistics = new Statistiek(3);
+        testStatistics = new VergelijkStatistieken(1);
+        moduleStatistics = new VergelijkStatistieken(2);
+        periodStatistics = new VergelijkStatistieken(3);
     }
 
     private void fillTabs() {
@@ -141,9 +145,13 @@ public class Vergelijken extends StackPane {
         moduleTabBox = new HBox();
         periodTabBox = new HBox();
 
-        testTabBox.getChildren().addAll(testChoiceMenu.getTestMenu(), testStatistics.returnStatisticsBox());
-        moduleTabBox.getChildren().addAll(moduleChoiceMenu.getModuleMenu(), moduleStatistics.returnStatisticsBox());
-        periodTabBox.getChildren().addAll(periodChoiceMenu.getPeriodMenu(), periodStatistics.returnStatisticsBox());
+        testTabBox.getChildren().addAll(testChoiceMenu.getTestChoiceMenu(),
+                testStatistics.getCompareStatisticsBox());
+        moduleTabBox.getChildren().addAll(moduleChoiceMenu
+                        .getCourseChoiceMenu(), moduleStatistics
+                .getCompareStatisticsBox());
+        periodTabBox.getChildren().addAll(periodChoiceMenu.getBlockChoiceMenu(),
+                periodStatistics.getCompareStatisticsBox());
 
         testTabBox.setPadding(new Insets(5, 5, 5, 5));
         moduleTabBox.setPadding(new Insets(5, 5, 5, 5));
