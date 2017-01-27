@@ -7,15 +7,15 @@ import java.util.*;
 /**
  * Created by kwita_000 on 26-1-2017.
  */
-public class ModuleStatsCalculator {
+public class CourseStatsCalculator {
     Object[][] attempts;
     HashMap<String, Double[]> tempGrades = new HashMap();
     HashMap<String, Double[]> finalGrades = new HashMap();
     DatabaseConn d;
 
-    ModuleStatsCalculator(String moduleID){
+    CourseStatsCalculator(String courseID){
         this.d = new DatabaseConn();
-        this.attempts = d.GetToetsKansen(moduleID);
+        this.attempts = d.GetToetsKansen(courseID);
         compileFinalGrades();
         determineInclusion();
         d.CloseConnection();
@@ -89,7 +89,7 @@ public class ModuleStatsCalculator {
         return Statistics.round(sum/num, 1);
     }
 
-    protected List<String> getPasses(){
+    protected Set<String> getPasses(){
         List<String> out = new ArrayList();
         for (String key: this.finalGrades.keySet()){
             boolean include = true;
@@ -103,6 +103,6 @@ public class ModuleStatsCalculator {
                 out.add(key);
             }
         }
-        return out;
+        return new HashSet(out);
     }
 }

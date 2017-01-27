@@ -5,10 +5,7 @@ import database.DatabaseConn;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Davy on 9-1-2017.
@@ -469,14 +466,64 @@ public class Statistics {
         return out;
     }
 
-    public static Object[] moduleStats(String moduleID){
-        ModuleStatsCalculator calc = new ModuleStatsCalculator(moduleID);
+    public static Object[] moduleStats(String courseID){
+        CourseStatsCalculator calc = new CourseStatsCalculator(courseID);
         Object[] out = new Object[5];
         out[0] = calc.getAverageGrade();
         out[1] = calc.getParticipant().size();
         out[3] = calc.getPasses().size();
         out[2] = (int) out[1] - (int) out[3];
         out[4] = round(percentage((int) out[3], (int) out[1]), 2);
+        return out;
+    }
+
+    public static Object[] periodStats(String selectedYear, String selectedSchoolYear, String selectedBlock){
+        DatabaseConn d = new DatabaseConn();
+        List<String> courses = d.getCourses(selectedYear, selectedSchoolYear, selectedBlock);
+        d.CloseConnection();
+        List<Set> passes = new ArrayList();
+        List<Set> participants = new ArrayList();
+        double sum = 0;
+        int num = 0;
+        for (String course: courses){
+            CourseStatsCalculator courseStats = new CourseStatsCalculator(course);
+            passes.add(courseStats.getPasses());
+            participants.add(courseStats.getParticipant());
+            for (String key: courseStats.finalGrades.keySet()){
+                for (Double value: courseStats.finalGrades.get(key)){
+                    sum += value;
+                    ++num;
+                }
+            }
+        }
+        return determinePeriodStats(sum, num, passes, participants);
+    }
+
+    private static Object[] determinePeriodStats(double sum, int num, List<Set> passes, List<Set> participants) {
+        Object[] out = new Object[5];
+        out[0] = round(sum/num, 2);
+        out[1] = multipleSetIntersect(participants).size();
+        out[3] = multipleSetIntersect(passes).size();
+        out[2] = (int) out[1] - (int) out[3];
+        out[4] = round(percentage((int) out[3], (int) out[1]), 2);
+        return out;
+    }
+
+    public static Set<String> multipleSetIntersect(List<Set> setList){
+        Set firstSet = setList.get(0);
+        Set out = new HashSet();
+        for (Object value: firstSet){
+            boolean include = true;
+            for (int i = 1; i < setList.size(); ++i){
+                if (! (setList.get(i).contains(value))){
+                    include = false;
+                    break;
+                }
+            }
+            if (include){
+                out.add(value);
+            }
+        }
         return out;
     }
 }
