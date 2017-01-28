@@ -77,7 +77,7 @@ public class Main extends Application {
         });
 
 
-        invoer.btn1.setOnAction(event -> {
+        invoer.loadTest.setOnAction(event -> {
             String[] searchOnProperties = invoer.getSelectionProperties();
             if (searchOnProperties == null) {
                 warning();
@@ -89,7 +89,7 @@ public class Main extends Application {
                 invoer.fillTable(examID);
             }
         });
-        
+
         view.loadBtn.setOnAction(event -> {
             String[] searchOnProperties = view.getSelectionProperties();
             if (searchOnProperties == null) {
@@ -113,14 +113,14 @@ public class Main extends Application {
         alert.setContentText(text);
         alert.showAndWait();
     }
-    
+
     private void warning() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Niet alles is ingevoerd!");
-                alert.setContentText("Voer de niet gevoerde keuzes in het "
-                        + "keuzemenu in om verder te gaan.");
-                alert.showAndWait();
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Niet alles is ingevoerd!");
+        alert.setContentText("Voer de niet gevoerde keuzes in het "
+                + "keuzemenu in om verder te gaan.");
+        alert.showAndWait();
     }
 
     private static void initLayout(){
