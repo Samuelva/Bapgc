@@ -52,6 +52,8 @@ public class ViewScreen extends StackPane{
     private Object[][] questionData;
     private Integer[] examPoints;
 
+    private String selectedGraph;
+
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
      * rechter gedeelte gezet dat de rest van het scherm opvult.
@@ -175,13 +177,8 @@ public class ViewScreen extends StackPane{
         this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
                         "Boxplot", "Histogram"));
-        this.plotChoiceBox.setOnAction(event -> {
-            if (plotChoiceBox.getValue() == "Boxplot") {
-                //makeBoxplot();
-            } else if (plotChoiceBox.getValue() == "Histogram") {
-                //makeHistogram();
-            }
-        });
+        this.plotChoiceBox.setOnAction(event ->
+                selectedGraph = (String) plotChoiceBox.getValue());
         this.plotChoiceBox.setValue("Boxplot");
         this.plotChoiceBox.setPrefWidth(133);
         this.plotChoiceBox.setPrefHeight(30);
@@ -313,8 +310,15 @@ public class ViewScreen extends StackPane{
             if (newValue.getColumn() < 3){
                 examSelectedUpdate();
             } else {
+                graphUpdate(newValue);
                 questionSelectedUpdate(newValue.getColumn());
             }
+        }
+    }
+
+    private void graphUpdate(TablePosition newValue) {
+        if (selectedGraph == "Histogram") {
+            plotHistogram(newValue);
         }
     }
 
@@ -493,7 +497,20 @@ public class ViewScreen extends StackPane{
         alert.showAndWait();
     }
 
+    private void plotHistogram(TablePosition newValue) {
+        barChart = new Histogram("Student", "Punten", "Vraagpunten per " +
+                "student",
+                "Punten");
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(barChart.getBarChartBox());
 
+        for (int i = 0; i < pointsTable.getItems().size(); i++) {
+            barChart.addBar(pointsTable.getColumns().get(0)
+                    .getCellObservableValue(i).getValue().toString(), Integer
+                    .parseInt((String) newValue.getTableColumn()
+                            .getCellObservableValue(i).getValue()));
+        }
+    }
     protected void makeHistogram() {
         barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
         barChart.makeBarChart();

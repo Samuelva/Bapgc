@@ -86,10 +86,7 @@ public class VergelijkStatistieken {
         table.getFocusModel().focusedCellProperty().addListener((observable,
                                                                  oldValue,
                                                                  newValue) -> {
-            if (newValue.getTableColumn() != null && newValue.getTableColumn
-                    ().getText() != "Toets" && newValue.getTableColumn()
-                    .getText() != "Module" && newValue.getTableColumn()
-                    .getText() != "Periode") {
+            if (newValue.getTableColumn() != null && newValue.getColumn() > 0) {
                 colSelectEvent(newValue);
             }
         });
