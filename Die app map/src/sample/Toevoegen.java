@@ -735,6 +735,7 @@ public class Toevoegen extends TabPane{
                 if (file != null) {
                     System.out.println(file);
                     Object moduleReader = new ModuleReader(file.toString());
+                    fillTable();
                 }
             });
         }

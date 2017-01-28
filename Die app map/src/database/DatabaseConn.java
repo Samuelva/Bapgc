@@ -121,6 +121,8 @@ public class DatabaseConn {
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
     private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar, Periode, Schooljaar" +
             " FROM Toets;";
+    private final String DELETESCORES = "DELETE FROM SCORE" +
+            " WHERE VraagID=%s";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -883,5 +885,17 @@ public class DatabaseConn {
             throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
+    }
+
+    public void DeleteScoresForQuestion(Integer questionID){
+        try {
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(String.format(
+                    this.DELETESCORES, questionID
+            ));
+            this.statement.close();
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
     }
 }
