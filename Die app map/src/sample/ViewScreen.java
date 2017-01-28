@@ -441,25 +441,32 @@ public class ViewScreen extends StackPane{
             columnsTotal[i+3] = columns[i];
         }
         for (int i = 0; i < columnsTotal.length; i++) {
-            TableColumn column = new TableColumn(columnsTotal[i]);
-            final int index = i;
-            column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(CellDataFeatures<String[], String> values) {
-                    return new SimpleStringProperty((values.getValue()[index]));
-                }
-            });
-            if (i < 3){
-                column.setMinWidth(80);
-                column.setMaxWidth(80);
-            } else {
-                column.setMinWidth(40);
-                column.setMaxWidth(40);
-            }
+            TableColumn column = makeColumn(i, columnsTotal[i]);
             this.pointsTable.getColumns().add(column);
         }
     }
 
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private TableColumn makeColumn(int i, String columnLabel) {
+        TableColumn column = new TableColumn(columnLabel);
+        final int INDEX = i;
+        column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<String[], String> values) {
+                return new SimpleStringProperty((values.getValue()[INDEX]));
+            }
+        });
+        if (i < 3){
+            column.setMinWidth(80);
+            column.setMaxWidth(80);
+        } else {
+            column.setMinWidth(40);
+            column.setMaxWidth(40);
+        }
+        return column;
+    }
+
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /* Deze functie vult de tabel in.
      */
     protected void fillTable(int examID){
@@ -482,6 +489,7 @@ public class ViewScreen extends StackPane{
         d.CloseConnection();
     }
 
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void warnNoData() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Waarschuwing!");
@@ -510,7 +518,7 @@ public class ViewScreen extends StackPane{
         boxplot.addData();
     }
 
-
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void setLoadEvent(){
         this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

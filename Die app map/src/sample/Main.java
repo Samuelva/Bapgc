@@ -58,9 +58,9 @@ public class Main extends Application {
         });
         toevoeg.saveExamBtn.setOnAction(event -> {
             DatabaseConn databaseConn = new DatabaseConn();
-            databaseConn.UpdateCesuurGok(toevoeg.examID,Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
+            databaseConn.UpdateCesuurGok(toevoeg.examID, Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
             if (toevoeg.questionPropertyCheckBox.isSelected()) {
-                for (String[] questionInfoArray: toevoeg.getQuestionInfo()) {
+                for (String[] questionInfoArray : toevoeg.getQuestionInfo()) {
                     databaseConn.DeleteVragenToets(toevoeg.examID);
                     databaseConn.InputVraag(questionInfoArray[0], Integer.parseInt(questionInfoArray[1]), toevoeg.examID, questionInfoArray[2].equals("true") ? true : false);
                 }
@@ -75,48 +75,6 @@ public class Main extends Application {
             toevoeg.examTab.setExamPropertiesScreen(selection.toArray(new String[0]));
             databaseConn.CloseConnection();
         });
-
-
-        invoer.loadTest.setOnAction(event -> {
-            String[] searchOnProperties = invoer.getSelectionProperties();
-            if (searchOnProperties == null) {
-                warning();
-            }
-            else {
-                toevoeg.setSelection(searchOnProperties);
-                int examID = 1; //HIER MOET DE TOETS ID OPGEHAALD WORDEN MBV HET KEUZEMENU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                invoer.fillTable(examID);
-            }
-        });
-
-        view.loadBtn.setOnAction(event -> {
-            String[] searchOnProperties = view.getSelectionProperties();
-            if (searchOnProperties == null) {
-                warning();
-            }
-            else {
-                invoer.setSelection(searchOnProperties);
-                toevoeg.setSelection(searchOnProperties);
-                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
-                view.fillTable(examID);
-
-    }
-
-    private void warning(String header, String text) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(header);
-        alert.setContentText(text);
-        alert.showAndWait();
-    }
-
-    private void warning() {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Niet alles is ingevoerd!");
-        alert.setContentText("Voer de niet gevoerde keuzes in het "
-                + "keuzemenu in om verder te gaan.");
-        alert.showAndWait();
     }
 
     private static void initLayout(){
