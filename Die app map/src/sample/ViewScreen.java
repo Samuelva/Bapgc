@@ -2,7 +2,6 @@ package sample;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.EmptyStackException;
 import java.util.List;
@@ -20,7 +19,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -63,16 +61,14 @@ public class ViewScreen extends StackPane{
         selectionBox.setMinWidth(150);
         selectionBox.setSpacing(20);
         HBox.setMargin(selectionBox, new Insets(5));
-
         VBox rightBox = makeRightBox();
         rightBox.setSpacing(10);
         HBox.setHgrow(rightBox, Priority.ALWAYS);
         HBox.setMargin(rightBox, new Insets(5));
-
         HBox mainBox = new HBox(selectionBox, rightBox);
         mainBox.setSpacing(20);
-
         setLoadEvent();
+        setExportEvent();
         this.getChildren().add(mainBox);
     }
 
@@ -230,17 +226,6 @@ public class ViewScreen extends StackPane{
      */
     private HBox makeMiddleBox(){
         this.exportBtn = new Button("Exporteer CSV");
-
-        this.exportBtn.setOnAction(e -> {
-            if (this.gradeTable != null) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)", "*.csv"));
-            fileChooser.setTitle("Opslaan Als");
-            File file = fileChooser.showSaveDialog(new Stage());
-            if (file != null) {
-                csvExport(this.gradeTable, questionLabels, file);
-            }}
-        });
         this.exportBtn.setPrefWidth(240);
         this.exportBtn.setPrefHeight(30);
         Region leftFill = new Region();
@@ -252,15 +237,30 @@ public class ViewScreen extends StackPane{
         return new HBox(this.exportBtn, leftFill, questionLabel, rightFill);
     }
 
+    private void setExportEvent(){
+        this.exportBtn.setOnAction(e -> {
+            if (this.gradeTable != null) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)",
+                        "*.csv"));
+                fileChooser.setTitle("Opslaan Als");
+                File file = fileChooser.showSaveDialog(new Stage());
+                if (file != null) {
+                    csvExport(this.gradeTable, questionLabels, file);
+                }
+            }
+        });
+    }
+
     /* Deze functie schrijft maakt een CSV bestand van de labels en scores die meegegeven worden
        in het bestand dat meegegeven wordt.
      */
     private void csvExport(String[][] scores, String[] labels, File file){
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write("Studentnr,Cijfer,Totaal," + String.join(";", labels) + "\n");
+            writer.write("Studentnr;Cijfer;Totaal;" + String.join(";", labels) + "\n");
             for (String[] student: scores){
-                writer.write(String.join(",", student) + "\n");
+                writer.write(String.join(";", student) + "\n");
             }
             writer.close();
         } catch (Exception e) {
@@ -280,39 +280,22 @@ public class ViewScreen extends StackPane{
      * overgenomen van het internet en moet dus aangepast worden!
      */
     private void makeTable(){
-        this.pointsTable = new TableView<>(); 
-        this.pointsTable.setEditable(false);
+        this.pointsTable = new TableView<>();
         VBox.setVgrow(this.pointsTable, Priority.ALWAYS);
         this.pointsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.pointsTable.getSelectionModel().setCellSelectionEnabled(true);
         this.pointsTable.getFocusModel().focusedCellProperty().addListener(new ChangeListener<TablePosition>() {
-
-            /* Als er op een cel gedrukt wordt, wordt de gehele kolom geselecteerd en de statistiek geupdate.
-             * Als een van de eerste drie kolomen geselecteerd wordt worden de statistieken voor de hele toets
-             * weergegeven, anders voor de specifieke vraag.
-             */
             @Override
             public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue,
                                 TablePosition newValue) {
-                if (newValue.getTableColumn() != null) {
-                    pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
-                            pointsTable.getItems().size(), newValue.getTableColumn());
-                    if (newValue.getColumn() < 3){
-                        examSelectedUpdate();
-                    } else {
-                        questionSelectedUpdate(newValue.getColumn());
-                    }
-                }
+                columnSelectionChange(newValue);
             }
         });
         pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
-            /* Zorg ervoor dat de kolomen niet van volgorde veranderd kunnen worden.
-             */
             @Override
             public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
                 TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
                 header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
-
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
                                         Boolean newValue) {
@@ -321,6 +304,18 @@ public class ViewScreen extends StackPane{
                 });
             }
         });
+    }
+
+    private void columnSelectionChange(TablePosition newValue) {
+        if (newValue.getTableColumn() != null) {
+            pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
+                    pointsTable.getItems().size(), newValue.getTableColumn());
+            if (newValue.getColumn() < 3){
+                examSelectedUpdate();
+            } else {
+                questionSelectedUpdate(newValue.getColumn());
+            }
+        }
     }
 
     /* Bereken de statistieken voor de geselecteerde vraag en update de weergave.
