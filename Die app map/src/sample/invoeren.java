@@ -2,8 +2,7 @@ package sample;
 
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import database.DatabaseConn;
@@ -12,6 +11,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -64,6 +64,8 @@ final class Invoeren extends StackPane {
     private String[] questionLabels;
     private String[][] pointsArray;
     private int[] questionIDs;
+    private boolean emptied = false;
+    private Map<String, Map> changes = new HashMap();
 
     public Invoeren() {
         /*
@@ -76,6 +78,8 @@ final class Invoeren extends StackPane {
         VBox vbox2 = MenuMaken();
         makeTable();
         BoxenVullen(vbox2, hbox);
+        setLoadEvent();
+        setSaveChangesEvent();
         
 
         btn4.setOnAction(e -> {
@@ -120,7 +124,7 @@ final class Invoeren extends StackPane {
         	
         	if (result.get() == OK){
                 this.pointsTable.getItems().clear();
-                this.pointsTable.getColumns().clear();
+                this.emptied = true;
         	} else {
         	    alert.close();
         	}
@@ -138,11 +142,7 @@ final class Invoeren extends StackPane {
     protected void setupTable(String[] columns) {
         this.pointsTable.getItems().clear();
         this.pointsTable.getColumns().clear();
-        String[] columnsTotal = new String[columns.length + 1];
-        columnsTotal[0] = "Student nr.";
-        for (int i = 0; i < columns.length; i++){
-            columnsTotal[i+1] = columns[i];
-        }
+        String[] columnsTotal = compileColumns(columns);
         for (int i = 0; i < columnsTotal.length; i++) {
             TableColumn column = new TableColumn(columnsTotal[i]);
             final int index = i;
@@ -158,7 +158,6 @@ final class Invoeren extends StackPane {
             } else {
                 column.setMinWidth(40);
                 column.setMaxWidth(40);
-                TextFieldTableCell cell = new TextFieldTableCell();
                 column.setCellFactory(TextFieldTableCell.<String>forTableColumn());
                 column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
 
@@ -168,13 +167,17 @@ final class Invoeren extends StackPane {
                     @Override
                     public void handle(TableColumn.CellEditEvent event) {
                         try{
-                            int x = Integer.parseInt(event.getNewValue().toString());
+                            int newValue = Integer.parseInt(event.getNewValue().toString());
+                            if (newValue > 9999 || newValue < 0){
+                                throw new NumberFormatException();
+                            }
                             ObservableList items = pointsTable.getItems();
                             String[] newRow = ((String[]) event.getRowValue());
                             newRow[pointsTable.getColumns().indexOf(column)] = event.getNewValue().toString();
                             items.set(event.getTablePosition().getRow(), newRow);
                             pointsTable.setItems(items);
-                        } catch (Exception e) {
+                            storeChange(newRow[0], pointsTable.getColumns().indexOf(column), newValue);
+                        } catch (NumberFormatException e) {
                             column.setVisible(false);
                             column.setVisible(true);
                         }
@@ -183,6 +186,24 @@ final class Invoeren extends StackPane {
             }
             this.pointsTable.getColumns().add(column);
         }
+    }
+
+    private String[] compileColumns(String[] columns) {
+        String[] columnsTotal = new String[columns.length + 1];
+        columnsTotal[0] = "Student nr.";
+        for (int i = 0; i < columns.length; i++){
+            columnsTotal[i+1] = columns[i];
+        }
+        return columnsTotal;
+    }
+
+    private void storeChange(String studentID, int i, Integer newValue) {
+        if (! this.changes.keySet().contains(studentID)){
+            this.changes.put(studentID, new HashMap<Integer, Integer>());
+        }
+        Map<Integer, Integer> map = this.changes.get(studentID);
+        map.put(questionIDs[i-1], newValue);
+        this.changes.put(studentID, map);
     }
 
     /* Deze functie vult de tabel in.
@@ -202,10 +223,10 @@ final class Invoeren extends StackPane {
             setupTable(this.questionLabels);
             this.pointsArray = d.GetStudentScores(examID);
             if (this.pointsArray[0][0] != null) {
-                System.out.println(Arrays.deepToString(this.pointsArray));
                 ObservableList<String[]> data = FXCollections.observableArrayList();
                 data.addAll(Arrays.asList(this.pointsArray));
                 this.pointsTable.setItems(data);
+                this.emptied = false;
             }
             d.CloseConnection();
         }
@@ -278,7 +299,6 @@ final class Invoeren extends StackPane {
         pointsTable = new TableView();
         pointsTable.setEditable(true);
         VBox.setVgrow(pointsTable, Priority.ALWAYS);
-        
         pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -431,6 +451,68 @@ final class Invoeren extends StackPane {
         attemptChoiceBox.setValue(selection[5]);
     }
 
+    protected void setSaveChangesEvent(){
+        this.btn3.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Waarschuwing");
+                alert.setHeaderText("Weet u zeker dat u de wijzigingen op wilt slaan?");
+                alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel");
+                ButtonType OK = new ButtonType("OK");
+                ButtonType Cancel = new ButtonType("Cancel");
+                alert.getButtonTypes().setAll(OK, Cancel);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == OK){
+                    saveChanges();
+                } else {
+                    alert.close();
+                }
 
+            }
+        });
+    }
 
+    private void saveChanges(){
+        if (this.emptied){
+            clearScores();
+        } else {
+            DatabaseConn d = new DatabaseConn();
+            for (String key : this.changes.keySet()) {
+                Map<Integer, Integer> map = this.changes.get(key);
+                Integer student = Integer.parseInt(key);
+                for (Integer id : map.keySet()) {
+                    d.UpdateScore(student, id, map.get(id));
+                }
+            }
+            d.CloseConnection();
+        }
+        this.changes.clear();
+        this.emptied = false;
+    }
+
+    private void clearScores() {
+        System.out.println("hey");
+        DatabaseConn d = new DatabaseConn();
+        for (Integer id: this.questionIDs){
+            d.DeleteScoresForQuestion(id);
+        }
+        d.CloseConnection();
+    }
+
+    private void setLoadEvent(){
+        this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                emptied = false;
+                changes.clear();
+                DatabaseConn d = new DatabaseConn();
+                List<String> selection = choiceMenu.getSelection();
+                int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
+                        selection.get(4), selection.get(5));
+                fillTable(id);
+                d.CloseConnection();
+            }
+        });
+    }
 }

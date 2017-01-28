@@ -520,6 +520,7 @@ public class ViewScreen extends StackPane{
                 int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
                         selection.get(4), selection.get(5));
                 fillTable(id);
+                d.CloseConnection();
             }
         });
     }
