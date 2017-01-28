@@ -2,6 +2,7 @@ package sample;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.EmptyStackException;
 import java.util.List;
@@ -13,12 +14,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -26,6 +32,8 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+
+import javax.imageio.ImageIO;
 
 /* Deze class maakt een StackPane dat het inzage scherm bevat.
  */
@@ -46,13 +54,16 @@ public class ViewScreen extends StackPane{
     protected Histogram barChart;
     protected Boxplot boxplot;
     protected Keuzemenu choiceMenu;
+    protected String selectedGraph;
+    protected WritableImage graphImage;
+    protected boolean plotted;
 
     private String[][] gradeTable = null;
     private String[] questionLabels = null;
     private Object[][] questionData;
     private Integer[] examPoints;
 
-    private String selectedGraph;
+
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -185,16 +196,15 @@ public class ViewScreen extends StackPane{
         this.plotBtn = new Button("Plotten");
         this.plotBtn.setPrefWidth(133);
         this.plotBtn.setPrefHeight(30);
-        this.savePlotBtn = new Button("Afbeelding opslaan");
+        this.savePlotBtn = new Button("Grafiek opslaan");
         this.savePlotBtn.setPrefWidth(133);
         this.savePlotBtn.setPrefHeight(30);
         this.savePlotBtn.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG (*.png)", "*.png"));
-            fileChooser.setTitle("Opslaan Als");
-            File file = fileChooser.showSaveDialog(new Stage());
-            if (file != null) {
-                System.out.println(file);
+            if (selectedGraph != null && plotted) {
+                displaySaveDialog();
+            }
+            else {
+                displayInformationDialog();
             }
         });
         HBox hBox = new HBox(this.plotChoiceBox,
@@ -510,6 +520,8 @@ public class ViewScreen extends StackPane{
                     .parseInt((String) newValue.getTableColumn()
                             .getCellObservableValue(i).getValue()));
         }
+
+        plotted = true;
     }
     protected void makeHistogram() {
         barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
@@ -528,6 +540,60 @@ public class ViewScreen extends StackPane{
         graphPane.getChildren().clear();
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
+    }
+
+    private void displaySaveDialog() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter
+                ("PNG (*.png)", ".png"));
+        fileChooser.setTitle("Opslaan Als");
+        File savePath = fileChooser.showSaveDialog(new Stage());
+        if (savePath != null) {
+            saveGraph(savePath);
+        }
+    }
+
+    private void saveGraph(File savePath) {
+        BarChart<String, Number> barChartGraph;
+        LineChart<String, Number> lineChartGraph;
+        if (selectedGraph == "Histogram") {
+            barChartGraph = barChart.getBarChart();
+            graphImage = barChartGraph.snapshot(new SnapshotParameters(),
+                    null);
+//        } else if (selectedGraph == "Boxplot") {
+//            lineChartGraph = lineChart.getLineChart();
+//            graphImage = lineChartGraph.snapshot(new SnapshotParameters(),
+//                    null);
+        }
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(graphImage, null),
+                    "png", savePath);
+        } catch (IOException e) {
+            displayErrorDialog();
+        }
+    }
+
+    private void displayInformationDialog() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Geen grafiek");
+        alert.setHeaderText("Er kan geen grafiek worden opgeslagen omdat er " +
+                "geen is aangemaakt.");
+        alert.setContentText("Maak een grafiek om deze te kunnen opslaan.");
+        ButtonType confirm = new ButtonType("OK");
+        alert.getButtonTypes().setAll(confirm);
+        alert.show();
+    }
+
+    private void displayErrorDialog() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fout");
+        alert.setHeaderText("Grafiek kan niet worden opgeslagen door een " +
+                "onbekende fout.");
+        alert.setContentText("IOException, de grafiek kon niet worden " +
+                "weggeschreven.");
+        ButtonType confirm = new ButtonType("OK");
+        alert.getButtonTypes().setAll(confirm);
+        alert.show();
     }
 
     //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
