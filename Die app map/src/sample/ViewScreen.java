@@ -444,12 +444,15 @@ public class ViewScreen extends StackPane{
                 Double.toString(Statistics.round(Statistics.mean(grades), 2)));
     }
 
-    /* Deze functie zet het rechter gedeelte van het scherm in elkaar.
-     * Eerst het statistieken gedeelte, daaronder het tussenstuk en dan
-     * de tabel. Het statistieken gedeelte heeft een vaste grote (300).
-     * Dit alles wordt als VBox terug gegeven.
-     */
+    //BOOKMARKTYPEOFTHINGY!!!!!!!!!!!!!!!!!!!!!!!!!!!!ABOVE STILL NEEDS TO BE DOCUMENTED PROPERLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     private VBox makeRightBox(){
+        /**
+         *  Deze functie zet het rechter gedeelte van het scherm in elkaar.
+         *  Eerst het statistieken gedeelte, daaronder het tussenstuk en dan
+         * de tabel. Het statistieken gedeelte heeft een vaste grote (280).
+         * Dit alles wordt als VBox terug gegeven.
+         */
         HBox topBox = makeTopBox();
         topBox.setPrefHeight(280);
         HBox middleBox = makeMiddleBox();
@@ -457,11 +460,14 @@ public class ViewScreen extends StackPane{
         return new VBox(topBox, middleBox, this.pointsTable);
     }
 
-    /* Deze functie update de statistieken voor de weergegeven toets.
-     */
     protected void updateStats(String questions, String maxPoints, String guessPoints, String earnablePoints,
                                String degree, String threshold, String participants, String passes, String fails,
                                String performance, String average) {
+        /**
+         * Deze methode past de statistiek voor de gehele toets aan.
+         * De tekst wordt aangepast om alle meegegeven waardes weer
+         * te geven.
+         */
         this.statisticsText.setText("Aantal vragen: " + questions + "\nMaximum punten: " + maxPoints +
                 "\nPunten door gokkans: " + guessPoints + "\nTotaal te verdienen: " + earnablePoints + "" +
                 "\nBeheersgraad: " + degree + "%\nCensuur: " + threshold + "\n");
@@ -470,10 +476,13 @@ public class ViewScreen extends StackPane{
                 average + "\n");
     }
 
-    /* Deze functie update de statistieken voor de geselecteerde vraag.
-     */
     protected void updateStats(String maxPoints,  boolean countsBoolean, String highGiven, String lowGiven,
                                String maxGiven, String noneGiven, String average, String varPoints, String r, String p){
+        /**
+         * Deze methode past de statistieken aan voor als er een vraag geselecteerd wordt.
+         * Eerst wordt de boolean counts omgezet naar "ja" of "nee". Daarna wordt de tekst
+         * aangepast om alle meegegeven waardes weer te geven.
+         */
         String counts;
         if (countsBoolean){
             counts = "Ja";
@@ -487,9 +496,13 @@ public class ViewScreen extends StackPane{
                 "\nVariantie gehaalde punten: "+ varPoints + "\nR(item-rest): " + r + "\np-waarde: " + p + "\n\n");
     }
 
-    /* Deze functie update het kwaliteits gedeelte van de statistieken.
-     */
     protected void updateQualityStats() {
+        /**
+         * Deze methode past de kwaliteits statistiek aan.
+         * Eersy worden de variantie van de vragen, variantie van de toets en de
+         * Cronbach alfa uitgerekend. Vervolgens wordt de tekst aangepast
+         * om deze weer te geven.
+         */
         double varQuestions = Statistics.varianceQuestions(gradeTable);
         double varTest = Statistics.var(Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable),
                 0));
@@ -499,9 +512,15 @@ public class ViewScreen extends StackPane{
                 Statistics.round(cronbach, 2) + "\n");
     }
 
-    /* Deze functie update het Cohen-Schotanus gedeelte van de statistieken
-     */
     protected void updateCohen() {
+        /**
+         * Deze methode past de Cohen-Schotanus statistiek aan.
+         * Als er een toets ingeladen is wordt de punten die voor de toets
+         * gehaald zijn uit gradeTable gehaald en onder de variabele total gezet.
+         * Vervolgens wordt het percentiel, het gemiddelde cijfer voor dat
+         * percentiel en de Cohen-Schotanus cesuur uitgerekend en de tekst
+         * gewijzigd om deze weer te geven.
+         */
         if (! (this.gradeTable == null)) {
             int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
             double percentilePoints = Statistics.kthPercentile(this.percentileSlider.getValue(), total);
@@ -511,13 +530,20 @@ public class ViewScreen extends StackPane{
                             this.examPoints[1]) / 100, this.examPoints[2]);
             this.cohenText.setText("Punten percentiel: " + Statistics.round(percentilePoints, 2) +
                     "\nGemiddelde punten percentiel: " + Statistics.round(average, 2) +
-                    "\nCohen-Schotanus censuur: " + Statistics.round(cohen, 2) + "\n");
+                    "\nCohen-Schotanus cesuur: " + Statistics.round(cohen, 2) + "\n");
         }
     }
 
-    /* Deze functie maakt de tabel leeg en de kolommen aan.
-     */
     protected void setupTable(String[] columns) {
+        /**
+         * Deze methode zet de tabel op.
+         * Eerst wordt de tabel leeg gemaakt en de kolomen
+         * verwijderd. Vervolgens worden de kolommen als meegegeven
+         * gemaakt samen met drie kolommen die er voor gezet worden:
+         * "student nr.", "Cijfer" en "Totaal".
+         * Vervolgens worden al deze kolommen gemaakt met behulp van
+         * de makeColumn methode en toegevoegd aan de tabel.
+         */
         this.pointsTable.getItems().clear();
         this.pointsTable.getColumns().clear();
         String[] columnsTotal = new String[columns.length + 3];
@@ -533,8 +559,18 @@ public class ViewScreen extends StackPane{
         }
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private TableColumn makeColumn(int i, String columnLabel) {
+        /**
+         * Deze methode maakt een kolom aan met de naam columnLabel.
+         * De kolom wordt aangemaakt en de positie van de kolom (i)
+         * wordt in een final variabele INDEX gezet.
+         * Vervolgens wordt de CellValueFactory zo gezet dat de data
+         * die in de tabel weergegeven wordt de waarde van positie
+         * INDEX in een String[] is. Hierdoor kan de tabel een
+         * String[][] als data accepteren. De breedte van de kolommen
+         * wordt daarna gezet, als het een van de eerste kolommen is
+         * is dit 80 anders 40. De kolom wordt terug gegeven.
+         */
         TableColumn column = new TableColumn(columnLabel);
         final int INDEX = i;
         column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
