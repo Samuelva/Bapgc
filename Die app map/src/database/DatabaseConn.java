@@ -869,6 +869,14 @@ public class DatabaseConn {
     }
 
     public String[][] GetToetsData() {
+        /**
+         * Deze methode haald alle informatie voor alle toetsen op uit
+         * de database. Hierbij worden de verschillende gelegenheden
+         * genegeerd. De SQL statement this.GETTOETSDATASQL wordt hiervoor
+         * gebruikt. De resultaten worden onder resultSet opgeslagen en
+         * vervolgens aan een ArrayList toegevoegd, zodat het vervolgens
+         * met ConvertArrayListTable omgezet kan worden in een String[][].
+         */
         ArrayList<ArrayList<String>> table = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
@@ -888,6 +896,11 @@ public class DatabaseConn {
     }
 
     public void DeleteScoresForQuestion(Integer questionID){
+        /**
+         * In deze methode wordt de SQL statement uitgevoerd die onder
+         * this.DELETESCORES gedefineerd staat. Hierdoor worden de
+         * scores voor de vraag met ID questionID verwijderd uit de database.
+         */
         try {
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(String.format(

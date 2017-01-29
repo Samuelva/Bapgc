@@ -85,28 +85,28 @@ final class Invoeren extends StackPane {
     }
 
     private void setEmptyEvent() {
+        /**
+         * Als op emptyButton wordt geklikt,
+         * wordt een Alert aangemaakt om een pop-up waarschuwing weer te geven.
+         * De titel wordt op 'Waarschuwing' gezet.
+         * De tekst van de header bevat een zin of je het bestand echt wilt maken.
+         * Een tekst eronder geeft instructies, druk op OK als je het zeker weet,
+         * anders druk je op cancel.
+         * Er worden twee button types aangemaakt: OK en Cancel.
+         * De button types worden toegevoegd aan alert.
+         * De optionele buttontype krijgt de naam result,
+         * als waarde krijgt hij showAndWait, dit betekent dat de pop-up wacht
+         * tot er input van de gebruiker volgt.
+         * Er volgt een if-else statement.
+         * Als result gelijk is aan 'OK' moet alles gewist worden,
+         * Dit wordt gedaan door de rijen leeg te maken.
+         * Ook wordt de importCSV knop weer actief gemaakt,
+         * zo kan er opnieuw een CSV worden geïmporteerd.
+         * Ook wordt de globale boolean 'emptied' op true gezet.
+         * Als result niet gelijk is aan 'OK' wordt de pop-up afgesloten.t.
+         * Als result niet gelijk is aan OK wordt de pop-up afgesloten.
+         */
         emptyButton.setOnAction(e -> {
-        	/**
-             * Als op emptyButton wordt geklikt,
-             * wordt een Alert aangemaakt om een pop-up waarschuwing weer te geven.
-             * De titel wordt op 'Waarschuwing' gezet.
-             * De tekst van de header bevat een zin of je het bestand echt wilt maken.
-             * Een tekst eronder geeft instructies, druk op OK als je het zeker weet,
-             * anders druk je op cancel.
-             * Er worden twee button types aangemaakt: OK en Cancel.
-             * De button types worden toegevoegd aan alert.
-             * De optionele buttontype krijgt de naam result,
-             * als waarde krijgt hij showAndWait, dit betekent dat de pop-up wacht
-             * tot er input van de gebruiker volgt.
-             * Er volgt een if-else statement.
-             * Als result gelijk is aan 'OK' moet alles gewist worden,
-             * Dit wordt gedaan door de rijen leeg te maken.
-             * Ook wordt de importCSV knop weer actief gemaakt,
-             * zo kan er opnieuw een CSV worden geïmporteerd.
-             * Ook wordt de globale boolean 'emptied' op true gezet.
-             * Als result niet gelijk is aan 'OK' wordt de pop-up afgesloten.t.
-        	 * Als result niet gelijk is aan OK wordt de pop-up afgesloten.
-        	 */
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Waarschuwing");
             alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt maken?");
@@ -125,12 +125,11 @@ final class Invoeren extends StackPane {
         });
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void setImportEvent() {
+        /**
+         * Met FileChooser wordt de verkenner geopend in windows.
+         */
         importCSV.setOnAction(e -> {
-        	/**
-        	 * Met FileChooser wordt de verkenner geopend in windows.
-        	 */
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
@@ -142,15 +141,15 @@ final class Invoeren extends StackPane {
 
     //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected void setupTable(String[] columns) {
-            /**
-             * Maak de kolommen aan voor de tabel.
-             * Maak eerst de tabel leeg en verwijder alle kolomen. Voeg vervolgens de string "Student nr." toe aan de
-             * columnsTotal op de eerste positie gevolgd door de waardes van columns. Maak voor iedere String in
-             * columnsTotal een kolom aan. Geef deze kolomen een Cell Factory die een String accepteerd (anders kunnen de
-             *  String arrays niet als waardes voor de tabel gebruikt worden). Maak de kolommen 40 breed en de eerste 80.
-             * Geef alle kolommen een TextField als cell (op de eerste na) en  voeg de hantering toe voor als die gewijzigd
-             * wordt. Voeg de kolommen toe aan de tabel.
-             */
+        /**
+         * Maak de kolommen aan voor de tabel.
+         * Maak eerst de tabel leeg en verwijder alle kolomen. Voeg vervolgens de string "Student nr." toe aan de
+         * columnsTotal op de eerste positie gevolgd door de waardes van columns. Maak voor iedere String in
+         * columnsTotal een kolom aan. Geef deze kolomen een Cell Factory die een String accepteerd (anders kunnen de
+         *  String arrays niet als waardes voor de tabel gebruikt worden). Maak de kolommen 40 breed en de eerste 80.
+         * Geef alle kolommen een TextField als cell (op de eerste na) en  voeg de hantering toe voor als die gewijzigd
+         * wordt. Voeg de kolommen toe aan de tabel.
+         */
         this.pointsTable.getItems().clear();
         this.pointsTable.getColumns().clear();
         String[] columnsTotal = compileColumns(columns);
