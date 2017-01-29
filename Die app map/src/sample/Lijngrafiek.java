@@ -29,12 +29,13 @@ public class Lijngrafiek {
         final NumberAxis yAxis = new NumberAxis();
         lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setTitle(title);
+        lineChart.setLegendVisible(false);
 
         xAxis.setLabel(xLabel);
         yAxis.setLabel(yLabel);
     }
 
-    public void addLine(String[] xValues, int[] yValues, String name) {
+    public void addLine(String[] xValues, double[] yValues, String name) {
         XYChart.Series series = new XYChart.Series();
         series.setName(name);
 
