@@ -277,7 +277,7 @@ public class VergelijkStatistieken {
         setLineChart(column.getText(), tablePos.getTableColumn().getText(),
                 tablePos.getTableColumn().getText() + title);
         String[] xValues = new String[table.getItems().size()];
-        int[] yValues = new int[table.getItems().size()];
+        double[] yValues = new double[table.getItems().size()];
         for (int i = 0; i < table.getItems().size(); i++) {
             xValues[i] = column.getCellObservableValue(i).getValue()
                     .toString();
@@ -330,7 +330,7 @@ public class VergelijkStatistieken {
         graphPane.getChildren().add(lineChart.getLineChartBox());
     }
 
-    private void addLineChartLine(String[] xValues, int[] yValues, String
+    private void addLineChartLine(String[] xValues, double[] yValues, String
             legend) {
         lineChart.addLine(xValues, yValues, legend);
     }
@@ -342,10 +342,10 @@ public class VergelijkStatistieken {
         graphPane.getChildren().add(barChart.getBarChartBox());
     }
 
-    private void setBoxPlot() {
-        boxplot = new Boxplot();
-        graphPane.getChildren().clear();
-        graphPane.getChildren().add(boxplot.makeBoxPlot());
-    }
+//    private void setBoxPlot() {
+//        boxplot = new Boxplot();
+//        graphPane.getChildren().clear();
+//        graphPane.getChildren().add(boxplot.makeBoxPlot());
+//    }
 }
 

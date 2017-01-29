@@ -45,6 +45,22 @@ public class Statistics {
         double total = sum(values);
         return total/values.length;
     }
+    
+    public static double median(double[] values) {
+        /**
+         * Bereken het mediaan van een double array.
+         */
+        Arrays.sort(values);
+        double median;
+
+        if (values.length % 2 == 0) {
+            median = (values[values.length / 2] +
+                    values[values.length / 2 - 1]) / 2;
+        } else {
+            median = values[values.length/2];
+        }
+        return median;
+    }
 
     /* Bereken de variantie van een int array.
      */
@@ -303,6 +319,16 @@ public class Statistics {
             double fraction = index-i;
             return values[i] + fraction*(values[i+1]-values[i]);
         }
+    }
+
+    public static double kthQuartile(int k, double[] values) {
+        /**
+         * Berekend 1, 2, of 3 kwartiel van de opgegeven in array.
+         * 25 = 1e kwartiel, 50 = 2e kwartiel, 75 = 3e kwartiel.
+         */
+        Arrays.sort(values);
+        int index = Math.round(values.length * k /100);
+        return values[index];
     }
 
     /* Maak een int[] met alle waardes uit 'values' die hoger zijn dan 'value'.

@@ -48,10 +48,12 @@ public class ViewScreen extends StackPane{
     protected Text resultsText;
     protected Text statisticsText;
     protected TableView<String[]> pointsTable;
+    protected TablePosition tablePos;
     protected Slider percentileSlider;
     protected Label percentileLabel;
     protected StackPane graphPane;
     protected Histogram barChart;
+    protected Lijngrafiek lineGraph;
     protected Boxplot boxplot;
     protected Keuzemenu choiceMenu;
     protected String selectedGraph;
@@ -185,20 +187,32 @@ public class ViewScreen extends StackPane{
         this.graphPane = new StackPane();
         this.graphPane.setPrefWidth(400);
         this.graphPane.setPrefHeight(250);
-        this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
+        this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY,
+                BorderStrokeStyle.SOLID, null, null)));
+
+        return new VBox(this.graphPane, makeGraphButtons());
+    }
+
+    /* Maakt de grafiek keuze en opslaan knop, plaatst deze in een box, en
+     * returned ze.
+     */
+    private HBox makeGraphButtons() {
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                        "Boxplot", "Histogram"));
-        this.plotChoiceBox.setOnAction(event ->
-                selectedGraph = (String) plotChoiceBox.getValue());
-        this.plotChoiceBox.setValue("Boxplot");
-        this.plotChoiceBox.setPrefWidth(133);
-        this.plotChoiceBox.setPrefHeight(30);
-        this.plotBtn = new Button("Plotten");
-        this.plotBtn.setPrefWidth(133);
-        this.plotBtn.setPrefHeight(30);
+                "Histogram", "Lijngrafiek", "Boxplot"));
+        this.plotChoiceBox.setOnAction(event -> {
+            this.selectedGraph = (String) plotChoiceBox.getValue();
+            if (tablePos != null) {
+                updateGraph();
+            }
+        });
+        this.plotChoiceBox.setValue("Histogram");
+        this.selectedGraph = "Histogram";
+        this.plotChoiceBox.setMaxWidth(150);
+        this.plotChoiceBox.setMinHeight(30);
+
         this.savePlotBtn = new Button("Grafiek opslaan");
-        this.savePlotBtn.setPrefWidth(133);
-        this.savePlotBtn.setPrefHeight(30);
+        this.savePlotBtn.setMaxWidth(150);
+        this.savePlotBtn.setMinHeight(30);
         this.savePlotBtn.setOnAction(e -> {
             if (selectedGraph != null && plotted) {
                 displaySaveDialog();
@@ -207,9 +221,13 @@ public class ViewScreen extends StackPane{
                 displayInformationDialog();
             }
         });
-        HBox hBox = new HBox(this.plotChoiceBox,
-                this.plotBtn, this.savePlotBtn);
-        return new VBox(this.graphPane, hBox);
+        HBox fillBox = new HBox();
+        HBox.setHgrow(fillBox, Priority.ALWAYS);
+
+        HBox hBox = new HBox(this.plotChoiceBox, fillBox, this.savePlotBtn);
+        hBox.setPadding(new Insets(5, 0, 0, 0));
+
+        return hBox;
     }
     
     /* Deze functie zet het bovenste gedeelte van het scherm in elkaar
@@ -317,18 +335,78 @@ public class ViewScreen extends StackPane{
         if (newValue.getTableColumn() != null) {
             pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
                     pointsTable.getItems().size(), newValue.getTableColumn());
+            tablePos = newValue;
             if (newValue.getColumn() < 3){
+                if (newValue.getColumn() == 1) {
+                    graphUpdateGrades(newValue);
+                } else if (newValue.getColumn() == 2) {
+                    graphUpdateTotal(newValue);
+                }
                 examSelectedUpdate();
             } else {
-                graphUpdate(newValue);
+                graphUpdateQuestions(newValue);
                 questionSelectedUpdate(newValue.getColumn());
             }
         }
     }
 
-    private void graphUpdate(TablePosition newValue) {
+    /*
+     * Deze functie zorgt ervoor dat de grafieksoort gelijk veranderd wordt
+     * als deze wordt aangepast in de grafiek keuze combobox.
+     */
+    private void updateGraph() {
+        if (tablePos.getColumn() < 3) {
+            if (tablePos.getColumn() == 1) {
+                graphUpdateGrades(tablePos);
+            } else if (tablePos.getColumn() == 2) {
+                graphUpdateTotal(tablePos);
+            }
+        } else {
+            graphUpdateQuestions(tablePos);
+        }
+    }
+
+    /*
+     * Roept de functies aan om de grafieken te maken als de cijfer kolom
+     * geselecteerd is.
+     */
+    private void graphUpdateGrades(TablePosition newValue) {
         if (selectedGraph == "Histogram") {
-            plotHistogram(newValue);
+            plotHistogram(newValue, "Cijfer", "Cijfer per student");
+        } else if (selectedGraph == "Lijngrafiek") {
+            plotLineGraph(newValue, "Cijfer", "Cijfer per student");
+        } else if (selectedGraph == "Boxplot") {
+            plotBoxplot(newValue, "", "Cijfer", "Boxplot ");
+        }
+    }
+
+    /*
+     * Roept de functies aan om de grafieken te maken als de totaal kolom
+     * geselecteerd is.
+     */
+    private void graphUpdateTotal(TablePosition newValue) {
+        if (selectedGraph == "Histogram") {
+            plotHistogram(newValue, "Punten", "Totaal aantal punten per " +
+                    "student");
+        } else if (selectedGraph == "Lijngrafiek") {
+            plotLineGraph(newValue, "Punten", "Totaal aantal punten per " +
+                    "student");
+        } else if (selectedGraph == "Boxplot") {
+            plotBoxplot(newValue, "", "Punten", "Boxplot punten ");
+        }
+    }
+
+    /*
+     * Roept de functies aan om de grafieken te maken als een vraag kolom
+     * geselecteerd is.
+     */
+    private void graphUpdateQuestions(TablePosition newValue) {
+        if (selectedGraph == "Histogram") {
+            plotHistogram(newValue, "Punten", "Vraagpunten per student");
+        } else if (selectedGraph == "Lijngrafiek") {
+            plotLineGraph(newValue, "Punten", "Vraagpunten per student");
+        } else if (selectedGraph == "Boxplot") {
+            plotBoxplot(newValue, "Vraag ", "Punten", "Boxplot vraag ");
         }
     }
 
@@ -507,42 +585,87 @@ public class ViewScreen extends StackPane{
         alert.showAndWait();
     }
 
-    private void plotHistogram(TablePosition newValue) {
-        barChart = new Histogram("Student", "Punten", "Vraagpunten per " +
-                "student",
-                "Punten");
+    private void plotHistogram(TablePosition newValue, String yLabel, String
+            title) {
+        /**
+         * Deze functie maakt en vult de histogram met de geselecteerde data
+         * uit de kolom.
+         */
+        barChart = new Histogram("Student", yLabel, title, "");
         graphPane.getChildren().clear();
         graphPane.getChildren().add(barChart.getBarChartBox());
 
         for (int i = 0; i < pointsTable.getItems().size(); i++) {
             barChart.addBar(pointsTable.getColumns().get(0)
-                    .getCellObservableValue(i).getValue().toString(), Integer
-                    .parseInt((String) newValue.getTableColumn()
+                    .getCellObservableValue(i).getValue().toString(), Double
+                    .parseDouble((String) newValue.getTableColumn()
                             .getCellObservableValue(i).getValue()));
         }
 
         plotted = true;
     }
-    protected void makeHistogram() {
-        barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
-        barChart.makeBarChart();
+
+    private void plotLineGraph(TablePosition newValue, String yLabel, String
+            title) {
+        /**
+         * Deze functie maakt en vult de lijngrafiek met de geselecteerde data
+         * uit de kolom.
+         */
+        lineGraph = new Lijngrafiek("Student", yLabel, title);
         graphPane.getChildren().clear();
-        graphPane.getChildren().add(barChart.getBarChart());
-        barChart.addBar("bar 1", 8);
-        barChart.addBar("bar 2", 9);
-        barChart.addBar("bar 3", 5);
-        barChart.addBar("bar 4", 6);
-        barChart.addBar("bar 5", 8);
+        graphPane.getChildren().add(lineGraph.getLineChartBox());
+
+        String[] xValues = new String[pointsTable.getItems().size()];
+        double[] yValues = new double[pointsTable.getItems().size()];
+
+        for (int i = 0; i < pointsTable.getItems().size(); i++) {
+            xValues[i] = pointsTable.getColumns().get(0)
+                    .getCellObservableValue(i).getValue().toString();
+            yValues[i] = Double.parseDouble((String) newValue.getTableColumn()
+                    .getCellObservableValue(i).getValue());
+        }
+
+        lineGraph.addLine(xValues, yValues, "");
+        plotted = true;
     }
 
-    protected void makeBoxplot() {
-        boxplot = new Boxplot();
+    private void plotBoxplot(TablePosition newValue, String xLabelI, String
+            yLabel, String title) {
+        /**
+         * Maakt en vult de boxplot met geselecteerde data.
+         * Voor alle data in de geselecteerde kolom wordt het minimum,
+         * maximum, 1e kwartiel, 2e kwartiel en mediaan bepaald, welke
+         * vervolgens geplot worden.
+         */
+        double[] points = new double[pointsTable.getItems().size()];
+        for (int i=0; i<pointsTable.getItems().size(); i++) {
+            points[i] = Double.parseDouble((String) newValue.getTableColumn()
+                    .getCellObservableValue(i).getValue());
+        }
+
+        double[][] boxplotData = new double[][] {
+                {1, Statistics.kthQuartile(25, points), Statistics
+                        .kthQuartile(75, points), Statistics.max(points),
+                        Statistics.min(points), Statistics.median(points)}
+        };
+
+        String xLabel = new String(xLabelI + newValue.getTableColumn()
+                .getText());
+        String graphTitle = new String(title + newValue.getTableColumn()
+                .getText());
+
+        boxplot = new Boxplot(boxplotData, graphTitle, xLabel, yLabel,
+                false);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
+        plotted = true;
     }
 
     private void displaySaveDialog() {
+        /**
+         * Deze functie toont een scherm om de grafieken te kunnen opslaan.
+         */
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter
                 ("PNG (*.png)", ".png"));
@@ -554,16 +677,26 @@ public class ViewScreen extends StackPane{
     }
 
     private void saveGraph(File savePath) {
+        /**
+         * Deze functie veranderd de geselecteerde grafiek in een image
+         * bestand en schrijft deze weg als een png. Mocht dit wegschrijven
+         * een error opleveren, dan wordt er een error getoond.
+         */
         BarChart<String, Number> barChartGraph;
         LineChart<String, Number> lineChartGraph;
+        CandleStickChart boxPlotGraph;
         if (selectedGraph == "Histogram") {
             barChartGraph = barChart.getBarChart();
             graphImage = barChartGraph.snapshot(new SnapshotParameters(),
                     null);
-//        } else if (selectedGraph == "Boxplot") {
-//            lineChartGraph = lineChart.getLineChart();
-//            graphImage = lineChartGraph.snapshot(new SnapshotParameters(),
-//                    null);
+        } else if (selectedGraph == "Lijngrafiek") {
+            lineChartGraph = lineGraph.getLineChart();
+            graphImage = lineChartGraph.snapshot(new SnapshotParameters(),
+                    null);
+        } else if (selectedGraph == "Boxplot") {
+            boxPlotGraph = boxplot.getBoxPlot();
+            graphImage = boxPlotGraph.snapshot(new SnapshotParameters(),
+                    null);
         }
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(graphImage, null),
@@ -574,6 +707,10 @@ public class ViewScreen extends StackPane{
     }
 
     private void displayInformationDialog() {
+        /**
+         * Als er geen grafiek aangemaakt is, wordt er een informatie scherm
+         * getoond.
+         */
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Geen grafiek");
         alert.setHeaderText("Er kan geen grafiek worden opgeslagen omdat er " +
@@ -585,6 +722,10 @@ public class ViewScreen extends StackPane{
     }
 
     private void displayErrorDialog() {
+        /**
+         * Als het wegschrijven van het png bestand fout gaat, wordt er een
+         * error scherm getoond met wat informatie.
+         */
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Fout");
         alert.setHeaderText("Grafiek kan niet worden opgeslagen door een " +
