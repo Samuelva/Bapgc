@@ -380,7 +380,6 @@ final class Invoeren extends StackPane {
 
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void BoxenVullen(VBox vbox2, HBox hbox){
         /*
         Er wordt eerst een label aangemaakt met de naam: Vragen.

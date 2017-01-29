@@ -141,7 +141,7 @@ public class ViewScreen extends StackPane{
         Label secondLabel = new Label("Cohen-Schotanus");
         secondLabel.setFont(new Font("Arial", 18));
         this.cohenText = new Text("Punten percentiel:\nGemiddelde punten "
-                + "percentiel:\nCohen-Schotanus censuur:\n");
+                + "percentiel:\nCohen-Schotanus cesuur:\n");
         HBox percentileBox = makePercentileBox();
         this.calculateBtn = new Button("Bereken");
         this.calculateBtn.setPrefHeight(30);
@@ -166,7 +166,7 @@ public class ViewScreen extends StackPane{
         statisticsLabel.setFont(new Font("Arial", 18));
         this.statisticsText = new Text("Aantal vragen:\nMaximum punten:\n"
                 + "Punten door gokkans:\nTotaal te verdienen:\nBeheersgraad:\n"
-                + "Censuur:\n");
+                + "Cesuur:\n");
         Label resultsLabel = new Label("Resultaten");
         resultsLabel.setFont(new Font("Arial", 18));
         this.resultsText = new Text("Aantal deelnemers:\nAantal voldoendes:\n"
@@ -475,10 +475,22 @@ public class ViewScreen extends StackPane{
         return column;
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /* Deze functie vult de tabel in.
-     */
     protected void fillTable(int examID){
+        /**
+         * Deze methode vult de tabel.
+         * De vragen, maximum aantal punten, punten door gok kans en cesuur
+         * worden opgehaald voor de meegegeven toets. De scores die behaald
+         * zijn voor de vragen worden ook opgehaald en de cijfer worden hier
+         * direct berekend. Dit resulteerd in een matrix met alle data die
+         * in de tabel moet komen. Als er hier een EcptyStackException of een
+         * NumberFormatException plaatsvind, is er geen data bekend voor
+         * de toets en wordt er een waarschuwing getoond. Anders
+         * worden de label van de vragen uit de eerder opgehaald vraag data
+         * gehaald en deze gebruikt voor het aanmaken van de kolomen met
+         * de methode setupTable. Vervolgens wordt de matrix aan de tabel
+         * toegevoegd om er data in te zetten en de de kwaliteits statistieken
+         * geupdate.
+         */
         DatabaseConn d = new DatabaseConn();
         try {
             this.questionData = d.GetVragenVanToets(examID);
@@ -498,8 +510,11 @@ public class ViewScreen extends StackPane{
         d.CloseConnection();
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void warnNoData() {
+        /**
+         * Deze methode toont een pop-up met een waarchuwing als er geen
+         * data bekend is voor een toets die geladen wordt.
+         */
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Waarschuwing!");
         alert.setHeaderText("Er is geen data bekend voor deze toets!");
@@ -596,8 +611,12 @@ public class ViewScreen extends StackPane{
         alert.show();
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void setLoadEvent(){
+        /**
+         * Deze methode zorgt ervoor dat als er op de toetsweergave knop gedrukt wordt
+         * het ID van de geselecteerde toets opgehaald wordt en dat de fillTable
+         * aangeroepen wordt.
+         */
         this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
