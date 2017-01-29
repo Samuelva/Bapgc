@@ -741,6 +741,15 @@ public class Toevoegen extends TabPane{
         }
 
         protected void fillTable(){
+            /**
+             * Deze methode vult de tabel in de module tab van het toevoeg scherm met data.
+             * Eerst wort de tabel leeg gemaakt en de kolommen verwijderd. Daarna worden er
+             * de kolommen opnieuw aangemaakt. Er wordt een connectie gemaakt met de
+             * database en de informatie van de toetsen wordt opgehaald. Vervolgens wordt
+             * er voor iedere toets een instantie gemaakt van de DataForTable class. De
+             * connectie met de database wordt gesloten en de DataForTable instaties worden
+             * aan de tabel toegevoegd.
+             */
             pointsTable.getItems().clear();
             pointsTable.getColumns().clear();
             makeColumn("Module Code", "code");
@@ -750,16 +759,24 @@ public class Toevoegen extends TabPane{
             makeColumn("Toetsvorm", "type");
             DatabaseConn d = new DatabaseConn();
             String[][] list = d.GetToetsData();
-            dataForTable[] rows = new dataForTable[list.length];
+            DataForTable[] rows = new DataForTable[list.length];
             for (int i = 0; i < list.length; ++i){
                 List<String> types = d.getTypes(list[i][1], list[i][3], list[i][2], list[i][0]);
-                rows[i] = new dataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
+                rows[i] = new DataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
             }
             d.CloseConnection();
             pointsTable.getItems().addAll(rows);
         }
 
         protected void makeColumn(String label, String value){
+            /**
+             * Deze methode maakt een nieuwe kolom aan vor pointsTable.
+             * Eerst wordt er een kolom gemaakt met de naam die under label gedefineerd is,
+             * de cellValueFactory wordt vervolgens zo gedifieerd dat de waarde die getoond
+             * wordt automatich uit een class gehaald kan worden. De waarde in de class die
+             * opgehaald zal worden is degene onder de variabele naam die under value
+             * staat. De kolom wordt op niet aanpasbaar gezet en toegevoegd aan de tabel.
+             */
             TableColumn column = new TableColumn(label);
             column.setCellValueFactory(new PropertyValueFactory(value));
             column.setEditable(false);

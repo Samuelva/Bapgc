@@ -8,14 +8,14 @@ import java.util.List;
 /**
  * Created by kwita_000 on 24-1-2017.
  */
-public class dataForTable {
+public class DataForTable {
     private SimpleStringProperty code;
     private SimpleStringProperty period;
     private SimpleStringProperty year;
     private SimpleStringProperty studyYear;
     private SimpleStringProperty type;
 
-    public dataForTable(String codeIn, String yearIn,  String periodIn, String studyYearIn, List<String> typeIn) {
+    public DataForTable(String codeIn, String yearIn, String periodIn, String studyYearIn, List<String> typeIn) {
         code = new SimpleStringProperty(codeIn);
         year = new SimpleStringProperty(yearIn);
         period = new SimpleStringProperty(periodIn);
