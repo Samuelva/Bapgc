@@ -22,7 +22,7 @@ import java.util.*;
 
 
 /**
- * Created by Diëgo on 05-12-16.
+ * Created by Diego on 05-12-16.
  * 7-12-2016: Toevoegscherm is af
  * 9-12-2016: Documenteren van script
  * 11-12-2016: Layout aangepast
@@ -35,6 +35,7 @@ import java.util.*;
  * 15-01-2017: Verder met ontwikkelen
  * 16-01-2017: Documenteren van methoden
  * 17-01-2017: Toets data aanpassingen
+ * 30-01-2016: Documenteren & pep toepassen
  */
 public class Toevoegen extends TabPane{
     /**
@@ -54,8 +55,7 @@ public class Toevoegen extends TabPane{
     //SELECTION MENU
     public Keuzemenu choiceMenu;
 
-    public ScreenButtons showExamBtn;
-    public ScreenButtons saveExamBtn;
+    public ScreenButtons saveExamBtn = new ScreenButtons("Toets opslaan");
 
     //EXAM PROPERTIES
     public CheckBox questionPropertyCheckBox;
@@ -65,10 +65,10 @@ public class Toevoegen extends TabPane{
     public ExamTab examTab;
 
     public ModuleTab moduleTab;
-    private  Button emptyButton;
-    private  Button saveButton;
+    private Button emptyButton;
+    private Button saveButton;
 
-    private  Button importCSV;
+    private Button importCSV;
     private TableView pointsTable;
 
     public Integer examID;
@@ -83,7 +83,6 @@ public class Toevoegen extends TabPane{
          * grootte. De laatste regel laat zien hoe er een nieuwe tab
          * wordt aangemaakt voor het scherm.
          */
-        createSelectionMenuElements();
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
         this.setTabMinWidth(100);
         examTab = new ExamTab("Toetsen");
@@ -94,90 +93,79 @@ public class Toevoegen extends TabPane{
 
     }
 
-    private void warning() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Waarschuwing!");
-        alert.setHeaderText("Niet alles is ingevoerd!");
-        alert.setContentText("Voer de niet gevoerde keuzes in het "
-                + "keuzemenu in om verder te gaan.");
-        alert.showAndWait();
-    }
 
     public String[][] getQuestionInfo() {
-        String[][] questionInformation = new String[examTab.questionAndCheckboxes.getChildren().size()][];
-        ObservableList<Node> childsVB = examTab.questionAndCheckboxes.getChildren();
-
+        /**
+         * Functie die het terughalen van de ingevoerde vragen naar
+         * in een array zet zodat het in kan worden geladen in de
+         * database
+         *
+         * In de eerste regel wordt er een 2d array aangemaakt met
+         * de grootte van het aantal vragen dat er aanwezig is.
+         * De lijst bevat alle elementen die zich in de questionAndCheckboxes
+         * flowpane bevinden. Hier wordt overheen geloopt en wordt het
+         * element omgevast naar een HBox. De elementen die zich in deze
+         * HBOx bevinden worden weer naar hun oorspronkelijke element gecast
+         * waarna de informatie eruit geextraheerd kan worden en het dan
+         * kan worden toegevoed aan de 2d array.
+         */
+        String[][] questionInformation =
+                new String[
+                        examTab.questionAndCheckboxes.getChildren().size()][];
+        ObservableList<Node> childsVB =
+                examTab.questionAndCheckboxes.getChildren();
         for (int i = 0; i < childsVB.size() ; i++) {
             HBox hb = (HBox)childsVB.get(i);
-
             ObservableList<Node> childsHB = hb.getChildren();
-
             Label question = (Label)childsHB.get(0);
             CheckBox accountable = (CheckBox)childsHB.get(2);
-
-            System.out.println(question.getText().split(" ")[1].replace(":", ""));
-            System.out.println(question.getText().split(" ")[2]);
-            System.out.println(accountable.isSelected());
-
-            String[] info = new String[]{question.getText().split(" ")[1].replace(":", ""), question.getText().split(" ")[2],String.valueOf(accountable.isSelected())};
+            String[] info = new String[]{
+                    question.getText().split(" ")[1].replace(":", ""),
+                    question.getText().split(" ")[2],
+                    String.valueOf(accountable.isSelected())};
             questionInformation[i] = info;
-        }
-        for (String[] info: questionInformation) {
-            System.out.println(Arrays.asList(info));
         }
         return  questionInformation;
     }
 
     public void resetWarning() {
+        /**
+         * Aanmaken van een een pop-up waarschuwing die zal aangeven wat
+         * er zal gebeuren zodra de toets punten worden gereset.
+         *
+         * Er wordt een nieuwe alert aangemaakt met type confirmation
+         * Verschillende strings worden toegevoegd om het scherm duidelijk te
+         * maken. Er worden twee knoppen aan toegevoegd Ja en Nee.
+         * Als er op de knop wordt gedrukt wordt de waarde van de gedrukte
+         * knop opgeslagen in result. Als dit gelijk is aan de Ja knop
+         * dan wordt de database vragen verwijderd die gelijk is aan de
+         * toets id. Om opnieuw punten in te laden worden de knoppen
+         * weer beschikbaar gezet.
+         */
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Waarschuwing!");
-        alert.setHeaderText("Met deze actie worden alle vragen verwijderd! Ook uit de database als ze er al in stonden.");
+        alert.setHeaderText("Met deze actie worden alle vragen verwijderd! " +
+                "Ook uit de database als ze er al in stonden.");
         alert.setContentText("Gaat u akkoord?");
-
         ButtonType buttonTypeOne = new ButtonType("Ja");
-        ButtonType buttonTypeCancel = new ButtonType("Nee", ButtonBar.ButtonData.CANCEL_CLOSE);
-
+        ButtonType buttonTypeCancel = new ButtonType("Nee",
+                ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
-
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
             examTab.questionAndCheckboxes.getChildren().clear();
-            examTab.pointDistributionBox.getChildren().remove(examTab.questionAndCheckBoxesScrollpane);
+            examTab.pointDistributionBox.getChildren().remove(
+                    examTab.questionAndCheckBoxesScrollpane);
             DatabaseConn databaseConn = new DatabaseConn();
             databaseConn.DeleteVragenToets(examID);
             databaseConn.CloseConnection();
             examTab.importCsvButton.setDisable(false);
             examTab.resetPointDistributionButton.setDisable(true);
-
-        } else {
-            // ... user chose CANCEL or closed the dialog
         }
     }
 
 
-    private void createSelectionMenuElements(){
-        /**
-         * Aanmaken van de verschillende elementen die van belang zijn voor
-         * het selectiemenu. Onder andere verschillende choiceboxes, die
-         * aanwezig zijn voor het selecteren. Maar ook de knoppen die van
-         * belang zijn voor het inladen of het aanmaken van een nieuwe toets.
-         */
-        createSelectionMenuButtons();
-    }
 
-
-
-
-    private void createSelectionMenuButtons() {
-        /**
-         * Aanmaken van knoppen voor het selectiemenu.
-         */
-        showExamBtn = new ScreenButtons("Toets weergeven");
-        saveExamBtn = new ScreenButtons("Toets opslaan");
-    }
-
-    public void setSelection(String[] searchOnProperties) {
-    }
 
 
     public class ExamTab extends Tab {
@@ -194,15 +182,12 @@ public class Toevoegen extends TabPane{
          *
          */
         public BorderPane examPane = new BorderPane();
-
         private VBox selectionMenu;
-
         public ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
         public ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
         private VBox pointDistributionBox;
         private ScrollPane questionAndCheckBoxesScrollpane;
         public FlowPane questionAndCheckboxes;
-
         private Label lbl2;
         private Label lbl3;
 
@@ -328,6 +313,17 @@ public class Toevoegen extends TabPane{
             }
         }
 
+        private void setQuestionAndCheckboxesFlowpaneSettings() {
+            /**
+             * Nieuwe flowpane aangemaakt met de juistte instellingen
+             */
+            questionAndCheckboxes = new FlowPane();
+            questionAndCheckboxes.setMaxHeight(250);
+            questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
+            questionAndCheckboxes.setVgap(4);
+            questionAndCheckboxes.setHgap(10);
+        }
+
         private void extractQuestionsFromLines(String[] questions, String[] subQuestions, String[] subQuestionsPoints) {
             /**
              * Extraheren van de juiste gegevens uit de variabelen questions,
@@ -348,8 +344,8 @@ public class Toevoegen extends TabPane{
              *
              * Hierna volgen een paar layout aanpassingen.
              */
+            setQuestionAndCheckboxesFlowpaneSettings();
             questionAndCheckBoxesScrollpane = new ScrollPane();
-            questionAndCheckboxes = new FlowPane();
             for (int i = 0; i < subQuestions.length; i++) {
                 if (subQuestions[i].contains("Vraagnummer:")) {
                     int index = i+2; //Remove Vraagnummer and whitespaces
@@ -363,20 +359,16 @@ public class Toevoegen extends TabPane{
                     }
                 }
             }
-            questionAndCheckboxes.setMaxHeight(250);
-            questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
-            questionAndCheckboxes.setVgap(4);
-            questionAndCheckboxes.setHgap(10);
             questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
             pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
         }
 
 
         public void setExamPropertiesScreen(String[] examProperties) {
-            System.out.println(examProperties[0]);
             VBox vbox = new VBox();
             VBox buttonBox = new VBox(saveExamBtn);
-            vbox.getChildren().addAll(getExamInformationBoxes(examProperties, examID), getPointDistribution(examProperties), buttonBox);
+            vbox.getChildren().addAll(getExamInformationBoxes(examProperties,
+                    examID), getPointDistribution(examProperties), buttonBox);
             buttonBox.setAlignment(Pos.CENTER);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
@@ -389,6 +381,7 @@ public class Toevoegen extends TabPane{
             /**
              * Aanmaken van de vbox die de puntenverdeling zal laten zien.
              */
+            setQuestionAndCheckboxesFlowpaneSettings();
             questionAndCheckBoxesScrollpane = new ScrollPane();
             pointDistributionBox = new VBox();
             pointDistributionBox.getChildren().addAll(new BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
@@ -398,14 +391,9 @@ public class Toevoegen extends TabPane{
                 if (questionInfo.length == 0) {
                     throw new EmptyStackException();
                 }
-                questionAndCheckboxes = new FlowPane();
                 for (String[] info: questionInfo) {
                     questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(info[1], info[2],info[4]));
                 }
-                questionAndCheckboxes.setOrientation(Orientation.VERTICAL);
-                questionAndCheckboxes.setMaxHeight(250);
-                questionAndCheckboxes.setVgap(4);
-                questionAndCheckboxes.setHgap(10);
                 databaseConn.CloseConnection();
                 importCsvButton.setDisable(true);
                 resetPointDistributionButton.setDisable(false);
@@ -486,7 +474,8 @@ public class Toevoegen extends TabPane{
             questionPropertyCheckBox = new CheckBox();
             DatabaseConn databaseConn = new DatabaseConn();
             try {
-                String[][] gradeInfo = databaseConn.GetTable("toets", "toetsID = " + String.valueOf(examID));
+                String[][] gradeInfo = databaseConn.GetTable("toets",
+                        "toetsID = " + String.valueOf(examID));
                 thresholdTextfield.setText(gradeInfo[0][7]);
                 chanceByGamblingTextfield.setText(gradeInfo[0][8]);
             } catch (Exception E) {
@@ -495,19 +484,22 @@ public class Toevoegen extends TabPane{
             VBox vbox2 = new VBox();
             questionPropertyCheckBox.setSelected(true);
             showQuestionPropertiesCheckBoxEvent();
-            vbox2.getChildren().addAll(questionPropertyCheckBox, thresholdTextfield, chanceByGamblingTextfield);
-            thresholdTextfield.textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    if (!newValue.matches("\\d{1,3}")) {
-                        thresholdTextfield.setText(newValue.replaceAll("[^\\d]", ""));
-                    }
-                    if (thresholdTextfield.getText().length() > 4) {
-                        String s = thresholdTextfield.getText().substring(0, 4);
-                        thresholdTextfield.setText(s);
-                    }
-                }
-            });
+            vbox2.getChildren().addAll(questionPropertyCheckBox,
+                    thresholdTextfield, chanceByGamblingTextfield);
+            setSettingsThreshholdtextfield();
+            setSettingsChanceByGamblingTextfield();
+            vbox2.setSpacing(20);
+            databaseConn.CloseConnection();
+            return vbox2;
+        }
+
+        private void setSettingsChanceByGamblingTextfield() {
+            /**
+             * Textfield input instellingen.
+             *
+             * Getallen mogen niet langer zijn dan 4 cijfers. Letters invoeren
+             * is niet mogelijk
+             */
             chanceByGamblingTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
                 public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -520,9 +512,27 @@ public class Toevoegen extends TabPane{
                     }
                 }
             });
-            vbox2.setSpacing(20);
-            databaseConn.CloseConnection();
-            return vbox2;
+        }
+
+        private void setSettingsThreshholdtextfield() {
+            /**
+             * Textfield input instellingen.
+             *
+             * Getallen mogen niet langer zijn dan 4 cijfers. Letters invoeren
+             * is niet mogelijk
+             */
+            thresholdTextfield.textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if (!newValue.matches("\\d{1,3}")) {
+                        thresholdTextfield.setText(newValue.replaceAll("[^\\d]", ""));
+                    }
+                    if (thresholdTextfield.getText().length() > 4) {
+                        String s = thresholdTextfield.getText().substring(0, 4);
+                        thresholdTextfield.setText(s);
+                    }
+                }
+            });
         }
 
         private VBox getGradePropertyLabels() {
@@ -702,14 +712,7 @@ public class Toevoegen extends TabPane{
             super(text);
             Region leftFill = new Region();
             HBox.setHgrow(leftFill, Priority.ALWAYS);
-
-            emptyButton = new Button("Leeg maken");
-            saveButton = new Button("Wijzigingen opslaan");
-            importCSV = new Button("Import CSV");
-
-            emptyButton.setPrefSize(150, 30);
-            saveButton.setPrefSize(150, 30);
-            importCSV.setPrefSize(150, 30);
+            createModuleTabButtons();
             Region rightFill = new Region();
             HBox.setHgrow(rightFill, Priority.ALWAYS);
 
@@ -729,6 +732,28 @@ public class Toevoegen extends TabPane{
 
             this.setContent(vbox);
 
+            importModuleCSV();
+        }
+
+        private void createModuleTabButtons() {
+            /**
+             * Aanmaken van knoppen die van belang zijn voor het module scherm
+             */
+            emptyButton = new Button("Leeg maken");
+            saveButton = new Button("Wijzigingen opslaan");
+            importCSV = new Button("Import CSV");
+
+            emptyButton.setPrefSize(150, 30);
+            saveButton.setPrefSize(150, 30);
+            importCSV.setPrefSize(150, 30);
+        }
+
+        private void importModuleCSV() {
+            /**
+             * Importeren van module
+             *
+             * mist nog meer documentatie
+             */
             importCSV.setOnAction( e -> {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Open Toets Bestand");
@@ -761,10 +786,10 @@ public class Toevoegen extends TabPane{
             makeColumn("Toetsvorm", "type");
             DatabaseConn d = new DatabaseConn();
             String[][] list = d.GetToetsData();
-            DataForTable[] rows = new DataForTable[list.length];
+            dataForTable[] rows = new dataForTable[list.length];
             for (int i = 0; i < list.length; ++i){
                 List<String> types = d.getTypes(list[i][1], list[i][3], list[i][2], list[i][0]);
-                rows[i] = new DataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
+                rows[i] = new dataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
             }
             d.CloseConnection();
             pointsTable.getItems().addAll(rows);

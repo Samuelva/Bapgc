@@ -53,28 +53,58 @@ public class Main extends Application {
     }
 
     private void events() {
+        /**
+         * Events voor diverse knoppen van het toevoegscherm
+         */
         toevoeg.examTab.resetPointDistributionButton.setOnAction(event -> {
             toevoeg.resetWarning();
         });
         toevoeg.saveExamBtn.setOnAction(event -> {
-            DatabaseConn databaseConn = new DatabaseConn();
-            databaseConn.UpdateCesuurGok(toevoeg.examID, Integer.parseInt(toevoeg.thresholdTextfield.getText()), Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
-            if (toevoeg.questionPropertyCheckBox.isSelected()) {
-                for (String[] questionInfoArray : toevoeg.getQuestionInfo()) {
-                    databaseConn.DeleteVragenToets(toevoeg.examID);
-                    databaseConn.InputVraag(questionInfoArray[0], Integer.parseInt(questionInfoArray[1]), toevoeg.examID, questionInfoArray[2].equals("true") ? true : false);
-                }
-            }
-            databaseConn.CloseConnection();
+            putExamPropertiesInDatabase();
         });
         toevoeg.choiceMenu.examLoadButton.setOnAction(event -> {
-            DatabaseConn databaseConn = new DatabaseConn();
-            List<String> selection = toevoeg.choiceMenu.getSelection();
-            Integer examID = databaseConn.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3), selection.get(4), selection.get(5));
-            toevoeg.examID = examID;
-            toevoeg.examTab.setExamPropertiesScreen(selection.toArray(new String[0]));
-            databaseConn.CloseConnection();
+            getExamPropertiesFromDatabase();
         });
+    }
+
+    private void putExamPropertiesInDatabase() {
+        /**
+         * Maakt database verbinding
+         * past met het ingeladen toetsID de cessuur en gokkans aan
+         *
+         * Als er vragen voor de toetsaanwezig zijn worden de verschillende
+         * vragen ook in de database geladen
+         */
+        DatabaseConn databaseConn = new DatabaseConn();
+        databaseConn.UpdateCesuurGok(toevoeg.examID, Integer.parseInt(
+                toevoeg.thresholdTextfield.getText()),
+                Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
+        if (toevoeg.questionPropertyCheckBox.isSelected()) {
+            databaseConn.DeleteVragenToets(toevoeg.examID);
+            for (String[] questionInfoArray : toevoeg.getQuestionInfo()) {
+                databaseConn.InputVraag(questionInfoArray[0],
+                        Integer.parseInt(questionInfoArray[1]), toevoeg.examID,
+                        questionInfoArray[2].equals("true") ? true : false);
+            }
+        }
+        databaseConn.CloseConnection();
+    }
+
+    private void getExamPropertiesFromDatabase() {
+        /**
+         * Als er op de toets weergeven knop wordt gedrukt zal de selectie
+         * worden teruggehaald. Hiermee wordt de toetsID opgehaald waarna
+         * de gegevens in de klasse toets hiermee kunnen worden opgehaald.
+         */
+        DatabaseConn databaseConn = new DatabaseConn();
+        List<String> selection = toevoeg.choiceMenu.getSelection();
+        Integer examID = databaseConn.GetToetsID(selection.get(0),
+                selection.get(1), selection.get(2), selection.get(3),
+                selection.get(4), selection.get(5));
+        toevoeg.examID = examID;
+        toevoeg.examTab.setExamPropertiesScreen(selection.toArray(
+                new String[0]));
+        databaseConn.CloseConnection();
     }
 
     private static void initLayout(){
