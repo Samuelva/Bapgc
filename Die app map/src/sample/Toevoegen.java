@@ -786,10 +786,10 @@ public class Toevoegen extends TabPane{
             makeColumn("Toetsvorm", "type");
             DatabaseConn d = new DatabaseConn();
             String[][] list = d.GetToetsData();
-            dataForTable[] rows = new dataForTable[list.length];
+            DataForTable[] rows = new DataForTable[list.length];
             for (int i = 0; i < list.length; ++i){
                 List<String> types = d.getTypes(list[i][1], list[i][3], list[i][2], list[i][0]);
-                rows[i] = new dataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
+                rows[i] = new DataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
             }
             d.CloseConnection();
             pointsTable.getItems().addAll(rows);
