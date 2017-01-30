@@ -136,15 +136,11 @@ final class Invoeren extends StackPane {
          */
         importCSV.setOnAction(e -> {
             List A = choiceMenu.getSelection();
-            System.out.println(A);
-            System.out.println(A.get(0));
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
 
             if (file != null) {
-
-                //String[] list = getSelectionProperties();
                 Integer ToetsID = d.GetToetsID(A.get(0).toString(),
                         A.get(1).toString(),
                         A.get(2).toString(),
@@ -153,15 +149,6 @@ final class Invoeren extends StackPane {
                         A.get(5).toString());
 
                 Object reader = new Reader(file.toString(), ToetsID);
-
-                /*courseChoiceBox.getValue().toString(),
-                        yearChoiceBox.getValue().toString(),
-                        schoolYearChoiceBox.getValue().toString(),
-                        blockChoiceBox.getValue().toString(),
-                        attemptChoiceBox.getValue().toString(),
-                        typeChoiceBox.getValue().toString()*/
-
-                //btn4.setDisable(true);
             }
         });
     }
