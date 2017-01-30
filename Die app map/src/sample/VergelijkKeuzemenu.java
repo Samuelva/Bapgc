@@ -1,6 +1,7 @@
 package sample;
 
 import com.sun.org.apache.bcel.internal.generic.Select;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import database.DatabaseConn;
+
+import java.util.List;
 
 
 /**
@@ -37,6 +40,13 @@ public class VergelijkKeuzemenu {
     public Button allButton;
     public Button resetButton;
 
+    private String yearSelection;
+    private String schoolYearSelection;
+    private String blockSelection;
+    private String courseSelection;
+    private String typeSelection;
+    private String attemptSelection;
+
     private int instance;
     private DatabaseConn d;
 
@@ -55,6 +65,7 @@ public class VergelijkKeuzemenu {
         /**
          * Creërt het keuzemenu gedeelte met de comboBoxen.
          */
+        setSelections();
         choiceMenuSelectionBox = new VBox();
         choiceMenuSelectionBox.setSpacing(20);
         choiceMenuSelectionBox.setMinWidth(150);
@@ -67,11 +78,20 @@ public class VergelijkKeuzemenu {
         attempt = new ComboBox();
 
         setButtons(year, "Jaar");
-        setButtons(studyYear, "Studiejaar");
+        setButtons(studyYear, "Leerjaar");
         setButtons(block, "Periode");
-        setButtons(course, "Modules");
+        setButtons(course, "Module");
         setButtons(type, "Toetsvorm");
         setButtons(attempt, "Gelegenheid");
+    }
+
+    private void setSelections() {
+        yearSelection = "%";
+        schoolYearSelection = "%";
+        blockSelection = "%";
+        courseSelection = "%";
+        typeSelection = "%";
+        attemptSelection = "%";
     }
 
     private void setButtons(ComboBox choiceBox, String promptText) {
@@ -84,22 +104,66 @@ public class VergelijkKeuzemenu {
         choiceBox.setOnMouseClicked(event -> {
             boxClickEvent(choiceBox);
         });
+        choiceBox.valueProperty().addListener((observable, oldValue,
+                                               newValue) -> {
+            boxSelectedEvent(observable, choiceBox);
+        });
     }
 
     private void boxClickEvent(ComboBox choiceBox) {
-        if (instance == 1) {
-            testBoxClickEvent(choiceBox);
-        } else if (instance == 2) {
-
-        } else if (instance == 3) {
-
+        choiceBox.getItems().clear();
+        switch (choiceBox.getPromptText()) {
+            case "Jaar":
+                choiceBox.getItems().addAll(d.getItems("Jaar"));
+                break;
+            case "Leerjaar":
+                choiceBox.getItems().addAll(d.getItems("Schooljaar"));
+                break;
+            case "Periode":
+                choiceBox.getItems().addAll(d.getItems("Periode"));
+                break;
+            case "Module":
+                choiceBox.getItems().addAll(d.getItems("ModuleCode"));
+                break;
+            case "Toetsvorm":
+                choiceBox.getItems().addAll(d.getItems("Toetsvorm"));
+                break;
+            case "Gelegenheid":
+                choiceBox.getItems().addAll(d.getItems("Gelegenheid"));
+                break;
         }
     }
 
-    private void testBoxClickEvent(ComboBox choiceBox) {
-        switch (choiceBox.getPromptText()) {
-            case "Jaar":
-                System.out.println("lol!");
+    private void boxSelectedEvent(ObservableValue observable, ComboBox
+            choiceBox) {
+        if (choiceBox.getPromptText() == "Jaar") {
+            yearSelection = (String) observable.getValue();
+        } else if (choiceBox.getPromptText() == "Leerjaar") {
+            schoolYearSelection = (String) observable.getValue();
+        } else if (choiceBox.getPromptText() == "Periode") {
+            blockSelection = (String) observable.getValue();
+        } else if (choiceBox.getPromptText() == "Module") {
+            courseSelection = (String) observable.getValue();
+        } else if (choiceBox.getPromptText() == "Toetsvorm") {
+            typeSelection = (String) observable.getValue();
+        } else if (choiceBox.getPromptText() == "Gelegenheid") {
+            attemptSelection = (String) observable.getValue();
+        }
+        updateSelectionMenu();
+    }
+
+    private void updateSelectionMenu() {
+        selectionMenu.getItems().clear();
+        if (instance == 1) {
+            selectionMenu.getItems().addAll(d.filterTest(yearSelection,
+                    schoolYearSelection, blockSelection, courseSelection,
+                    typeSelection, attemptSelection));
+        } else if (instance == 2) {
+            selectionMenu.getItems().addAll(d.filterCourse(yearSelection,
+                    schoolYearSelection, blockSelection));
+        } else if (instance == 3) {
+            selectionMenu.getItems().addAll(d.filterBlock(yearSelection,
+                    schoolYearSelection));
         }
     }
 
@@ -116,7 +180,19 @@ public class VergelijkKeuzemenu {
         resetButton.setMinHeight(30);
         resetButton.setOnAction(event -> {
             selectionMenu.getSelectionModel().clearSelection();
+            setSelections();
+            clearSelections();
+            updateSelectionMenu();
         });
+    }
+
+    private void clearSelections() {
+        year.getSelectionModel().clearSelection();
+        studyYear.getSelectionModel().clearSelection();
+        block.getSelectionModel().clearSelection();
+        course.getSelectionModel().clearSelection();
+        type.getSelectionModel().clearSelection();
+        attempt.getSelectionModel().clearSelection();
     }
 
     private void createSelectionMenu() {
@@ -124,7 +200,7 @@ public class VergelijkKeuzemenu {
         selectionMenu.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         if (instance == 1) {
             selectionMenu.setItems(FXCollections.observableArrayList(d
-                    .getAllTest()));
+                    .filterTest("%", "%", "%", "%", "%", "%")));
         } else if (instance == 2) {
             selectionMenu.setItems(FXCollections.observableArrayList(d
                     .getAllCourses()));
