@@ -94,6 +94,11 @@ public class VergelijkStatistieken {
         createColumns();
     }
 
+    public void clearTable() {
+        table.getItems().removeAll();
+        table.getColumns().removeAll();
+    }
+
     private void colSelectEvent(TablePosition newValue) {
         table.getSelectionModel().selectRange(0, newValue.getTableColumn(),
                 table.getItems().size(), newValue.getTableColumn());
@@ -227,25 +232,26 @@ public class VergelijkStatistieken {
         return compareStatisticsBox;
     }
 
-    public void setTestTableContent(ObservableList data) {
+    public void setTestTableColumns() {
         /**
          * Voor toetsen
          */
-        table.setItems(data);
         table.getColumns().addAll(testCol, averageGradeCol, participantsCol,
                 failedCol, passedCol, passRateCol);
     }
 
-    public void setModuleTableContent(ObservableList data) {
-        table.setItems(data);
-        table.getColumns().addAll(moduleCol, participantsCol, failedCol,
-                passedCol, passRateCol);
+    public void setModuleTableColumns() {
+        table.getColumns().addAll(moduleCol, averageGradeCol,
+                participantsCol, failedCol, passedCol, passRateCol);
     }
 
-    public void setPeriodTableContent(ObservableList data) {
+    public void setPeriodTableColumns() {
+        table.getColumns().addAll(periodCol, averageGradeCol,
+                participantsCol, failedCol, passedCol, passRateCol);
+    }
+
+    public void fillTable(ObservableList data) {
         table.setItems(data);
-        table.getColumns().addAll(periodCol, participantsCol, failedCol,
-                passedCol, passRateCol);
     }
 
     private void fillGraph(TableColumn column, String
@@ -257,6 +263,8 @@ public class VergelijkStatistieken {
             case "Lijngrafiek":
                 fillLineGraph(column, title);
                 break;
+            case "Boxplot":
+                plotBoxplot(title);
         }
     }
 
@@ -266,9 +274,20 @@ public class VergelijkStatistieken {
                 tablePos.getTableColumn().getText() + title, tablePos
                         .getTableColumn().getText());
         for (int i = 0; i < table.getItems().size(); i++) {
-            barChart.addBar(column.getCellObservableValue(i).getValue()
-                    .toString(), (int) tablePos.getTableColumn()
-                    .getCellObservableValue(i).getValue());
+            if (tablePos.getTableColumn().getCellObservableValue
+                    (0).getValue().getClass().getName() == "java.lang" +
+                    ".Double") {
+                barChart.addBar(column.getCellObservableValue(i).getValue()
+                        .toString(), (double) tablePos.getTableColumn()
+                        .getCellObservableValue(i).getValue());
+            } else if (tablePos.getTableColumn().getCellObservableValue
+                    (0).getValue().getClass().getName() == "java.lang" +
+                    ".Integer") {
+                barChart.addBar(column.getCellObservableValue(i).getValue()
+                        .toString(), (int) tablePos.getTableColumn()
+                        .getCellObservableValue(i).getValue());
+            }
+
         }
     }
 
@@ -278,11 +297,28 @@ public class VergelijkStatistieken {
                 tablePos.getTableColumn().getText() + title);
         String[] xValues = new String[table.getItems().size()];
         double[] yValues = new double[table.getItems().size()];
+
+        if (tablePos.getTableColumn().getCellObservableValue
+                (0).getValue().getClass().getName() == "java.lang.Double") {
+        } else if (tablePos.getTableColumn().getCellObservableValue
+                (0).getValue().getClass().getName() == "java.lang.Integer") {
+        }
+
         for (int i = 0; i < table.getItems().size(); i++) {
             xValues[i] = column.getCellObservableValue(i).getValue()
                     .toString();
-            yValues[i] = (int) tablePos.getTableColumn()
-                    .getCellObservableValue(i).getValue();
+            if (tablePos.getTableColumn().getCellObservableValue
+                    (0).getValue().getClass().getName() == "java.lang" +
+                    ".Double") {
+                yValues[i] = (double) tablePos.getTableColumn()
+                        .getCellObservableValue(i).getValue();
+            } else if (tablePos.getTableColumn().getCellObservableValue
+                    (0).getValue().getClass().getName() == "java.lang" +
+                    ".Integer") {
+                yValues[i] = (int) tablePos.getTableColumn()
+                        .getCellObservableValue(i).getValue();
+            }
+
         }
         addLineChartLine(xValues, yValues, tablePos.getTableColumn()
                 .getText());
@@ -291,6 +327,7 @@ public class VergelijkStatistieken {
     private void saveGraph(File savePath) {
         BarChart<String, Number> barChartGraph;
         LineChart<String, Number> lineChartGraph;
+        CandleStickChart boxplotGraph;
         if (selectedGraph == "Histogram") {
             barChartGraph = barChart.getBarChart();
             graphImage = barChartGraph.snapshot(new SnapshotParameters(),
@@ -300,9 +337,8 @@ public class VergelijkStatistieken {
             graphImage = lineChartGraph.snapshot(new SnapshotParameters()
                     , null);
         } else if (selectedGraph == "Boxplot") {
-            lineChartGraph = lineChart.getLineChart();
-            graphImage = lineChartGraph.snapshot(new SnapshotParameters(),
-                    null);
+            boxplotGraph = boxplot.getBoxPlot();
+            graphImage = boxplotGraph.snapshot(new SnapshotParameters(), null);
         }
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(graphImage, null),
@@ -342,10 +378,37 @@ public class VergelijkStatistieken {
         graphPane.getChildren().add(barChart.getBarChartBox());
     }
 
-//    private void setBoxPlot() {
-//        boxplot = new Boxplot();
-//        graphPane.getChildren().clear();
-//        graphPane.getChildren().add(boxplot.makeBoxPlot());
-//    }
+    private void plotBoxplot(String title) {
+        /**
+         * Maakt en vult de boxplot met geselecteerde data.
+         * Voor alle data in de geselecteerde kolom wordt het minimum,
+         * maximum, 1e kwartiel, 2e kwartiel en mediaan bepaald, welke
+         * vervolgens geplot worden.
+         */
+        double[] points = new double[table.getItems().size()];
+        for (int i = 0; i < table.getItems().size(); i++) {
+            if (tablePos.getTableColumn().getCellObservableValue(0).getValue
+                    ().getClass().getName() == "java.lang.Double") {
+                points[i] = (double) tablePos.getTableColumn()
+                        .getCellObservableValue(i).getValue();
+            } else if (tablePos.getTableColumn().getCellObservableValue(0).getValue
+                    ().getClass().getName() == "java.lang.Integer") {
+                points[i] = (int) tablePos.getTableColumn()
+                        .getCellObservableValue(i).getValue();
+            }
+
+        }
+
+        double[][] boxplotData = new double[][]{
+                {1, Statistics.kthQuartile(25, points), Statistics
+                        .kthQuartile(75, points), Statistics.max(points),
+                        Statistics.min(points), Statistics.median(points)}
+        };
+        boxplot = new Boxplot(boxplotData, tablePos.getTableColumn().getText
+                () + title, "", tablePos.getTableColumn().getText(), false);
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(boxplot.makeBoxPlot());
+        boxplot.addData();
+    }
 }
 

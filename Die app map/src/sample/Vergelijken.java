@@ -1,5 +1,6 @@
 package sample;
 
+import database.DatabaseConn;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -9,6 +10,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+
+import java.util.Random;
 
 /**
  * Klasse voor het vergelijkscherm.
@@ -34,63 +37,141 @@ public class Vergelijken extends StackPane {
     public VergelijkStatistieken moduleStatistics;
     public VergelijkStatistieken periodStatistics;
 
+    private DatabaseConn d;
 
-    public Vergelijken(){
+    public Vergelijken() {
         /**
          * Hoofdfunctie.
          * Roept de functies aan om het tabmenu, keuzemenu en statistieken
          * gedeelte aan te maken.
          */
+        d = new DatabaseConn();
         createTabs(); // Initieerd de tabs
         createChoiceMenus(); // Maakt instanties voor keuzemenu
         createStatistics(); // Maakt instanties voor statistieken
         fillTabs(); // Maakt boxjes voor elke tab en stopt deze in de tabs
+        selectionMenuEvent();
+        choiceMenuAllButtonEvent();
 
         this.getChildren().add(tabPane);
+    }
 
-        // Voeg zo inhoud toe aan de dropdown menu's
-        // gaat later weg
-        testChoiceMenu.setYearContent("2016", "2017", "2018");
-//        testChoiceMenu.setModuleContent("Bapgc", "Bacf");
-        moduleChoiceMenu.setYearContent("2016", "207");
+    private void selectionMenuEvent() {
+        testChoiceMenu.selectionMenu.setOnMouseClicked(event -> {
+            ObservableList<String> selection = testChoiceMenu.selectionMenu
+                    .getSelectionModel().getSelectedItems();
+            fillTestTable(selection);
+        });
 
-        // Voeg zo items toe aan het menu in het keuzemenu
-        // gaat later weg
-        testChoiceMenu.setSelectionMenuItems("Binp 2016 opdracht 1", "Binp 2016 opdracht 2", "Binp 2015 opdracht 1", "Binp 2015 odpracht 2", "Binp 2014 opdracht 1", "Binp 2014 opdracht 2", "Binp 2013 opdracht 1", "Binp 2013 opdracht 2");
-        moduleChoiceMenu.setSelectionMenuItems("Binp 2016", "Binp 2015", "Binp 2014", "Binp 2013", "Binp 2012");
-        periodChoiceMenu.setSelectionMenuItems("1", "2", "3", "4");
+        moduleChoiceMenu.selectionMenu.setOnMouseClicked(event -> {
+            ObservableList<String> selection = moduleChoiceMenu.selectionMenu
+                    .getSelectionModel().getSelectedItems();
+            fillModuleTable(selection);
+        });
 
-        // Voeg zo statistieken toe
-        // Gaat later weg
-        testStatistics.setTestTableContent(FXCollections.observableArrayList(
-                new TestRow("Binp 2018 Opdracht 1", 7, 6, 4, 9, 2),
-                new TestRow("Binp 2017 Opdracht 1", 3, 9, 4, 7, 4),
-                new TestRow("Binp 2016 Opdracht 1", 7, 6, 7, 6, 3),
-                new TestRow("Binp 2015 Opdracht 1", 5, 4, 0, 4, 6),
-                new TestRow("Binp 2014 Opdracht 1", 4, 3, 5, 9, 8),
-                new TestRow("Binp 2013 Opdracht 1", 6, 8, 7, 7, 5),
-                new TestRow("Binp 2012 Opdracht 1", 8, 5, 8, 6, 4),
-                new TestRow("Binp 2011 Opdracht 1", 4, 8, 9, 5, 6)
-        ));
+        periodChoiceMenu.selectionMenu.setOnMouseClicked(event -> {
+            ObservableList<String> selection = periodChoiceMenu.selectionMenu
+                    .getSelectionModel().getSelectedItems();
+            fillBlockTable(selection);
+        });
 
-        moduleStatistics.setModuleTableContent(FXCollections.observableArrayList(
-                new Row("Binp 2018", 6, 4, 9, 2),
-                new Row("Binp 2017", 9, 4, 7, 4),
-                new Row("Binp 2016", 6, 7, 6, 3),
-                new Row("Binp 2015", 4, 0, 4, 6),
-                new Row("Binp 2014", 3, 5, 9, 8),
-                new Row("Binp 2013", 8, 7, 7, 5),
-                new Row("Binp 2012", 5, 8, 6, 4),
-                new Row("Binp 2011", 8, 9, 5, 6)
-        ));
+    }
 
-        periodStatistics.setPeriodTableContent(FXCollections.observableArrayList(
-                new Row("1", 6, 4, 9, 2),
-                new Row("2", 9, 4, 7, 4),
-                new Row("3", 6, 7, 6, 3),
-                new Row("4", 4, 0, 4, 6),
-                new Row("5", 3, 5, 9, 8)
-        ));
+    private void choiceMenuAllButtonEvent() {
+        testChoiceMenu.allButton.setOnAction(event -> {
+            testChoiceMenu.selectionMenu.getSelectionModel().selectAll();
+            ObservableList<String> selection = testChoiceMenu.selectionMenu
+                    .getSelectionModel().getSelectedItems();
+            fillTestTable(selection);
+        });
+        moduleChoiceMenu.allButton.setOnAction(event -> {
+            moduleChoiceMenu.selectionMenu.getSelectionModel().selectAll();
+            ObservableList<String> selection = moduleChoiceMenu.selectionMenu
+                    .getSelectionModel().getSelectedItems();
+            fillModuleTable(selection);
+        });
+        periodChoiceMenu.allButton.setOnAction(event -> {
+            periodChoiceMenu.selectionMenu.getSelectionModel().selectAll();
+            ObservableList<String> selection = periodChoiceMenu.selectionMenu
+                    .getSelectionModel().getSelectedItems();
+            fillBlockTable(selection);
+        });
+    }
+
+    private void fillTestTable(ObservableList<String> selection) {
+        Random r = new Random();
+        testStatistics.clearTable();
+        ObservableList<TestRow> data = FXCollections.observableArrayList();
+
+        try {
+            for (String s : selection) {
+//                String[] parts = s.split(" ");
+//                String course = parts[0];
+//                String type = parts[1];
+//                String attempt = parts[2];
+//                String year = parts[3];
+//
+//                Integer testId = d.getTestIdTestTab(year, course, type, attempt);
+//                Object[] testStatisticsObj = Statistics.examStats(testId);
+//
+//                data.add(new TestRow(s.toString(),
+//                                (Double) testStatisticsObj[0],
+//                                (int) testStatisticsObj[1],
+//                                (int) testStatisticsObj[2],
+//                                (int) testStatisticsObj[3],
+//                                (Double) testStatisticsObj[4]));
+                data.add(new TestRow(s.toString(), r.nextDouble(), r.nextInt
+                        (), r.nextInt(), r.nextInt(), r.nextDouble()));
+            }
+            testStatistics.fillTable(data);
+        } catch(Exception e) {
+            displayWarning("toets");
+        }
+    }
+
+    private void fillModuleTable(ObservableList<String> selection) {
+        moduleStatistics.clearTable();
+        ObservableList<Row> data = FXCollections.observableArrayList();
+
+        try {
+            for (String s : selection) {
+                String courseId = s.split(" ")[0];
+                Object[] courseStatisticsObj = Statistics.courseStats(courseId);
+
+                data.add(new Row(s.toString(), (double) courseStatisticsObj[0],
+                        (int) courseStatisticsObj[1], (int) courseStatisticsObj[2],
+                        (int) courseStatisticsObj[3],
+                        (double) courseStatisticsObj[4]));
+            }
+            moduleStatistics.fillTable(data);
+        } catch (Exception e) {
+            displayWarning("module");
+        }
+    }
+
+    private void fillBlockTable(ObservableList<String> selection) {
+        periodStatistics.clearTable();
+        ObservableList<Row> data = FXCollections.observableArrayList();
+
+        try {
+            for (String s : selection) {
+                String[] parts = s.split(" ");
+                String year = parts[4];
+                String schoolYear = parts[3];
+                String block = parts[1];
+
+                Object[] blockStatisticsObj = Statistics.periodStats(year,
+                        schoolYear, block);
+
+                data.add(new Row(s.toString(), (double) blockStatisticsObj[0],
+                        (int) blockStatisticsObj[1], (int) blockStatisticsObj[2],
+                        (int) blockStatisticsObj[3], (double)
+                        blockStatisticsObj[4]));
+            }
+            periodStatistics.fillTable(data);
+        } catch (Exception e) {
+            displayWarning("Periode");
+        }
     }
 
     private void createTabs() {
@@ -123,9 +204,9 @@ public class Vergelijken extends StackPane {
         /**
          * Initieerd instanties voor het keuzemenu
          */
-        testChoiceMenu = new VergelijkKeuzemenu();
-        moduleChoiceMenu = new VergelijkKeuzemenu();
-        periodChoiceMenu = new VergelijkKeuzemenu();
+        testChoiceMenu = new VergelijkKeuzemenu(1);
+        moduleChoiceMenu = new VergelijkKeuzemenu(2);
+        periodChoiceMenu = new VergelijkKeuzemenu(3);
     }
 
     private void createStatistics() {
@@ -133,8 +214,11 @@ public class Vergelijken extends StackPane {
          * Initieerd instanties voor het statistiek gedeelte
          */
         testStatistics = new VergelijkStatistieken(1);
+        testStatistics.setTestTableColumns();
         moduleStatistics = new VergelijkStatistieken(2);
+        moduleStatistics.setModuleTableColumns();
         periodStatistics = new VergelijkStatistieken(3);
+        periodStatistics.setPeriodTableColumns();
     }
 
     private void fillTabs() {
@@ -160,5 +244,17 @@ public class Vergelijken extends StackPane {
         testTab.setContent(testTabBox);
         moduleTab.setContent(moduleTabBox);
         periodTab.setContent(periodTabBox);
+    }
+
+    private void displayWarning(String selected) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Fout");
+        alert.setHeaderText("De geselecteerde " + selected + " kan niet " +
+                "worden ingeladen.");
+        alert.setContentText("De geselecteerde " + selected + " bevat geen of" +
+                " te weinig waarden. Selecteer een andere.");
+        ButtonType confirm = new ButtonType("OK");
+        alert.getButtonTypes().setAll(confirm);
+        alert.show();
     }
 }
