@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import database.DatabaseConn;
+import database.Reader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -76,17 +77,36 @@ final class Invoeren extends StackPane {
         VBox vbox2 = MenuMaken();
         makeTable();
         BoxenVullen(vbox2, hbox);
+
+        DatabaseConn d = new DatabaseConn();
+
         
 
         btn4.setOnAction(e -> {
+            //System.out.println(courseChoiceBox.getValue().toString());
+            //System.out.println(yearChoiceBox.getValue());
+            //System.out.println(schoolYearChoiceBox.getValue());
+            //System.out.println(blockChoiceBox.getValue());
+            //System.out.println(attemptChoiceBox.getValue());
+            //System.out.println(typeChoiceBox.getValue());
         	/*
         	 *Met FileChooser wordt de verkenner geopend in windows. 
         	 */
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
-            if (file != null) {;
-                btn4.setDisable(true);
+            if (file != null) {
+                //String[] list = getSelectionProperties();
+
+                /*/nteger ToetsID = d.GetToetsID(courseChoiceBox.getValue().toString(),
+                        yearChoiceBox.getValue().toString(),
+                        schoolYearChoiceBox.getValue().toString(),
+                        blockChoiceBox.getValue().toString(),
+                        attemptChoiceBox.getValue().toString(),
+                        typeChoiceBox.getValue().toString()
+                        );*/
+                Object reader = new Reader(file.toString(), 1);
+                //btn4.setDisable(true);
             }
         });
         
