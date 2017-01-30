@@ -119,10 +119,19 @@ public class DatabaseConn {
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s';";
     private final String CHANCESQL = "SELECT Gelegenheid FROM TOETS" +
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
+    private final String GETALLTOETS = "SELECT ToetsID, Jaar, ModuleCode, " +
+            "Toetsvorm, Gelegenheid FROM TOETS;";
+    private final String GETALLMODULES = "SELECT DISTINCT ModuleCode, Jaar " +
+            "FROM TOETS;";
     private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar, Periode, Schooljaar" +
-            " FROM Toets;";
+            " FROM TOETS";
+    private final String GETALLBLOCKS = "SELECT DISTINCT Jaar, Schooljaar, " +
+            "Periode FROM TOETS;";
     private final String DELETESCORES = "DELETE FROM SCORE" +
             " WHERE VraagID=%s";
+    private final String GETTOETSIDTOETSTAB = "SELECT ToetsID FROM TOETS " +
+            "WHERE Jaar='%s' AND ModuleCode='%s' AND Toetsvorm='%s' AND " +
+            "Gelegenheid='%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -893,6 +902,75 @@ public class DatabaseConn {
             throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
+    }
+
+    public List<String> getAllTest() {
+        List<String> tests;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(this.GETALLTOETS);
+            tests = new ArrayList<>();
+            while (resultSet.next()) {
+                tests.add(resultSet.getString("ModuleCode") + " " +
+                        resultSet.getString("Toetsvorm") + " " +
+                        resultSet.getString("Gelegenheid") + " " +
+                        resultSet.getString("Jaar"));
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return tests;
+    }
+
+    public List<String> getAllCourses() {
+        List<String> modules;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(this
+                    .GETALLMODULES);
+            modules = new ArrayList<>();
+            while (resultSet.next()) {
+                modules.add(resultSet.getString("ModuleCode") + " " +
+                        resultSet.getString("Jaar"));
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return modules;
+    }
+
+    public List<String> getAllBlocks() {
+        List<String> blocks;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(this
+                    .GETALLBLOCKS);
+            blocks = new ArrayList<>();
+            while (resultSet.next()) {
+                blocks.add("Periode " + resultSet.getString("Periode") +
+                        " jaar " + resultSet.getString("Schooljaar") +
+                        " " + resultSet.getString("Jaar"));
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return blocks;
+    }
+
+    public Integer getTestIdTestTab(String year, String course, String type,
+                                 String attempt) {
+        Integer testId = null;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(this
+                    .GETTOETSIDTOETSTAB, year, course, type, attempt));
+            while (resultSet.next()) {
+                testId = new Integer(resultSet.getString("ToetsID"));
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return testId;
     }
 
     public void DeleteScoresForQuestion(Integer questionID){

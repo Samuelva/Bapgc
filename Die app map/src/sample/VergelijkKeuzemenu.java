@@ -31,18 +31,21 @@ public class VergelijkKeuzemenu {
     private ComboBox course;
     private ComboBox type;
     private ComboBox attempt;
-    private ListView<String> selectionMenu;
-    private ObservableList<String> selectionMenuItems;
+    public ListView<String> selectionMenu;
+    public ObservableList<String> selectionMenuItems;
 
-    private Button allButton;
-    private Button resetButton;
+    public Button allButton;
+    public Button resetButton;
 
+    private int instance;
+    private DatabaseConn d;
 
-    public VergelijkKeuzemenu() {
+    public VergelijkKeuzemenu(int instanceI) {
         /**
          * Hoofd functies roept subfuncties aan om keuzemenu onderdelen te maken.
          */
-        //test();
+        d = new DatabaseConn();
+        instance = instanceI;
         createComboBoxes();
         createSelectionMenu();
         createButtons();
@@ -56,24 +59,48 @@ public class VergelijkKeuzemenu {
         choiceMenuSelectionBox.setSpacing(20);
         choiceMenuSelectionBox.setMinWidth(150);
 
-        year = makeComboBox("Jaar");
-        studyYear = makeComboBox("Studiejaar");
-        block = makeComboBox("Periode");
-        course = makeComboBox("Modules");
-        type = makeComboBox("Toetsvorm");
-        attempt = makeComboBox("Gelegenheid");
+        year = new ComboBox();
+        studyYear = new ComboBox();
+        block = new ComboBox();
+        course = new ComboBox();
+        type = new ComboBox();
+        attempt = new ComboBox();
 
+        setButtons(year, "Jaar");
+        setButtons(studyYear, "Studiejaar");
+        setButtons(block, "Periode");
+        setButtons(course, "Modules");
+        setButtons(type, "Toetsvorm");
+        setButtons(attempt, "Gelegenheid");
     }
 
-    private ComboBox makeComboBox(String promptText) {
+    private void setButtons(ComboBox choiceBox, String promptText) {
         /**
          * Maakt een combobox en returned deze met de opgegeven weergeef waarde.
          */
-        ComboBox comboBox = new ComboBox();
-        comboBox.setPromptText(promptText);
-        comboBox.setPrefWidth(150);
-        comboBox.setMinHeight(30);
-        return comboBox;
+        choiceBox.setPromptText(promptText);
+        choiceBox.setPrefWidth(150);
+        choiceBox.setMinHeight(30);
+        choiceBox.setOnMouseClicked(event -> {
+            boxClickEvent(choiceBox);
+        });
+    }
+
+    private void boxClickEvent(ComboBox choiceBox) {
+        if (instance == 1) {
+            testBoxClickEvent(choiceBox);
+        } else if (instance == 2) {
+
+        } else if (instance == 3) {
+
+        }
+    }
+
+    private void testBoxClickEvent(ComboBox choiceBox) {
+        switch (choiceBox.getPromptText()) {
+            case "Jaar":
+                System.out.println("lol!");
+        }
     }
 
     private void createButtons() {
@@ -87,9 +114,6 @@ public class VergelijkKeuzemenu {
         allButton.setMinHeight(30);
         resetButton.setPrefWidth(75);
         resetButton.setMinHeight(30);
-        allButton.setOnAction(event -> {
-            selectionMenu.getSelectionModel().selectAll();
-        });
         resetButton.setOnAction(event -> {
             selectionMenu.getSelectionModel().clearSelection();
         });
@@ -98,15 +122,16 @@ public class VergelijkKeuzemenu {
     private void createSelectionMenu() {
         selectionMenu = new ListView<>();
         selectionMenu.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        selectionMenu.setOnMouseClicked(event -> {
-            // Event handler voor het selecteren van items in het menu.
-            ObservableList<String> selection = selectionMenu.getSelectionModel().getSelectedItems();
-
-            for (String s : selection) {
-                System.out.println(s);
-            }
-            System.out.println("\n");
-        });
+        if (instance == 1) {
+            selectionMenu.setItems(FXCollections.observableArrayList(d
+                    .getAllTest()));
+        } else if (instance == 2) {
+            selectionMenu.setItems(FXCollections.observableArrayList(d
+                    .getAllCourses()));
+        } else if (instance == 3) {
+            selectionMenu.setItems(FXCollections.observableArrayList(d
+                    .getAllBlocks()));
+        }
         VBox.setVgrow(selectionMenu, Priority.ALWAYS);
     }
 
@@ -168,6 +193,8 @@ public class VergelijkKeuzemenu {
         choiceMenu.setAlignment(Pos.TOP_CENTER);
         choiceMenu.setPadding(new Insets(0, 20, 0, 0));
     }
+
+
 
     public void setYearContent(String... values) {
         /**
