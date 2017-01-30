@@ -33,7 +33,7 @@ public class VoorbeeldAanroep {
 //        }
 //        System.out.println(d.GetTable("MODULE").toString());
 //        d.UpdateCesuurMaxGok(2, new Integer[]{5,100,10});
-//        d.ResetTables();
+        d.ResetTables();
 //        d.InputModule("test1", "meh", 1);
 //        d.InputModule("test2", "hmm", 1);
 //        d.InputToets("2017", "1", "1", "test1", "stage", "1", 45, 0);
@@ -71,14 +71,14 @@ public class VoorbeeldAanroep {
         perdiode 1: 2 deelnemers, 1 voldoende, 1 onvoldoende, 50%
          */
 
-        try {
-            new ModuleReader(new File("src/modulesCSV.csv").getAbsolutePath());
-            new Reader(new File("src/brela_1e_1617.csv").getAbsolutePath(),
-                    d.GetToetsID("bato", "2017", "1",
-                            "1", "1", "Theorietoets"));
-        } catch (Exception e){
-            System.out.println(e);
-        }
+//        try {
+//            new ModuleReader(new File("src/modulesCSV.csv").getAbsolutePath());
+//            new Reader(new File("src/brela_1e_1617.csv").getAbsolutePath(),
+//                    d.GetToetsID("bato", "2017", "1",
+//                            "1", "1", "Theorietoets"));
+//        } catch (Exception e){
+//            System.out.println(e);
+//        }
 
         d.CloseConnection();
     }
