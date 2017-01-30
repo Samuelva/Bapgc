@@ -2,8 +2,10 @@ package sample;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.Writer;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.EmptyStackException;
+import java.util.List;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import database.DatabaseConn;
@@ -12,13 +14,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -27,17 +33,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import javax.imageio.ImageIO;
+
 /* Deze class maakt een StackPane dat het inzage scherm bevat.
  */
 public class ViewScreen extends StackPane{
-    protected ComboBox schoolYearChoiceBox;
-    protected ComboBox yearChoiceBox;
-    protected ComboBox blockChoiceBox;
-    protected ComboBox courseChoiceBox;
-    protected ComboBox typeChoiceBox;
-    protected ComboBox attemptChoiceBox;
     protected ChoiceBox plotChoiceBox;
-    protected Button loadBtn;
     protected Button calculateBtn;
     protected Button plotBtn;
     protected Button savePlotBtn;
@@ -47,19 +48,24 @@ public class ViewScreen extends StackPane{
     protected Text resultsText;
     protected Text statisticsText;
     protected TableView<String[]> pointsTable;
+    protected TablePosition tablePos;
     protected Slider percentileSlider;
     protected Label percentileLabel;
     protected StackPane graphPane;
     protected Histogram barChart;
+    protected Lijngrafiek lineGraph;
     protected Boxplot boxplot;
     protected Keuzemenu choiceMenu;
+    protected String selectedGraph;
+    protected WritableImage graphImage;
+    protected boolean plotted;
 
     private String[][] gradeTable = null;
     private String[] questionLabels = null;
-    private int threshold;
-    private int maxPoints;
-    private int guessPoints;
     private Object[][] questionData;
+    private Integer[] examPoints;
+
+
 
     /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
      * met een margin van 5 en een breedte van 150. Daarnaast wordt het
@@ -70,14 +76,14 @@ public class ViewScreen extends StackPane{
         selectionBox.setMinWidth(150);
         selectionBox.setSpacing(20);
         HBox.setMargin(selectionBox, new Insets(5));
-
         VBox rightBox = makeRightBox();
         rightBox.setSpacing(10);
         HBox.setHgrow(rightBox, Priority.ALWAYS);
         HBox.setMargin(rightBox, new Insets(5));
-
         HBox mainBox = new HBox(selectionBox, rightBox);
         mainBox.setSpacing(20);
+        setLoadEvent();
+        setExportEvent();
         this.getChildren().add(mainBox);
     }
 
@@ -86,40 +92,21 @@ public class ViewScreen extends StackPane{
      * aangemaakt die gebruikt wordt voor het laden van een toets.
      */
     private VBox makeSelectionBox(){
-        //label
         Label label = new Label("Keuzemenu");
         label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(150);
         choiceMenu = new Keuzemenu();
-
-        //lege ruimte
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);
-        //laad knop
-        this.loadBtn = new Button("Laad toets");
-
-//        //HIER MOET DE CODE VOOR ALS ER TOETS GELADEN WORDT!!
-//        this.loadBtn.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                int examID = 1; //HIER MOET HER ID VAN DE IN HET KEUZEMENU GESELECTEERDE TOETS OPGEHAALD WORDEN!!!!!!
-//                fillTable(examID);
-//
-//                updateQualityStats();
-//            }
-//        });
-
-        this.loadBtn.setPrefWidth(150);
-        this.loadBtn.setPrefHeight(30);
         return new VBox(label, choiceMenu.getChoiceMenuBox());
     }
     
-    /* Deze functie maakt de HBox waarin het percentiel gekozen kan worden.
+    /* Deze functie maakt de hbox waarin het percentiel gekozen kan worden.
      * Eerst wordt er een label "percentiel" neergezet, vervolgens een
      * slider en als laatst een label dat het percentiel weergeeft. 
-     * Er wordt daarna nog een Listener toegevoegd aan de slider die
-     * het percentiel label veranderd als de slider verandered.
+     * Er wordt daarna nog een listener toegevoegd aan de slider, die
+     * het percentiel label verandert als de slider verandert.
      */
     private HBox makePercentileBox(){
         Label label = new Label("Percentiel:");
@@ -139,14 +126,14 @@ public class ViewScreen extends StackPane{
         return new HBox(label, this.percentileSlider, this.percentileLabel);
     }
     
-    /* Deze functie maakt de VBox aan waarin de text neergezet wordt
+    /* Deze functie maakt de vbox aan, waarin de tekst neergezet wordt
      * met statistieken over de betrouwbaarheid van de toets.
-     * Eerst wordt er een kop geplaatst dan een stuk text, vervolgens
-     * nog een kop en dan nog een stuk text.
-     * Deze stukken text moeten vervangen worden met de berekende 
+     * Eerst wordt er een kop geplaatst, dan een stuk tekst. Vervolgens
+     * nog een kop en dan nog een stuk tekst.
+     * Deze stukken tekst moeten vervangen worden met de berekende 
      * statistieken.
-     * Onder de text staat een HBox waarbinnen een percentiel gekozen kan
-     * worden en daaronder staat een knop om het berkeken uit te voeren.
+     * Onder de tekst staat een hbox waarbinnen een percentiel gekozen kan
+     * worden en daaronder staat een knop om het berekenen uit te voeren.
      */
     private VBox makeTopLeftBox(){
         Label firstLabel = new Label("Betrouwbaarheid Toets");
@@ -156,7 +143,7 @@ public class ViewScreen extends StackPane{
         Label secondLabel = new Label("Cohen-Schotanus");
         secondLabel.setFont(new Font("Arial", 18));
         this.cohenText = new Text("Punten percentiel:\nGemiddelde punten "
-                + "percentiel:\nCohen-Schotanus censuur:\n");
+                + "percentiel:\nCohen-Schotanus cesuur:\n");
         HBox percentileBox = makePercentileBox();
         this.calculateBtn = new Button("Bereken");
         this.calculateBtn.setPrefHeight(30);
@@ -170,18 +157,18 @@ public class ViewScreen extends StackPane{
                 this.cohenText, percentileBox, this.calculateBtn);
     }
     
-    /* Deze functie maakt een VBox aan waarin statistieken van de gemaakte
-     * toets weergegeven worden. Twee maal staat er een kop met een stuk
-     * test eronder. Deze text moet veranderd worden naar de berekende
+    /* Deze functie maakt een vbox aan waarin statistieken van de gemaakte
+     * toets weergegeven worden. Tweemaal staat er een kop met een stuk
+     * tekst eronder. Deze tekst moet veranderd worden naar de berekende
      * statistieken voor de toets of een vraag als er een vraag
-     * geselecteerd word.
+     * geselecteerd wordt.
      */
     private VBox makeTopMiddleBox(){
         Label statisticsLabel = new Label("Statistieken");
         statisticsLabel.setFont(new Font("Arial", 18));
         this.statisticsText = new Text("Aantal vragen:\nMaximum punten:\n"
                 + "Punten door gokkans:\nTotaal te verdienen:\nBeheersgraad:\n"
-                + "Censuur:\n");
+                + "Cesuur:\n");
         Label resultsLabel = new Label("Resultaten");
         resultsLabel.setFont(new Font("Arial", 18));
         this.resultsText = new Text("Aantal deelnemers:\nAantal voldoendes:\n"
@@ -190,9 +177,9 @@ public class ViewScreen extends StackPane{
                 this.resultsText);
     }
     
-    /* Deze functie maakt een VBox aan die een afbeelding weergeeft van 
+    /* Deze functie maakt een vbox aan die een afbeelding weergeeft van 
      * 400x250. Daaronder staan dropdown menu's om mee te kiezen welke
-     * afbeelding weergegeven moet worden. Een voor het soort plot en een
+     * afbeelding weergegeven moet worden. Eén voor het soort plot en één
      * voor de data die gebruikt moet worden (een vraag, cijfer of totaal).
      * Naast de dropdowns staat een knop om de afbeelding op te slaan.
      */
@@ -200,43 +187,53 @@ public class ViewScreen extends StackPane{
         this.graphPane = new StackPane();
         this.graphPane.setPrefWidth(400);
         this.graphPane.setPrefHeight(250);
-        this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, null, null)));
+        this.graphPane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY,
+                BorderStrokeStyle.SOLID, null, null)));
+
+        return new VBox(this.graphPane, makeGraphButtons());
+    }
+
+    /* Maakt de grafiekkeuze en opslaanknop, plaatst deze in een box, en
+     * returnt ze.
+     */
+    private HBox makeGraphButtons() {
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
-                        "Boxplot", "Histogram"));
+                "Histogram", "Lijngrafiek", "Boxplot"));
         this.plotChoiceBox.setOnAction(event -> {
-            if (plotChoiceBox.getValue() == "Boxplot") {
-                //makeBoxplot();
-            } else if (plotChoiceBox.getValue() == "Histogram") {
-                //makeHistogram();
+            this.selectedGraph = (String) plotChoiceBox.getValue();
+            if (tablePos != null) {
+                updateGraph();
             }
         });
-        this.plotChoiceBox.setValue("Boxplot");
-        this.plotChoiceBox.setPrefWidth(133);
-        this.plotChoiceBox.setPrefHeight(30);
-        this.plotBtn = new Button("Plotten");
-        this.plotBtn.setPrefWidth(133);
-        this.plotBtn.setPrefHeight(30);
-        this.savePlotBtn = new Button("Afbeelding opslaan");
-        this.savePlotBtn.setPrefWidth(133);
-        this.savePlotBtn.setPrefHeight(30);
+        this.plotChoiceBox.setValue("Histogram");
+        this.selectedGraph = "Histogram";
+        this.plotChoiceBox.setMaxWidth(150);
+        this.plotChoiceBox.setMinHeight(30);
+
+        this.savePlotBtn = new Button("Grafiek opslaan");
+        this.savePlotBtn.setMaxWidth(150);
+        this.savePlotBtn.setMinHeight(30);
         this.savePlotBtn.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG (*.png)", "*.png"));
-            fileChooser.setTitle("Opslaan Als");
-            File file = fileChooser.showSaveDialog(new Stage());
-            if (file != null) {
-                System.out.println(file);
+            if (selectedGraph != null && plotted) {
+                displaySaveDialog();
+            }
+            else {
+                displayInformationDialog();
             }
         });
-        HBox hBox = new HBox(this.plotChoiceBox,
-                this.plotBtn, this.savePlotBtn);
-        return new VBox(this.graphPane, hBox);
+        HBox fillBox = new HBox();
+        HBox.setHgrow(fillBox, Priority.ALWAYS);
+
+        HBox hBox = new HBox(this.plotChoiceBox, fillBox, this.savePlotBtn);
+        hBox.setPadding(new Insets(5, 0, 0, 0));
+
+        return hBox;
     }
     
-    /* Deze functie zet het bovenste gedeelte van het scherm in elkaar
-     * hierbij worden de twee statistiek stukken (TopLeft en TopMiddle)
-     * gevruikt om de hele breedte te vullen.
-     * Het bovenste gedeelte wordt als HBox terug gegeven.
+    /* Deze functie zet het bovenste gedeelte van het scherm in elkaar.
+     * Hierbij worden de twee statistiek stukken (TopLeft en TopMiddle)
+     * gebruikt om de hele breedte te vullen.
+     * Het bovenste gedeelte wordt als hbox terugggegeven.
      */
     private HBox makeTopBox(){
         VBox leftBox = makeTopLeftBox();
@@ -248,23 +245,12 @@ public class ViewScreen extends StackPane{
     }
     
     /* Deze functie maakt het stuk tussen de statistieken en de tabel in
-     * een HBox. Eerst wordt er een knop aangemaakt met een breedte van 235.
-     * Daarnaast wordt een label met "vragen" neergezet. Om deze label heen
+     * een hbox. Eerst wordt er een knop aangemaakt met een breedte van 235.
+     * Daarnaast wordt een label met "vragen" neergezet. Om dit label
      * staan twee regio's die er voor zorgen dat het label gecentreerd staat.
      */
     private HBox makeMiddleBox(){
         this.exportBtn = new Button("Exporteer CSV");
-
-        this.exportBtn.setOnAction(e -> {
-            if (this.gradeTable != null) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)", "*.csv"));
-            fileChooser.setTitle("Opslaan Als");
-            File file = fileChooser.showSaveDialog(new Stage());
-            if (file != null) {
-                csvExport(this.gradeTable, questionLabels, file);
-            }}
-        });
         this.exportBtn.setPrefWidth(240);
         this.exportBtn.setPrefHeight(30);
         Region leftFill = new Region();
@@ -276,15 +262,30 @@ public class ViewScreen extends StackPane{
         return new HBox(this.exportBtn, leftFill, questionLabel, rightFill);
     }
 
-    /* Deze functie schrijft maakt een CSV bestand van de labels en scores die meegegeven worden
-       in het bestand dat meegegeven wordt.
+    private void setExportEvent(){
+        this.exportBtn.setOnAction(e -> {
+            if (this.gradeTable != null) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)",
+                        "*.csv"));
+                fileChooser.setTitle("Opslaan Als");
+                File file = fileChooser.showSaveDialog(new Stage());
+                if (file != null) {
+                    csvExport(this.gradeTable, questionLabels, file);
+                }
+            }
+        });
+    }
+
+    /* Deze functie schrijft en maakt een CSV bestand van de labels en 
+     * scores die meegegeven worden in het bestand dat meegegeven wordt.
      */
     private void csvExport(String[][] scores, String[] labels, File file){
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write("Studentnr,Cijfer,Totaal," + String.join(";", labels) + "\n");
+            writer.write("Studentnr;Cijfer;Totaal;" + String.join(";", labels) + "\n");
             for (String[] student: scores){
-                writer.write(String.join(",", student) + "\n");
+                writer.write(String.join(";", student) + "\n");
             }
             writer.close();
         } catch (Exception e) {
@@ -292,51 +293,34 @@ public class ViewScreen extends StackPane{
         }
     }
     
-    /* Deze functie maakt de tabel waar de punten in gezet moeten worden.
-     * Deze kan niet gewijzigd worden en vuld de rest van het scherm.
+    /* Deze functie maakt de tabel waar de punten ingezet moeten worden.
+     * Deze kan niet gewijzigd worden en vult de rest van het scherm.
      *     
      * Aangezien ik nog niet weet wat voor soort data (een class, string[],
-     * of iets anders?) gebruikt gaat worden en omdat het aantal kolomen,
-     * afhangt van de toets zijn er nog geen kolomen in de tabel gezet.
+     * of iets anders?) gebruikt gaat worden en omdat het aantal kolommen,
+     * afhangt van de toets zijn er nog geen kolommen in de tabel gezet.
      *
      * Er staat een stuk onder voor het testen van het scherm. Hier worden
-     * kolomen toegevoegd en een aantal rijen. Dit is vrijwel leterlijk
+     * kolommen toegevoegd en een aantal rijen. Dit is vrijwel letterlijk
      * overgenomen van het internet en moet dus aangepast worden!
      */
     private void makeTable(){
-        this.pointsTable = new TableView<>(); 
-        this.pointsTable.setEditable(false);
+        this.pointsTable = new TableView<>();
         VBox.setVgrow(this.pointsTable, Priority.ALWAYS);
         this.pointsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         this.pointsTable.getSelectionModel().setCellSelectionEnabled(true);
         this.pointsTable.getFocusModel().focusedCellProperty().addListener(new ChangeListener<TablePosition>() {
-
-            /* Als er op een cel gedrukt wordt, wordt de gehele kolom geselecteerd en de statistiek geupdate.
-             * Als een van de eerste drie kolomen geselecteerd wordt worden de statistieken voor de hele toets
-             * weergegeven, anders voor de specifieke vraag.
-             */
             @Override
             public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue,
                                 TablePosition newValue) {
-                if (newValue.getTableColumn() != null) {
-                    pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
-                            pointsTable.getItems().size(), newValue.getTableColumn());
-                    if (newValue.getColumn() < 3){
-                        examSelectedUpdate();
-                    } else {
-                        questionSelectedUpdate(newValue.getColumn());
-                    }
-                }
+                columnSelectionChange(newValue);
             }
         });
         pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
-            /* Zorg ervoor dat de kolomen niet van volgorde veranderd kunnen worden.
-             */
             @Override
             public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
                 TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
                 header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
-
                     @Override
                     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
                                         Boolean newValue) {
@@ -347,7 +331,86 @@ public class ViewScreen extends StackPane{
         });
     }
 
-    /* Bereken de statistieken voor de geselecteerde vraag en update de weergave.
+    private void columnSelectionChange(TablePosition newValue) {
+        if (newValue.getTableColumn() != null) {
+            pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
+                    pointsTable.getItems().size(), newValue.getTableColumn());
+            tablePos = newValue;
+            if (newValue.getColumn() < 3){
+                if (newValue.getColumn() == 1) {
+                    graphUpdateGrades(newValue);
+                } else if (newValue.getColumn() == 2) {
+                    graphUpdateTotal(newValue);
+                }
+                examSelectedUpdate();
+            } else {
+                graphUpdateQuestions(newValue);
+                questionSelectedUpdate(newValue.getColumn());
+            }
+        }
+    }
+
+    /*
+     * Deze functie zorgt ervoor dat de grafieksoort gelijk veranderd wordt
+     * als deze wordt aangepast in de grafiekkeuze combobox.
+     */
+    private void updateGraph() {
+        if (tablePos.getColumn() < 3) {
+            if (tablePos.getColumn() == 1) {
+                graphUpdateGrades(tablePos);
+            } else if (tablePos.getColumn() == 2) {
+                graphUpdateTotal(tablePos);
+            }
+        } else {
+            graphUpdateQuestions(tablePos);
+        }
+    }
+
+    /*
+     * Roept de functies aan om de grafieken te maken als de cijfer kolom
+     * geselecteerd is.
+     */
+    private void graphUpdateGrades(TablePosition newValue) {
+        if (selectedGraph == "Histogram") {
+            plotHistogram(newValue, "Cijfer", "Cijfer per student");
+        } else if (selectedGraph == "Lijngrafiek") {
+            plotLineGraph(newValue, "Cijfer", "Cijfer per student");
+        } else if (selectedGraph == "Boxplot") {
+            plotBoxplot(newValue, "", "Cijfer", "Boxplot ");
+        }
+    }
+
+    /*
+     * Roept de functies aan om de grafieken te maken als de totaal kolom
+     * geselecteerd is.
+     */
+    private void graphUpdateTotal(TablePosition newValue) {
+        if (selectedGraph == "Histogram") {
+            plotHistogram(newValue, "Punten", "Totaal aantal punten per " +
+                    "student");
+        } else if (selectedGraph == "Lijngrafiek") {
+            plotLineGraph(newValue, "Punten", "Totaal aantal punten per " +
+                    "student");
+        } else if (selectedGraph == "Boxplot") {
+            plotBoxplot(newValue, "", "Punten", "Boxplot punten ");
+        }
+    }
+
+    /*
+     * Roept de functies aan om de grafieken te maken als een vraag kolom
+     * geselecteerd is.
+     */
+    private void graphUpdateQuestions(TablePosition newValue) {
+        if (selectedGraph == "Histogram") {
+            plotHistogram(newValue, "Punten", "Vraagpunten per student");
+        } else if (selectedGraph == "Lijngrafiek") {
+            plotLineGraph(newValue, "Punten", "Vraagpunten per student");
+        } else if (selectedGraph == "Boxplot") {
+            plotBoxplot(newValue, "Vraag ", "Punten", "Boxplot vraag ");
+        }
+    }
+
+    /* Berekent de statistieken voor de geselecteerde vraag en update de weergave.
      */
     private void questionSelectedUpdate(int i) {
         int[] points = Statistics.stringToIntArray(Statistics.getColumn(i, gradeTable), 0);
@@ -372,21 +435,24 @@ public class ViewScreen extends StackPane{
         int fails = gradeTable.length - passes;
         double performance = Statistics.percentage(passes, gradeTable.length);
         updateStats(Integer.toString(questionLabels.length),
-                Integer.toString(maxPoints), Integer.toString(guessPoints),
-                Integer.toString(maxPoints-guessPoints),
-                Double.toString(Statistics.round(Statistics.percentage(threshold-guessPoints, maxPoints),
-                        2)),
-                Integer.toString(threshold), Integer.toString(gradeTable.length),
+                Integer.toString(this.examPoints[1]), Integer.toString(this.examPoints[2]),
+                Integer.toString(this.examPoints[1]-this.examPoints[2]),
+                Double.toString(Statistics.round(Statistics.percentage(examPoints[0]-this.examPoints[2],
+                        this.examPoints[1]),2)),
+                Integer.toString(examPoints[0]), Integer.toString(gradeTable.length),
                 Integer.toString(passes), Integer.toString(fails), Double.toString(performance),
                 Double.toString(Statistics.round(Statistics.mean(grades), 2)));
     }
 
-    /* Deze functie zet het rechter gedeelte van het scherm in elkaar.
-     * Eerst het statistieken gedeelte, daaronder het tussenstuk en dan
-     * de tabel. Het statistieken gedeelte heeft een vaste grote (300).
-     * Dit alles wordt als VBox terug gegeven.
-     */
+    //BOOKMARKTYPEOFTHINGY!!!!!!!!!!!!!!!!!!!!!!!!!!!!ABOVE STILL NEEDS TO BE DOCUMENTED PROPERLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     private VBox makeRightBox(){
+        /**
+         * Deze functie zet het rechtergedeelte van het scherm in elkaar.
+         * Eerst het statistiekgedeelte, daaronder het tussenstuk en dan
+         * de tabel. Het statistiekgedeelte heeft een vaste grote (280).
+         * Dit alles wordt als vbox teruggegeven.
+         */
         HBox topBox = makeTopBox();
         topBox.setPrefHeight(280);
         HBox middleBox = makeMiddleBox();
@@ -394,11 +460,14 @@ public class ViewScreen extends StackPane{
         return new VBox(topBox, middleBox, this.pointsTable);
     }
 
-    /* Deze functie update de statistieken voor de weergegeven toets.
-     */
     protected void updateStats(String questions, String maxPoints, String guessPoints, String earnablePoints,
                                String degree, String threshold, String participants, String passes, String fails,
                                String performance, String average) {
+        /**
+         * Deze methode past de statistiek voor de gehele toets aan.
+         * De tekst wordt aangepast om alle meegegeven waardes weer
+         * te geven.
+         */
         this.statisticsText.setText("Aantal vragen: " + questions + "\nMaximum punten: " + maxPoints +
                 "\nPunten door gokkans: " + guessPoints + "\nTotaal te verdienen: " + earnablePoints + "" +
                 "\nBeheersgraad: " + degree + "%\nCensuur: " + threshold + "\n");
@@ -407,10 +476,14 @@ public class ViewScreen extends StackPane{
                 average + "\n");
     }
 
-    /* Deze functie update de statistieken voor de geselecteerde vraag.
-     */
     protected void updateStats(String maxPoints,  boolean countsBoolean, String highGiven, String lowGiven,
                                String maxGiven, String noneGiven, String average, String varPoints, String r, String p){
+        /**
+         * Deze methode past de statistieken aan voor als er een vraag 
+         * geselecteerd wordt. Eerst wordt de boolean counts omgezet naar "ja" 
+         * of "nee". Daarna wordt de tekst aangepast om alle meegegeven waardes 
+         * weer te geven.
+         */
         String counts;
         if (countsBoolean){
             counts = "Ja";
@@ -424,9 +497,13 @@ public class ViewScreen extends StackPane{
                 "\nVariantie gehaalde punten: "+ varPoints + "\nR(item-rest): " + r + "\np-waarde: " + p + "\n\n");
     }
 
-    /* Deze functie update het kwaliteits gedeelte van de statistieken.
-     */
     protected void updateQualityStats() {
+        /**
+         * Deze methode past de kwaliteitsstatistiek aan.
+         * Eerst worden de variantie van de vragen, variantie van de toets en de
+         * Cronbach alfa uitgerekend. Vervolgens wordt de tekst aangepast
+         * om deze weer te geven.
+         */
         double varQuestions = Statistics.varianceQuestions(gradeTable);
         double varTest = Statistics.var(Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable),
                 0));
@@ -436,24 +513,38 @@ public class ViewScreen extends StackPane{
                 Statistics.round(cronbach, 2) + "\n");
     }
 
-    /* Deze functie update het Cohen-Schotanus gedeelte van de statistieken
-     */
     protected void updateCohen() {
+        /**
+         * Deze methode past de Cohen-Schotanus statistiek aan.
+         * Als er een toets ingeladen is, worden de punten die voor de toets
+         * gehaald zijn uit gradeTable gehaald en onder de variabele total gezet.
+         * Vervolgens wordt het percentiel, het gemiddelde cijfer voor dat
+         * percentiel en de Cohen-Schotanus cesuur uitgerekend en de tekst
+         * gewijzigd om deze weer te geven.
+         */
         if (! (this.gradeTable == null)) {
             int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
             double percentilePoints = Statistics.kthPercentile(this.percentileSlider.getValue(), total);
             double average = Statistics.percentileMean(total, percentilePoints);
             double cohen = Statistics.cohen(average,
-                    Statistics.percentage(threshold - guessPoints, maxPoints) / 100, this.guessPoints);
+                    Statistics.percentage(this.examPoints[0] - this.examPoints[2],
+                            this.examPoints[1]) / 100, this.examPoints[2]);
             this.cohenText.setText("Punten percentiel: " + Statistics.round(percentilePoints, 2) +
                     "\nGemiddelde punten percentiel: " + Statistics.round(average, 2) +
-                    "\nCohen-Schotanus censuur: " + Statistics.round(cohen, 2) + "\n");
+                    "\nCohen-Schotanus cesuur: " + Statistics.round(cohen, 2) + "\n");
         }
     }
 
-    /* Deze functie maakt de tabel leeg en de kolommen aan.
-     */
     protected void setupTable(String[] columns) {
+        /**
+         * Deze methode zet de tabel op.
+         * Eerst wordt de tabel leeggemaakt en de kolommen
+         * verwijderd. Vervolgens worden de kolommen als meegegeven
+         * gemaakt, samen met drie kolommen die er voor gezet worden:
+         * "student nr.", "Cijfer" en "Totaal".
+         * Vervolgens worden al deze kolommen gemaakt met behulp van
+         * de makeColumn methode en toegevoegd aan de tabel.
+         */
         this.pointsTable.getItems().clear();
         this.pointsTable.getColumns().clear();
         String[] columnsTotal = new String[columns.length + 3];
@@ -464,97 +555,252 @@ public class ViewScreen extends StackPane{
             columnsTotal[i+3] = columns[i];
         }
         for (int i = 0; i < columnsTotal.length; i++) {
-            TableColumn column = new TableColumn(columnsTotal[i]);
-            final int index = i;
-            column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(CellDataFeatures<String[], String> values) {
-                    return new SimpleStringProperty((values.getValue()[index]));
-                }
-            });
-            if (i < 3){
-                column.setMinWidth(80);
-                column.setMaxWidth(80);
-            } else {
-                column.setMinWidth(40);
-                column.setMaxWidth(40);
-            }
+            TableColumn column = makeColumn(i, columnsTotal[i]);
             this.pointsTable.getColumns().add(column);
         }
     }
 
-    /* Deze functie vult de tabel in.
-     */
+    private TableColumn makeColumn(int i, String columnLabel) {
+        /**
+         * Deze methode maakt een kolom aan met de naam columnLabel.
+         * De kolom wordt aangemaakt en de positie van de kolom (i)
+         * wordt in een final variabele INDEX gezet.
+         * Vervolgens wordt de CellValueFactory zo gezet dat de data
+         * die in de tabel weergegeven wordt, de waarde van positie
+         * INDEX in een String[] is. Hierdoor kan de tabel een
+         * String[][] als data accepteren. De breedte van de kolommen
+         * wordt daarna gezet, als het een van de eerste kolommen is
+         * is dit 80, anders 40. De kolom wordt teruggegeven.
+         */
+        TableColumn column = new TableColumn(columnLabel);
+        final int INDEX = i;
+        column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<String[], String> values) {
+                return new SimpleStringProperty((values.getValue()[INDEX]));
+            }
+        });
+        if (i < 3){
+            column.setMinWidth(80);
+            column.setMaxWidth(80);
+        } else {
+            column.setMinWidth(40);
+            column.setMaxWidth(40);
+        }
+        return column;
+    }
+
     protected void fillTable(int examID){
+        /**
+         * Deze methode vult de tabel.
+         * De vragen, maximum aantal punten, punten door gokkans en cesuur
+         * worden opgehaald voor de meegegeven toets. De scores die behaald
+         * zijn voor de vragen worden ook opgehaald en de cijfers worden hier
+         * direct berekend. Dit resulteert in een matrix met alle data die
+         * in de tabel moet komen. Als er hier een EcptyStackException of een
+         * NumberFormatException plaatsvindt, is er geen data bekend voor
+         * de toets en wordt er een waarschuwing getoond. Anders
+         * worden de label van de vragen, uit de eerder opgehaalde vraag, data
+         * gehaald en deze gebruikt voor het aanmaken van de kolommen met
+         * de methode setupTable. Vervolgens wordt de matrix aan de tabel
+         * toegevoegd, om er data in te zetten en die de kwaliteitsstatistieken
+         * updatet.
+         */
         DatabaseConn d = new DatabaseConn();
-        this.questionData = d.GetVragenVanToets(examID);
+        try {
+            this.questionData = d.GetVragenVanToets(examID);
+            this.examPoints = d.GetCesuurMaxGok(examID);
+            this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.examPoints[0],
+                    this.examPoints[1]);
+        } catch (EmptyStackException | NumberFormatException e) {
+            warnNoData();
+            return;
+        }
         this.questionLabels = Statistics.getColumn(1, questionData);
         setupTable(this.questionLabels);
-        Integer[] examPoints = d.GetCesuurMaxGok(examID);
-        this.threshold = examPoints[0];
-        this.maxPoints = examPoints[1];
-        this.guessPoints = examPoints[2];
-        this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.threshold, this.maxPoints);
         ObservableList<String[]> data = FXCollections.observableArrayList();
         data.addAll(Arrays.asList(this.gradeTable));
         this.pointsTable.setItems(data);
+        updateQualityStats();
         d.CloseConnection();
     }
 
-
-    protected void makeHistogram() {
-        barChart = new Histogram("x-as", "y-as", "Titel", "Histogram");
-        barChart.makeBarChart();
-        graphPane.getChildren().clear();
-        graphPane.getChildren().add(barChart.getBarChart());
-        barChart.addBar("bar 1", 8);
-        barChart.addBar("bar 2", 9);
-        barChart.addBar("bar 3", 5);
-        barChart.addBar("bar 4", 6);
-        barChart.addBar("bar 5", 8);
+    private void warnNoData() {
+        /**
+         * Deze methode toont een pop-up met een waarchuwing als er geen
+         * data bekend is voor een toets die geladen wordt.
+         */
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Er is geen data bekend voor deze toets!");
+        alert.setContentText("U kunt alleen toetsen waarvoor scores bekend zijn inzien.");
+        alert.showAndWait();
     }
 
-    protected void makeBoxplot() {
-        boxplot = new Boxplot();
+    private void plotHistogram(TablePosition newValue, String yLabel, String
+            title) {
+        /**
+         * Deze functie maakt en vult de histogram met de geselecteerde data
+         * uit de kolom.
+         */
+        barChart = new Histogram("Student", yLabel, title, "");
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(barChart.getBarChartBox());
+
+        for (int i = 0; i < pointsTable.getItems().size(); i++) {
+            barChart.addBar(pointsTable.getColumns().get(0)
+                    .getCellObservableValue(i).getValue().toString(), Double
+                    .parseDouble((String) newValue.getTableColumn()
+                            .getCellObservableValue(i).getValue()));
+        }
+
+        plotted = true;
+    }
+
+    private void plotLineGraph(TablePosition newValue, String yLabel, String
+            title) {
+        /**
+         * Deze functie maakt en vult de lijngrafiek met de geselecteerde data
+         * uit de kolom.
+         */
+        lineGraph = new Lijngrafiek("Student", yLabel, title);
+        graphPane.getChildren().clear();
+        graphPane.getChildren().add(lineGraph.getLineChartBox());
+
+        String[] xValues = new String[pointsTable.getItems().size()];
+        double[] yValues = new double[pointsTable.getItems().size()];
+
+        for (int i = 0; i < pointsTable.getItems().size(); i++) {
+            xValues[i] = pointsTable.getColumns().get(0)
+                    .getCellObservableValue(i).getValue().toString();
+            yValues[i] = Double.parseDouble((String) newValue.getTableColumn()
+                    .getCellObservableValue(i).getValue());
+        }
+
+        lineGraph.addLine(xValues, yValues, "");
+        plotted = true;
+    }
+
+    private void plotBoxplot(TablePosition newValue, String xLabelI, String
+            yLabel, String title) {
+        /**
+         * Maakt en vult de boxplot met geselecteerde data.
+         * Voor alle data in de geselecteerde kolom wordt het minimum,
+         * maximum, 1e kwartiel, 2e kwartiel en mediaan bepaald, welke
+         * vervolgens geplot worden.
+         */
+        double[] points = new double[pointsTable.getItems().size()];
+        for (int i=0; i<pointsTable.getItems().size(); i++) {
+            points[i] = Double.parseDouble((String) newValue.getTableColumn()
+                    .getCellObservableValue(i).getValue());
+        }
+
+        double[][] boxplotData = new double[][] {
+                {1, Statistics.kthQuartile(25, points), Statistics
+                        .kthQuartile(75, points), Statistics.max(points),
+                        Statistics.min(points), Statistics.median(points)}
+        };
+
+        String xLabel = new String(xLabelI + newValue.getTableColumn()
+                .getText());
+        String graphTitle = new String(title + newValue.getTableColumn()
+                .getText());
+
+        boxplot = new Boxplot(boxplotData, graphTitle, xLabel, yLabel,
+                false);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(boxplot.makeBoxPlot());
         boxplot.addData();
+        plotted = true;
     }
-    
-    public String[] getSelectionProperties() {
-            String[] properties = new String[6];
 
-
-            if (yearChoiceBox.getValue().equals("Jaar"))
-                return null;
-            if (schoolYearChoiceBox.getValue().equals("Leerjaar"))
-                return null;
-            if (blockChoiceBox.getValue().equals("Periode"))
-                return null;
-            if (courseChoiceBox.getValue().equals("Module"))
-                return null;
-            if (typeChoiceBox.getValue().equals("Toetsvorm"))
-                return null;
-            if (attemptChoiceBox.getValue().equals("Gelegenheid"))
-                return null;
-
-            properties[0] = (String) courseChoiceBox.getValue();
-            properties[1] = (String) yearChoiceBox.getValue();
-            properties[2] = (String) schoolYearChoiceBox.getValue();
-            properties[3] = (String) blockChoiceBox.getValue();
-            properties[4] = (String) typeChoiceBox.getValue();
-            properties[5] = (String) attemptChoiceBox.getValue();
-
-
-            return properties;
+    private void displaySaveDialog() {
+        /**
+         * Deze functie toont een scherm om de grafieken te kunnen opslaan.
+         */
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter
+                ("PNG (*.png)", ".png"));
+        fileChooser.setTitle("Opslaan Als");
+        File savePath = fileChooser.showSaveDialog(new Stage());
+        if (savePath != null) {
+            saveGraph(savePath);
         }
-    
-    public void setSelection(String[] selection) {
-        courseChoiceBox.setValue(selection[0]);
-        yearChoiceBox.setValue(selection[1]);
-        schoolYearChoiceBox.setValue(selection[2]);
-        blockChoiceBox.setValue(selection[3]);
-        typeChoiceBox.setValue(selection[4]);
-        attemptChoiceBox.setValue(selection[5]);        
+    }
+    private void saveGraph(File savePath) {
+        /**
+         * Deze functie verandert de geselecteerde grafiek in een image
+         * bestand en schrijft deze weg als een png. Mocht dit wegschrijven
+         * een error opleveren, dan wordt er een error getoond.
+         */
+        BarChart<String, Number> barChartGraph;
+        LineChart<String, Number> lineChartGraph;
+        CandleStickChart boxPlotGraph;
+        if (selectedGraph == "Histogram") {
+            barChartGraph = barChart.getBarChart();
+            graphImage = barChartGraph.snapshot(new SnapshotParameters(),
+                    null);
+        } else if (selectedGraph == "Lijngrafiek") {
+            lineChartGraph = lineGraph.getLineChart();
+            graphImage = lineChartGraph.snapshot(new SnapshotParameters(),
+                    null);
+        } else if (selectedGraph == "Boxplot") {
+            boxPlotGraph = boxplot.getBoxPlot();
+            graphImage = boxPlotGraph.snapshot(new SnapshotParameters(),
+                    null);
+        }
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(graphImage, null),
+                    "png", savePath);
+        } catch (IOException e) {
+            displayErrorDialog();
+        }
+    }
+    private void displayInformationDialog() {
+        /**
+         * Als er geen grafiek aangemaakt is, wordt er een informatiescherm
+         * getoond.
+         */
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Geen grafiek");
+        alert.setHeaderText("Er kan geen grafiek worden opgeslagen omdat er " +
+                "geen is aangemaakt.");
+        alert.setContentText("Maak een grafiek om deze te kunnen opslaan.");
+        ButtonType confirm = new ButtonType("OK");
+        alert.getButtonTypes().setAll(confirm);
+        alert.show();
+    }
+    private void displayErrorDialog() {
+        /**
+         * Als het wegschrijven van het png bestand fout gaat, wordt er een
+         * errorscherm getoond met wat informatie.
+         */
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fout");
+        alert.setHeaderText("Grafiek kan niet worden opgeslagen door een " +
+                "onbekende fout.");
+        alert.setContentText("IOException, de grafiek kon niet worden " +
+                "weggeschreven.");
+        ButtonType confirm = new ButtonType("OK");
+        alert.getButtonTypes().setAll(confirm);
+        alert.show();
+    }
+    public void setLoadEvent(){
+        /**
+         * Deze methode zorgt ervoor dat het ID van de geselecteerde toets 
+         * opgehaald wordt, als er op de toetsweergave knop gedrukt wordt, en 
+         * dat de fillTable aangeroepen wordt.
+         */
+        this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                DatabaseConn d = new DatabaseConn();
+                List<String> selection = choiceMenu.getSelection();
+                int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
+                        selection.get(4), selection.get(5));
+                fillTable(id);
+                d.CloseConnection();
+            }
+        });
     }
 }

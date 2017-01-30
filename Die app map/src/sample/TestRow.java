@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -8,26 +9,27 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class TestRow {
     private SimpleStringProperty test;
-    private SimpleIntegerProperty averageGrade;
+    private SimpleDoubleProperty averageGrade;
     private SimpleIntegerProperty participants;
     private SimpleIntegerProperty failed;
     private SimpleIntegerProperty passed;
-    private SimpleIntegerProperty passRate;
+    private SimpleDoubleProperty passRate;
 
-    public TestRow(String testI, Integer averageGradeI, Integer participantsI, Integer failedI, Integer passedI, Integer passRateI) {
+    public TestRow(String testI, Double averageGradeI, Integer participantsI,
+                   Integer failedI, Integer passedI, Double passRateI) {
         test = new SimpleStringProperty(testI);
-        averageGrade = new SimpleIntegerProperty(averageGradeI);
+        averageGrade = new SimpleDoubleProperty(averageGradeI);
         participants = new SimpleIntegerProperty(participantsI);
         failed = new SimpleIntegerProperty(failedI);
         passed = new SimpleIntegerProperty(passedI);
-        passRate = new SimpleIntegerProperty(passRateI);
+        passRate = new SimpleDoubleProperty(passRateI);
     }
 
     public String getTest() {
         return test.get();
     }
 
-    public Integer getAverageGrade() {
+    public Double getAverageGrade() {
         return averageGrade.get();
     }
 
@@ -43,7 +45,7 @@ public class TestRow {
         return passed.get();
     }
 
-    public Integer getPassRate() {
+    public Double getPassRate() {
         return passRate.get();
     }
 

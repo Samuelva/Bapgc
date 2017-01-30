@@ -32,16 +32,16 @@ public class Histogram {
         final NumberAxis yAxis = new NumberAxis();
         barChart = new BarChart<>(xAxis, yAxis);
         barChart.setTitle(title);
+        barChart.setLegendVisible(false);
 
         xAxis.setLabel(xLabel);
         yAxis.setLabel(yLabel);
 
         series = new XYChart.Series();
-        series.setName(name);
         barChart.getData().add(series);
     }
 
-    public void addBar(String xValue, int yValue) {
+    public void addBar(String xValue, double yValue) {
         series.getData().add(new XYChart.Data(xValue, yValue));
     }
 

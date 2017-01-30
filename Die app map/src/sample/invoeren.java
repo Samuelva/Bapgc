@@ -1,18 +1,18 @@
+
 package sample;
 
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import database.DatabaseConn;
-import database.Reader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,13 +20,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -34,177 +32,202 @@ import javafx.util.Callback;
 
 /*
 Programmeur: Anne van Winzum
-Datum laatste aanpassing: 08-12-2016 (door Davy Cats, layout aangepast)
-Beschrijving: In dit script wordt de eerste layout van het invoerscherm getoond.
+Datum: 08-12-2016 (door Davy Cats, layout aangepast)
+Datum: 27-1-2017 (door Anne van Winzum, leegmaak knop werkend)
 */
 
 final class Invoeren extends StackPane {
-    /*
-    De volgende globale variabelen worden gemaakt:
-    btn1, btn2, btn3 en btn4, deze worden later gebruikt voor de knoppen
-    onderaan het scherm
-    Ook worden de labels lbl1 en lbl2 gemaakt en de pointsTable.
-    */
-    protected Button btn1;
-    protected Button btn2;
-    protected Button btn3;
-    protected Button btn4;
+    /**
+     * Er worden drie buttons geinitialiseerd:
+     * - emptyButton, voor het leegmaken van de tabel.
+     * - saveButton, voor het opslaan van de data.
+     * - importCSV, voor hetr inladen van data.
+     *
+     * Er worden twee labels, een TabelView en een Keuzemenu geinitialiseerd.
+     *
+     * Vervolgens worden er een aantal variabelen geinitialiseerd:
+     * - questionIDs: Een int array die de de IDs van de vragen bevat (zodra deze gevuld wordt
+     *      zullen de IDs dezelfde volgorde hebben als de kolomen).
+     * - emptied: Een boolean die aanduid of de tabel leeggemaakt is.
+     * - changes: Een HashMap die gebruikt wordt om de veranderingen in de tabel bij te houden.
+     *      De keys zijn de student nummers (als String) en de waardes zijn HashMaps die als key
+     *      de ID van vragen bevatten met als waarde de nieuwe waarde voor de vraag.
+     */
+    protected Button emptyButton;
+    protected Button saveChanges;
+    protected Button importCSV;
     protected Label lbl1;
     protected Label lbl2;
-    protected Button btn5;
     protected TableView pointsTable;
-    protected ComboBox yearChoiceBox;
-    protected ComboBox schoolYearChoiceBox;
-    protected ComboBox blockChoiceBox;
-    protected ComboBox courseChoiceBox;
-    protected ComboBox typeChoiceBox;
-    protected ComboBox attemptChoiceBox;
-
     protected Keuzemenu choiceMenu;
 
-    private String[] questionLabels;
-    private String[][] pointsArray;
     private int[] questionIDs;
+    private boolean emptied = false;
+    private Map<String, Map> changes = new HashMap();
 
     public Invoeren() {
-        /*
-        De methode menuUnder wordt aangeroepen en maakt een HBox aan met
-        drie knoppen.
-        De methode MenuMaken wordt aangeroepen, deze maakt het keuzemenu aan.
-        BozenVullen zet vervolgens het scherm in elkaar.
-        */
+        /**
+         *  De methode menuUnder wordt aangeroepen en maakt een HBox aan met
+         *  drie knoppen.
+         *  De methode MenuMaken wordt aangeroepen, deze maakt het keuzemenu aan.
+         *  De methode makeTable maakt vervolgens de tabel aan.
+         *  BozenVullen zet vervolgens het scherm in elkaar.
+         *  Daarna worden er vier methodes gebruikt om de knoppen functies te geven.
+         */
         HBox hbox = menuUnder();
         VBox vbox2 = MenuMaken();
         makeTable();
         BoxenVullen(vbox2, hbox);
+        setLoadEvent();
+        setSaveChangesEvent();
+        setImportEvent();
+        setEmptyEvent();
 
-        DatabaseConn d = new DatabaseConn();
+    }
 
-        
+    private void setEmptyEvent() {
+        /**
+         * Als op emptyButton wordt geklikt,
+         * wordt een Alert aangemaakt om een pop-up waarschuwing weer te geven.
+         * De titel wordt op 'Waarschuwing' gezet.
+         * De tekst van de header bevat een zin of je het bestand echt wilt maken.
+         * Een tekst eronder geeft instructies, druk op OK als je het zeker weet,
+         * anders druk je op cancel.
+         * Er worden twee button types aangemaakt: OK en Cancel.
+         * De button types worden toegevoegd aan alert.
+         * De optionele buttontype krijgt de naam result,
+         * als waarde krijgt hij showAndWait, dit betekent dat de pop-up wacht
+         * tot er input van de gebruiker volgt.
+         * Er volgt een if-else statement.
+         * Als result gelijk is aan 'OK' moet alles gewist worden,
+         * Dit wordt gedaan door de rijen leeg te maken.
+         * Ook wordt de importCSV knop weer actief gemaakt,
+         * zo kan er opnieuw een CSV worden geïmporteerd.
+         * Ook wordt de globale boolean 'emptied' op true gezet.
+         * Als result niet gelijk is aan 'OK' wordt de pop-up afgesloten.t.
+         * Als result niet gelijk is aan OK wordt de pop-up afgesloten.
+         */
+        emptyButton.setOnAction(e -> {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Waarschuwing");
+            alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt maken?");
+            alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel");
+            ButtonType OK = new ButtonType("OK");
+            ButtonType Cancel = new ButtonType("Cancel");
+            alert.getButtonTypes().setAll(OK, Cancel);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == OK){
+                this.pointsTable.getItems().clear();
+                this.importCSV.setDisable(false);
+                this.emptied = true;
+            } else {
+                alert.close();
+            }
+        });
+    }
 
-        btn4.setOnAction(e -> {
-            //System.out.println(courseChoiceBox.getValue().toString());
-            //System.out.println(yearChoiceBox.getValue());
-            //System.out.println(schoolYearChoiceBox.getValue());
-            //System.out.println(blockChoiceBox.getValue());
-            //System.out.println(attemptChoiceBox.getValue());
-            //System.out.println(typeChoiceBox.getValue());
-        	/*
-        	 *Met FileChooser wordt de verkenner geopend in windows. 
-        	 */
+    private void setImportEvent() {
+        /**
+         * Met FileChooser wordt de verkenner geopend in windows.
+         */
+        importCSV.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
-                //String[] list = getSelectionProperties();
-
-                /*/nteger ToetsID = d.GetToetsID(courseChoiceBox.getValue().toString(),
-                        yearChoiceBox.getValue().toString(),
-                        schoolYearChoiceBox.getValue().toString(),
-                        blockChoiceBox.getValue().toString(),
-                        attemptChoiceBox.getValue().toString(),
-                        typeChoiceBox.getValue().toString()
-                        );*/
-                Object reader = new Reader(file.toString(), 1);
-                //btn4.setDisable(true);
+                importCSV.setDisable(true);
             }
-        });
-        
-        btn2.setOnAction(e -> {
-        	/*
-        	 * Als op btn2 wordt geklikt,
-        	 * wordt een Alert aangemaakt om een pop-up waarschuwing weer te geven.
-        	 * De titel wordt op waarschuwing gezet.
-        	 * De tekst van de header bevat een zin of je het bestand echt wilt maken.
-        	 * Een tekst eronder geeft instructies, druk op OK als je het zeker weet, 
-        	 * anders druk je op cancel.
-        	 * Er worden twee button types aangemaakt: OK en Cancel.
-        	 * De button types worden toegevoegd aan alert.
-        	 * De optionele buttontype krijgt de naam result,
-        	 * als waarde krijgt hij showAndWait, dit betekent dat de pop-up wacht
-        	 * tot er input van de gebruiker volgt.
-        	 * Er volgt een if-else statement.
-        	 * Als result gelijk is aan OK moet alles gewist worden,
-        	 * dit is nu nog een zin die naar de terminal wordt geprint.
-        	 * Als result niet gelijk is aan OK wordt de pop-up afgesloten.
-        	 */
-        	Alert alert = new Alert(AlertType.WARNING);
-        	alert.setTitle("Waarschuwing");
-        	alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt maken?");
-        	alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel");
-        	ButtonType OK = new ButtonType("OK");
-        	ButtonType Cancel = new ButtonType("Cancel");
-        	
-        	alert.getButtonTypes().setAll(OK, Cancel);
-        	Optional<ButtonType> result = alert.showAndWait();
-        	
-        	if (result.get() == OK){
-                this.pointsTable.getItems().clear();
-                this.pointsTable.getColumns().clear();
-        	} else {
-        	    alert.close();
-        	}
         });
     }
 
-    /* Maak de kolommen aan voor de tabel.
-     * Maak eerst de tabel leeg en verwijder alle kolomen. Voeg vervolgens de string "Student nr." toe aan de
-     * columnsTotal op de eerste positie gevolgd door de waardes van columns. Maak voor iedere String in
-     * columnsTotal een kolom aan. Geef deze kolomen een Cell Factory die een String accepteerd (anders kunnen de
-     * String arrays niet als waardes voor de tabel gebruikt worden). Maak de kolommen 40 breed en de eerste 80.
-     * Geef alle kolommen een TextField als cell (op de eerste na) en  voeg de hantering toe voor als die gewijzigd
-     * wordt. Voeg de kolommen toe aan de tabel.
-     */
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected void setupTable(String[] columns) {
+        /**
+         * Maak de kolommen aan voor de tabel.
+         * Maak eerst de tabel leeg en verwijder alle kolomen. Voeg vervolgens de string "Student nr." toe aan de
+         * columnsTotal op de eerste positie gevolgd door de waardes van columns. Maak voor iedere String in
+         * columnsTotal een kolom aan. Geef deze kolomen een Cell Factory die een String accepteerd (anders kunnen de
+         *  String arrays niet als waardes voor de tabel gebruikt worden). Maak de kolommen 40 breed en de eerste 80.
+         * Geef alle kolommen een TextField als cell (op de eerste na) en  voeg de hantering toe voor als die gewijzigd
+         * wordt. Voeg de kolommen toe aan de tabel.
+         */
         this.pointsTable.getItems().clear();
         this.pointsTable.getColumns().clear();
+        String[] columnsTotal = compileColumns(columns);
+        for (int i = 0; i < columnsTotal.length; i++) {
+            TableColumn column = makeColumn(i, columnsTotal[i]);
+            this.pointsTable.getColumns().add(column);
+        }
+    }
+
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private TableColumn makeColumn(int i, String columnLabel) {
+        TableColumn column = new TableColumn(columnLabel);
+        final int INDEX = i;
+        column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>,
+                ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> values) {
+                return new SimpleStringProperty((values.getValue()[INDEX]));
+            }
+        });
+        if (i == 0){
+            column.setMinWidth(80);
+            column.setMaxWidth(80);
+        } else {
+            column.setMinWidth(40);
+            column.setMaxWidth(40);
+            column.setCellFactory(TextFieldTableCell.<String>forTableColumn());
+            column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+                @Override
+                public void handle(TableColumn.CellEditEvent event) {
+                    editEvent(column, event);
+                }
+            });
+        }
+        return column;
+    }
+
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void editEvent(TableColumn column, TableColumn.CellEditEvent event) {
+        try{
+            int newValue = Integer.parseInt(event.getNewValue().toString());
+            if (newValue > 9999 || newValue < 0){
+                throw new NumberFormatException();
+            }
+            ObservableList items = pointsTable.getItems();
+            String[] newRow = ((String[]) event.getRowValue());
+            newRow[pointsTable.getColumns().indexOf(column)] = event.getNewValue().toString();
+            items.set(event.getTablePosition().getRow(), newRow);
+            pointsTable.setItems(items);
+            storeChange(newRow[0], pointsTable.getColumns().indexOf(column), newValue);
+        } catch (NumberFormatException e) {
+            column.setVisible(false);
+            column.setVisible(true);
+        }
+    }
+
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private String[] compileColumns(String[] columns) {
         String[] columnsTotal = new String[columns.length + 1];
         columnsTotal[0] = "Student nr.";
         for (int i = 0; i < columns.length; i++){
             columnsTotal[i+1] = columns[i];
         }
-        for (int i = 0; i < columnsTotal.length; i++) {
-            TableColumn column = new TableColumn(columnsTotal[i]);
-            final int index = i;
-            column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>>() {
-                @Override
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> values) {
-                    return new SimpleStringProperty((values.getValue()[index]));
-                }
-            });
-            if (i == 0){
-                column.setMinWidth(80);
-                column.setMaxWidth(80);
-            } else {
-                column.setMinWidth(40);
-                column.setMaxWidth(40);
-                TextFieldTableCell cell = new TextFieldTableCell();
-                column.setCellFactory(TextFieldTableCell.<String>forTableColumn());
-                column.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
-
-                    /* Wanneer de waarde van een cel gewijzigd wordt, wordt deze doorgevoerd naar de items van de
-                     * tabel. Er wordt ook gecontroleerd of het een cijfer is.
-                     */
-                    @Override
-                    public void handle(TableColumn.CellEditEvent event) {
-                        try{
-                            int x = Integer.parseInt(event.getNewValue().toString());
-                            ObservableList items = pointsTable.getItems();
-                            String[] newRow = ((String[]) event.getRowValue());
-                            newRow[pointsTable.getColumns().indexOf(column)] = event.getNewValue().toString();
-                            items.set(event.getTablePosition().getRow(), newRow);
-                            pointsTable.setItems(items);
-                        } catch (Exception e) {
-                            column.setVisible(false);
-                            column.setVisible(true);
-                        }
-                    }
-                });
-            }
-            this.pointsTable.getColumns().add(column);
-        }
+        return columnsTotal;
     }
 
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void storeChange(String studentID, int i, Integer newValue) {
+        if (! this.changes.keySet().contains(studentID)){
+            this.changes.put(studentID, new HashMap<Integer, Integer>());
+        }
+        Map<Integer, Integer> map = this.changes.get(studentID);
+        map.put(questionIDs[i-1], newValue);
+        this.changes.put(studentID, map);
+    }
+
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /* Deze functie vult de tabel in.
      * Er wordt connectie gemaakt met de database. De vraagnummers en ids worden opgehaald en opgeslagen onder
      * eerder geinitialiseerde variabelen. setupTable wordt gebruikt om de kolomen aan te maken.
@@ -214,25 +237,41 @@ final class Invoeren extends StackPane {
     protected void fillTable(int examID){
         DatabaseConn d = new DatabaseConn();
         Object[][] questionData = d.GetVragenVanToets(examID);
-        this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
-        this.questionLabels = Statistics.getColumn(1, questionData);
-        setupTable(this.questionLabels);
-        this.pointsArray = d.GetStudentScores(examID);
-        ObservableList<String[]> data = FXCollections.observableArrayList();
-        data.addAll(Arrays.asList(this.pointsArray));
-        this.pointsTable.setItems(data);
-        d.CloseConnection();
-
+        if (Arrays.deepToString(questionData).equals("[]")){
+            warnNoQuestions();
+        } else {
+            this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
+            String[] questionLabels = Statistics.getColumn(1, questionData);
+            setupTable(questionLabels);
+            String[][] pointsArray = d.GetStudentScores(examID);
+            if (pointsArray[0][0] != null) {
+                ObservableList<String[]> data = FXCollections.observableArrayList();
+                data.addAll(Arrays.asList(pointsArray));
+                pointsTable.setItems(data);
+                this.emptied = false;
+            }
+            d.CloseConnection();
+        }
     }
-    
+
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void warnNoQuestions() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Er zijn geen vragen bekend voor deze toets!");
+        alert.setContentText("U kunt alleen scores invoeren voor toetsen die vragen bevatten.");
+        alert.showAndWait();
+    }
+
+
     public HBox menuUnder(){
         /*
         Er wordt een regio gemaakt voor centreren van de knoppen.
-        btn2 krijgt de label Leeg maken en de afmetingen 150 bij 30 worden
+        emptyButton krijgt de label Leeg maken en de afmetingen 150 bij 30 worden
         meegegeven aan de methode maakObject.
-        btn3 krijgt de label Wijzigingen opslaan en de afmetingen 150 bij 30
+        saveChanges krijgt de label Wijzigingen opslaan en de afmetingen 150 bij 30
         worden meegegeven aan de methode maakObject.
-        btn4 krijgt de label Import CSV en de ametingen 150 bij 30 worden
+        importCSV krijgt de label Import CSV en de ametingen 150 bij 30 worden
         meegegeven aan de methode Import CSV.
         Er wort nog een regio gemaakt voor het centreren van de knoppen.
         Er wordt een HBox aangemaakt met de naam hbox.
@@ -242,32 +281,32 @@ final class Invoeren extends StackPane {
         */
         Region leftFill = new Region();
         HBox.setHgrow(leftFill, Priority.ALWAYS);
-        btn2 = maakObject(new Button(), "Leeg maken", 30, 150);
-        btn3 = maakObject(new Button(),"Wijzigingen opslaan", 30, 150);
-        btn4 = maakObject(new Button(),"Import CSV", 30, 150);
+        emptyButton = maakObject(new Button(), "Leeg maken", 30, 150);
+        saveChanges = maakObject(new Button(),"Wijzigingen opslaan", 30, 150);
+        importCSV = maakObject(new Button(),"Import CSV", 30, 150);
         Region rightFill = new Region();
         HBox.setHgrow(rightFill, Priority.ALWAYS);
-            
+
         HBox hbox = new HBox();
-        hbox.getChildren().addAll(rightFill, btn2, btn3, btn4, leftFill);
+        hbox.getChildren().addAll(rightFill, emptyButton, saveChanges, importCSV, leftFill);
         hbox.setSpacing(20);
         return hbox;
-        
+
     }
 
-    public Button maakObject(Button btn, String tekst, double hoogte, 
-            double breedte){
+    public Button maakObject(Button btn, String tekst, double hoogte,
+                             double breedte){
         /*
         Deze functie zet de naam, hoogte en breedte van de knoppen.
         */
         btn.setText(tekst);
         btn.setPrefHeight(hoogte);
         btn.setPrefWidth(150);
-        
+
         return btn;
-        
+
     }
-    
+
     public Label maakObject(Label lbl, String tekst){
         /*
         Deze functie zet de naam van de labels, laat ze centreren en
@@ -279,12 +318,11 @@ final class Invoeren extends StackPane {
         return lbl;
     }
 
-    //maak de tabel aan
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void makeTable() {
         pointsTable = new TableView();
         pointsTable.setEditable(true);
         VBox.setVgrow(pointsTable, Priority.ALWAYS);
-        
         pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -303,20 +341,20 @@ final class Invoeren extends StackPane {
     }
 
     @SuppressWarnings("unchecked")
-	public VBox MenuMaken(){
+    public VBox MenuMaken(){
         /*
         In deze functie wordt het menu aan de linkerkant gemaakt.
         lbl1 krijgt de tekst Keuzemnu, de breedte wordt op 150 gezet.
         De eerste ChoiceBox is year.
-        De tweede ChioceBox is studyyear: de items zijn: jaar 1, jaar 2, 
+        De tweede ChioceBox is studyyear: de items zijn: jaar 1, jaar 2,
         jaar 3 of jaar 4.
         De derde ChoiceBox is periode: de items zijn: periode 1, periode 2.
         periode 3, periode 4 en periode 5.
-        De vierde ChoiceBox is module, er zijn hier nog geen items, 
+        De vierde ChoiceBox is module, er zijn hier nog geen items,
         dit wordt nader bepaald.
         De vijfde ChoiceBox is toetsvorm, de items zijn: theorietoets,
         praktijktoets, opdracht, aanwezigheid, logboek en project.
-        De laatste ChoiceBox is gelegenheid, de items zijn: 1e kans en 
+        De laatste ChoiceBox is gelegenheid, de items zijn: 1e kans en
         2e kans.
         Alle ChoiceBoxes krijgen een hoogte van 30 en een breedte van 150.
         er wordt een Region gemaakt die (door VGrow) btn1 naar beneden duwt.
@@ -333,19 +371,16 @@ final class Invoeren extends StackPane {
 
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);
-        
-        btn1 = maakObject(new Button(), "Toets laden", 30, 150);
-        btn1.setPrefWidth(150);
-        
+
+
         VBox vbox2 = new VBox();
 
         vbox2.getChildren().addAll(lbl1, choiceMenu.getChoiceMenuBox());
-        
-        vbox2.setSpacing(20);
-        return vbox2;   
-        
-    }
 
+        vbox2.setSpacing(20);
+        return vbox2;
+
+    }
 
     public void BoxenVullen(VBox vbox2, HBox hbox){
         /*
@@ -370,73 +405,101 @@ final class Invoeren extends StackPane {
         Ten slotte wordt de hbox toegepast aan this, hierdoor kan
         deze klasse ook gebruikt worden in de main.
         */
-        
+
         Region fillLeft = new Region();
         HBox.setHgrow(fillLeft, Priority.ALWAYS);
         lbl2 = maakObject(new Label(), "Vragen");
         Region fillRight = new Region();
         HBox.setHgrow(fillRight, Priority.ALWAYS);
 
-        
+
         HBox hbox3 = new HBox();
         hbox3.getChildren().addAll(fillLeft, lbl2, fillRight);
-        
+
         VBox vbox3 = new VBox();
-        
+
         vbox3.setSpacing(10);
         vbox3.getChildren().addAll(hbox3, pointsTable, hbox);
-        
-        
+
+
         HBox hbox2 = new HBox();
         HBox.setHgrow(vbox3, Priority.ALWAYS);
-        
+
         HBox.setMargin(vbox2, new Insets(5));
         HBox.setMargin(vbox3, new Insets(5));
-        
+
         hbox2.setSpacing(20);
         hbox2.getChildren().addAll(vbox2, vbox3);
-        
+
         this.getChildren().add(hbox2);
-        
+
     }
-    
-    public String[] getSelectionProperties() {
-            String[] properties = new String[6];
 
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    protected void setSaveChangesEvent(){
+        this.saveChanges.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Alert alert = new Alert(AlertType.WARNING);
+                alert.setTitle("Waarschuwing");
+                alert.setHeaderText("Weet u zeker dat u de wijzigingen op wilt slaan?");
+                alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel");
+                ButtonType OK = new ButtonType("OK");
+                ButtonType Cancel = new ButtonType("Cancel");
+                alert.getButtonTypes().setAll(OK, Cancel);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == OK){
+                    saveChanges();
+                } else {
+                    alert.close();
+                }
 
-            if (schoolYearChoiceBox.getValue().equals("Jaartal"))
-                return null;
-            if (yearChoiceBox.getValue().equals("Leerjaar"))
-                return null;
-            if (blockChoiceBox.getValue().equals("Periode"))
-                return null;
-            if (courseChoiceBox.getValue().equals("Module"))
-                return null;
-            if (typeChoiceBox.getValue().equals("Toetsvorm"))
-                return null;
-            if (attemptChoiceBox.getValue().equals("Gelegenheid"))
-                return null;
+            }
+        });
+    }
 
-            properties[0] = (String) courseChoiceBox.getValue();
-            properties[1] = (String) schoolYearChoiceBox.getValue();
-            properties[2] = (String) yearChoiceBox.getValue();
-            properties[3] = (String) blockChoiceBox.getValue();
-            properties[4] = (String) typeChoiceBox.getValue();
-            properties[5] = (String) attemptChoiceBox.getValue();
-
-
-            return properties;
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void saveChanges(){
+        if (this.emptied){
+            clearScores();
+        } else {
+            DatabaseConn d = new DatabaseConn();
+            for (String key : this.changes.keySet()) {
+                Map<Integer, Integer> map = this.changes.get(key);
+                Integer student = Integer.parseInt(key);
+                for (Integer id : map.keySet()) {
+                    d.UpdateScore(student, id, map.get(id));
+                }
+            }
+            d.CloseConnection();
         }
-    
-    public void setSelection(String[] selection) {
-        courseChoiceBox.setValue(selection[0]);
-        schoolYearChoiceBox.setValue(selection[1]);
-        yearChoiceBox.setValue(selection[2]);
-        blockChoiceBox.setValue(selection[3]);
-        typeChoiceBox.setValue(selection[4]);
-        attemptChoiceBox.setValue(selection[5]);
+        this.changes.clear();
+        this.emptied = false;
     }
 
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void clearScores() {
+        System.out.println("hey");
+        DatabaseConn d = new DatabaseConn();
+        for (Integer id: this.questionIDs){
+            d.DeleteScoresForQuestion(id);
+        }
+        d.CloseConnection();
+    }
 
-
-}
+    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void setLoadEvent(){
+        this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                emptied = false;
+                changes.clear();
+                DatabaseConn d = new DatabaseConn();
+                List<String> selection = choiceMenu.getSelection();
+                int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
+                        selection.get(4), selection.get(5));
+                fillTable(id);
+                d.CloseConnection();
+            }
+        });
+    }
