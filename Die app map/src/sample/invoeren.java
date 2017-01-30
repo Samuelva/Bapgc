@@ -61,6 +61,7 @@ final class Invoeren extends StackPane {
     protected Label lbl2;
     protected TableView pointsTable;
     protected Keuzemenu choiceMenu;
+    protected DatabaseConn d;
 
     private int[] questionIDs;
     private boolean emptied = false;
@@ -83,6 +84,8 @@ final class Invoeren extends StackPane {
         setSaveChangesEvent();
         setImportEvent();
         setEmptyEvent();
+
+        d = new DatabaseConn();
 
     }
 
@@ -132,21 +135,31 @@ final class Invoeren extends StackPane {
          * Met FileChooser wordt de verkenner geopend in windows.
          */
         importCSV.setOnAction(e -> {
+            List A = choiceMenu.getSelection();
+            System.out.println(A);
+            System.out.println(A.get(0));
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Toets Bestand");
             File file = fileChooser.showOpenDialog(new Stage());
 
             if (file != null) {
+
                 //String[] list = getSelectionProperties();
-                /*/nteger ToetsID = d.GetToetsID(courseChoiceBox.getValue().toString(),
+                Integer ToetsID = d.GetToetsID(A.get(0).toString(),
+                        A.get(1).toString(),
+                        A.get(2).toString(),
+                        A.get(3).toString(),
+                        A.get(4).toString(),
+                        A.get(5).toString());
+
+                Object reader = new Reader(file.toString(), ToetsID);
+
+                /*courseChoiceBox.getValue().toString(),
                         yearChoiceBox.getValue().toString(),
                         schoolYearChoiceBox.getValue().toString(),
                         blockChoiceBox.getValue().toString(),
                         attemptChoiceBox.getValue().toString(),
-                        typeChoiceBox.getValue().toString()
-                        );*/
-
-                Object reader = new Reader(file.toString(), 1);
+                        typeChoiceBox.getValue().toString()*/
 
                 //btn4.setDisable(true);
             }
