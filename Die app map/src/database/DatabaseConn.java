@@ -122,16 +122,22 @@ public class DatabaseConn {
     private final String GETALLTOETS = "SELECT ToetsID, Jaar, ModuleCode, " +
             "Toetsvorm, Gelegenheid FROM TOETS;";
     private final String GETALLMODULES = "SELECT DISTINCT ModuleCode, Jaar " +
-            "FROM TOETS;";
+            "FROM TOETS";
+    private final String GETALLBLOCKS = "SELECT DISTINCT Jaar, Schooljaar, " +
+            "Periode FROM TOETS";
     private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar, Periode, Schooljaar" +
             " FROM TOETS";
-    private final String GETALLBLOCKS = "SELECT DISTINCT Jaar, Schooljaar, " +
-            "Periode FROM TOETS;";
+    private final String TESTFILTERSQL = "SELECT ToetsID, Jaar, ModuleCode, " +
+            "Toetsvorm, Gelegenheid FROM TOETS WHERE Jaar LIKE '%s' AND " +
+            "Schooljaar LIKE '%s' AND Periode LIKE '%s' AND ModuleCode LIKE " +
+            "'%s' AND Toetsvorm LIKE '%s' AND Gelegenheid LIKE '%s';";
+    private final String COURSEFILTERSQL = "SELECT ModuleCode, Jaar FROM " +
+            "TOETS WHERE Jaar LIKE '%s' AND Schooljaar LIKE '%s' AND Periode " +
+            "LIKE '%s';";
+    private final String BLOCKFILTERSQL = "SELECT Jaar, Schooljaar, Periode " +
+            "FROM TOETS WHERE Jaar LIKE '%s' AND Schooljaar LIKE '%s';";
     private final String DELETESCORES = "DELETE FROM SCORE" +
             " WHERE VraagID=%s";
-    private final String GETTOETSIDTOETSTAB = "SELECT ToetsID FROM TOETS " +
-            "WHERE Jaar='%s' AND ModuleCode='%s' AND Toetsvorm='%s' AND " +
-            "Gelegenheid='%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -957,20 +963,83 @@ public class DatabaseConn {
         return blocks;
     }
 
-    public Integer getTestIdTestTab(String year, String course, String type,
-                                 String attempt) {
-        Integer testId = null;
+    public List<String> filterTest(String year, String schoolYear, String
+            block, String course, String type, String attempt) {
+        List<String> filteredTests;
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(this
-                    .GETTOETSIDTOETSTAB, year, course, type, attempt));
+                    .TESTFILTERSQL, year, schoolYear, block, course, type,
+                    attempt));
+            filteredTests = new ArrayList<>();
             while (resultSet.next()) {
-                testId = new Integer(resultSet.getString("ToetsID"));
+                filteredTests.add(resultSet.getString("ModuleCode") + " " +
+                        resultSet.getString("Toetsvorm") + " " +
+                        resultSet.getString("Gelegenheid") + " " +
+                        resultSet.getString("Jaar"));
             }
         } catch (Exception e) {
             throw new EmptyStackException();
         }
-        return testId;
+        return filteredTests;
+    }
+
+    public List<String> filterCourse(String year, String schoolYear, String
+            block) {
+        List<String> filteredModules;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(this
+                            .COURSEFILTERSQL, year, schoolYear, block));
+            filteredModules = new ArrayList<>();
+            while (resultSet.next()) {
+                filteredModules.add(resultSet.getString("ModuleCode") + " " +
+                        resultSet.getString("Jaar"));
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return filteredModules;
+    }
+
+    public List<String> filterBlock(String year, String schoolYear) {
+        List<String> filteredBlocks;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format(this
+                    .BLOCKFILTERSQL, year, schoolYear));
+            filteredBlocks = new ArrayList<>();
+            while (resultSet.next()) {
+                String result = new String("Periode " + resultSet.getString
+                        ("Periode") + " jaar " + resultSet.getString
+                        ("Schooljaar") + " " + resultSet.getString("Jaar"));
+                if (!filteredBlocks.contains(result)) {
+                    filteredBlocks.add(result);
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return filteredBlocks;
+    }
+
+
+    public List<String> getItems(String item) {
+        List<String> items;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery("SELECT " +
+                    item + " FROM TOETS");
+            items = new ArrayList<>();
+            while (resultSet.next()) {
+                if (!items.contains(resultSet.getString(item))) {
+                    items.add(resultSet.getString(item));
+                }
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return items;
     }
 
     public void DeleteScoresForQuestion(Integer questionID){
