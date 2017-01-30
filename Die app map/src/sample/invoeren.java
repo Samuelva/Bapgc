@@ -163,7 +163,8 @@ final class Invoeren extends StackPane {
     private TableColumn makeColumn(int i, String columnLabel) {
         TableColumn column = new TableColumn(columnLabel);
         final int INDEX = i;
-        column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>>() {
+        column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>,
+                ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> values) {
                 return new SimpleStringProperty((values.getValue()[INDEX]));
@@ -380,7 +381,6 @@ final class Invoeren extends StackPane {
 
     }
 
-    //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public void BoxenVullen(VBox vbox2, HBox hbox){
         /*
         Er wordt eerst een label aangemaakt met de naam: Vragen.
