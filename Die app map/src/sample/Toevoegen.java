@@ -5,6 +5,8 @@ import database.ModuleReader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -710,41 +712,82 @@ public class Toevoegen extends TabPane{
     private class ModuleTab extends Tab{
         public ModuleTab(String text) {
             super(text);
-            Region leftFill = new Region();
-            HBox.setHgrow(leftFill, Priority.ALWAYS);
             createModuleTabButtons();
-            Region rightFill = new Region();
-            HBox.setHgrow(rightFill, Priority.ALWAYS);
-
             HBox hbox = new HBox();
-            hbox.getChildren().addAll(rightFill, emptyButton, saveButton, importCSV, leftFill);
+            hbox.getChildren().addAll(fillRegion(), emptyButton, fillRegion(), importCSV, fillRegion());
             hbox.setSpacing(20);
-
+            VBox.setMargin(hbox, new Insets(5));
             pointsTable = new TableView();
             VBox.setVgrow(pointsTable, Priority.ALWAYS);
-            fillTable();
-
+            VBox.setMargin(pointsTable, new Insets(5));
             VBox vbox = new VBox();
-
-            vbox.setSpacing(20);
             vbox.getChildren().addAll(pointsTable, hbox);
-
-
             this.setContent(vbox);
+            events();
+        }
 
+        private void events() {
+            fillTable();
             importModuleCSV();
+            setEmptyDatabaseEvent();
+        }
+
+        private void setEmptyDatabaseEvent() {
+            /**
+             * Deze methode zorgt ervoor dat als er op "Database leeg maken" gedrukt
+             * wordt, dat er een waarschuwing getoond wordt. Als er op OK gedrukt
+             * wordt in die waarchuwing wordt de database leeg gemaakt.
+             */
+            emptyButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Waarschuwing");
+                    alert.setHeaderText("Weet u zeker dat u alle data uit de database wilt verwijderen?");
+                    alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel.\n" +
+                            "Dit kan niet ongedaan gemaakt worden!");
+                    ButtonType OK = new ButtonType("OK");
+                    ButtonType Cancel = new ButtonType("Cancel");
+                    alert.getButtonTypes().setAll(OK, Cancel);
+                    Optional<ButtonType> result = alert.showAndWait();
+                    if (result.get() == OK) {
+                        emptyDatabase();
+                    } else {
+                        alert.close();
+                    }
+                }
+            });
+        }
+
+        private void emptyDatabase() {
+            /**
+             * Deze methode maakt een connctie met de database, maakt hem
+             * leeg en update de tabel op het scherm.
+             */
+            DatabaseConn d = new DatabaseConn();
+            d.ResetTables();
+            d.CloseConnection();
+            fillTable();
+        }
+
+        private Region fillRegion(){
+            /**
+             * Deze methode maakt een Region aan die zich uitstrekt over de
+             * breedte van het scherm.
+             */
+            Region region = new Region();
+            HBox.setHgrow(region, Priority.ALWAYS);
+            return region;
         }
 
         private void createModuleTabButtons() {
             /**
              * Aanmaken van knoppen die van belang zijn voor het module scherm
              */
-            emptyButton = new Button("Leeg maken");
-            saveButton = new Button("Wijzigingen opslaan");
+            emptyButton = new Button("Database leeg maken");
             importCSV = new Button("Import CSV");
 
             emptyButton.setPrefSize(150, 30);
-            saveButton.setPrefSize(150, 30);
             importCSV.setPrefSize(150, 30);
         }
 

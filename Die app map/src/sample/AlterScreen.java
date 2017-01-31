@@ -37,7 +37,7 @@ Datum: 08-12-2016 (door Davy Cats, layout aangepast)
 Datum: 27-1-2017 (door Anne van Winzum, leegmaak knop werkend)
 */
 
-final class Invoeren extends StackPane {
+final class AlterScreen extends StackPane {
     /**
      * Er worden drie buttons geinitialiseerd:
      * - emptyButton, voor het leegmaken van de tabel.
@@ -67,7 +67,7 @@ final class Invoeren extends StackPane {
     private boolean emptied = false;
     private Map<String, Map> changes = new HashMap();
 
-    public Invoeren() {
+    public AlterScreen() {
         /**
          *  De methode menuUnder wordt aangeroepen en maakt een HBox aan met
          *  drie knoppen.
@@ -251,7 +251,7 @@ final class Invoeren extends StackPane {
         DatabaseConn d = new DatabaseConn();
         Object[][] questionData = d.GetVragenVanToets(examID);
         if (Arrays.deepToString(questionData).equals("[]")) {
-            warnNoQuestions();
+            warnNoData();
         } else {
             this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
             String[] questionLabels = Statistics.getColumn(1, questionData);
@@ -268,11 +268,11 @@ final class Invoeren extends StackPane {
     }
 
     //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private void warnNoQuestions() {
+    private void warnNoData() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Waarschuwing!");
-        alert.setHeaderText("Er zijn geen vragen bekend voor deze toets!");
-        alert.setContentText("U kunt alleen scores invoeren voor toetsen die vragen bevatten.");
+        alert.setHeaderText("Er is geen data bekend voor deze toets!");
+        alert.setContentText("U kunt alleen scores aanpassen voor toetsen waarbij er al scores ingevoerd zijn.");
         alert.showAndWait();
     }
 
@@ -466,7 +466,6 @@ final class Invoeren extends StackPane {
                 } else {
                     alert.close();
                 }
-
             }
         });
     }

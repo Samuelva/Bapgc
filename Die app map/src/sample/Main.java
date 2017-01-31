@@ -3,18 +3,12 @@ package sample;
 import database.DatabaseConn;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-import java.util.EmptyStackException;
 import java.util.List;
-
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 
 public class Main extends Application {
@@ -24,7 +18,7 @@ public class Main extends Application {
     private static VBox frame;
     private static ViewScreen view;
     private static Toevoegen toevoeg;
-    private static Invoeren invoer;
+    private static AlterScreen invoer;
     private static Vergelijken vergelijk;
     private static TabPane tabPane;
     private static Tab toevoegen;
@@ -118,7 +112,7 @@ public class Main extends Application {
         inzien = new Tab();
         vergelijken = new Tab();
         toevoegen.setText("Toevoegen");
-        invoeren.setText("Invoeren");
+        invoeren.setText("Aanpassen");
         inzien.setText("Inzien");
         vergelijken.setText("Vergelijken");
 
@@ -135,7 +129,7 @@ public class Main extends Application {
         toevoegen.setContent(toevoeg);
 
 
-        invoer = new Invoeren();
+        invoer = new AlterScreen();
         invoeren.setContent(invoer);
 
         view = new ViewScreen();
