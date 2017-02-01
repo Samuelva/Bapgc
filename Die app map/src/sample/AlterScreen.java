@@ -121,6 +121,8 @@ final class AlterScreen extends StackPane {
             if (result.get() == OK) {
                 this.pointsTable.getItems().clear();
                 this.emptied = true;
+                this.saveChanges.setDisable(false);
+                this.emptyButton.setDisable(true);
             } else {
                 alert.close();
             }
@@ -189,6 +191,7 @@ final class AlterScreen extends StackPane {
             items.set(event.getTablePosition().getRow(), newRow);
             pointsTable.setItems(items);
             storeChange(newRow[0], pointsTable.getColumns().indexOf(column), newValue);
+            saveChanges.setDisable(false);
         } catch (NumberFormatException e) {
             column.setVisible(false);
             column.setVisible(true);
@@ -270,12 +273,16 @@ final class AlterScreen extends StackPane {
         Region leftFill = new Region();
         HBox.setHgrow(leftFill, Priority.ALWAYS);
         emptyButton = maakObject(new Button(), "Leeg maken", 30, 150);
+        emptyButton.setDisable(true);
+        Region midFill = new Region();
+        HBox.setHgrow(midFill, Priority.ALWAYS);
         saveChanges = maakObject(new Button(), "Wijzigingen opslaan", 30, 150);
+        saveChanges.setDisable(true);
         Region rightFill = new Region();
         HBox.setHgrow(rightFill, Priority.ALWAYS);
 
         HBox hbox = new HBox();
-        hbox.getChildren().addAll(rightFill, emptyButton, saveChanges, leftFill);
+        hbox.getChildren().addAll(rightFill, emptyButton, midFill, saveChanges, leftFill);
         hbox.setSpacing(20);
         return hbox;
 
@@ -461,6 +468,7 @@ final class AlterScreen extends StackPane {
         }
         this.changes.clear();
         this.emptied = false;
+        this.saveChanges.setDisable(true);
     }
 
     //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -486,6 +494,8 @@ final class AlterScreen extends StackPane {
                         selection.get(4), selection.get(5));
                 fillTable(id);
                 d.CloseConnection();
+                emptyButton.setDisable(false);
+                saveChanges.setDisable(true);
             }
         });
     }
