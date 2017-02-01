@@ -2,6 +2,7 @@ package sample;
 
 import database.DatabaseConn;
 import database.ModuleReader;
+import database.Reader;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -284,6 +285,8 @@ public class Toevoegen extends TabPane{
             File file = fileChooser.showOpenDialog(new Stage());
             if (file != null) {
                 findLinesWithQuestionPointDistribution(file);
+//                new Reader(file.toString(), examID);
+
             }
         }
 
@@ -301,17 +304,18 @@ public class Toevoegen extends TabPane{
              */
             try {
                 Scanner scanner = new Scanner(file);
-                while (scanner.hasNext()) {
-                    String questions = scanner.nextLine();
-                    if (questions.contains("Opgave")){
-                        String subQuestions = scanner.nextLine();
-                        String subQuestionsPoints = scanner.nextLine();
-                        extractQuestionsFromLines(questions.split(";"), subQuestions.split(";"), subQuestionsPoints.split(";"));
-                    }
-                }
+                String subQuestions = scanner.nextLine();
+                String accountAbility = scanner.nextLine();
+                String subQuestionsPoints = scanner.nextLine();
+                extractQuestionsFromLines(subQuestions.split(";"),
+                        accountAbility.split(";"),
+                        subQuestionsPoints.split(";"));
+
+                new Reader(file.toString(), examID);
             } catch (FileNotFoundException e) {
             }
         }
+
 
         private void setQuestionAndCheckboxesFlowpaneSettings() {
             /**
@@ -324,7 +328,7 @@ public class Toevoegen extends TabPane{
             questionAndCheckboxes.setHgap(10);
         }
 
-        private void extractQuestionsFromLines(String[] questions, String[] subQuestions, String[] subQuestionsPoints) {
+        private void extractQuestionsFromLines(String[] subQuestions,String[] accountAbility, String[] subQuestionsPoints) {
             /**
              * Extraheren van de juiste gegevens uit de variabelen questions,
              * subquestion en subquestionsPoints.
@@ -346,18 +350,11 @@ public class Toevoegen extends TabPane{
              */
             setQuestionAndCheckboxesFlowpaneSettings();
             questionAndCheckBoxesScrollpane = new ScrollPane();
-            for (int i = 0; i < subQuestions.length; i++) {
-                if (subQuestions[i].contains("Vraagnummer:")) {
-                    int index = i+2; //Remove Vraagnummer and whitespaces
-                    String currentQuestion = "1";
-                    while (((questions[index].length() != 0 || subQuestions[index].length() != 0) && subQuestionsPoints[index].length() != 0)) {// || index-1 == indexVraagnummer) {
-                        if (questions[index].length() != 0) {
-                            currentQuestion = questions[index];
-                        }
-                        questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(String.valueOf(currentQuestion) + "." + subQuestions[index], subQuestionsPoints[index], "true"));
-                        index++;
-                    }
-                }
+            for (int i = 2; i < subQuestions.length; i++) {
+                questionAndCheckboxes.getChildren().add(
+                        new QuestionBoxWithCheck(subQuestions[i],
+                                subQuestionsPoints[i],
+                                accountAbility[i]));
             }
             questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
             pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);

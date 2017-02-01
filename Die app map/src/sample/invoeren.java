@@ -56,7 +56,6 @@ final class Invoeren extends StackPane {
      */
     protected Button emptyButton;
     protected Button saveChanges;
-    protected Button importCSV;
     protected Label lbl1;
     protected Label lbl2;
     protected TableView pointsTable;
@@ -82,7 +81,6 @@ final class Invoeren extends StackPane {
         BoxenVullen(vbox2, hbox);
         setLoadEvent();
         setSaveChangesEvent();
-        setImportEvent();
         setEmptyEvent();
 
         d = new DatabaseConn();
@@ -122,7 +120,6 @@ final class Invoeren extends StackPane {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == OK) {
                 this.pointsTable.getItems().clear();
-                this.importCSV.setDisable(false);
                 this.emptied = true;
             } else {
                 alert.close();
@@ -130,28 +127,6 @@ final class Invoeren extends StackPane {
         });
     }
 
-    private void setImportEvent() {
-        /**
-         * Met FileChooser wordt de verkenner geopend in windows.
-         */
-        importCSV.setOnAction(e -> {
-            List A = choiceMenu.getSelection();
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open Toets Bestand");
-            File file = fileChooser.showOpenDialog(new Stage());
-
-            if (file != null) {
-                Integer ToetsID = d.GetToetsID(A.get(0).toString(),
-                        A.get(1).toString(),
-                        A.get(2).toString(),
-                        A.get(3).toString(),
-                        A.get(4).toString(),
-                        A.get(5).toString());
-
-                Object reader = new Reader(file.toString(), ToetsID);
-            }
-        });
-    }
 
     //DOCUMENTATIE AANPASSEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     protected void setupTable(String[] columns) {
@@ -296,12 +271,11 @@ final class Invoeren extends StackPane {
         HBox.setHgrow(leftFill, Priority.ALWAYS);
         emptyButton = maakObject(new Button(), "Leeg maken", 30, 150);
         saveChanges = maakObject(new Button(), "Wijzigingen opslaan", 30, 150);
-        importCSV = maakObject(new Button(), "Import CSV", 30, 150);
         Region rightFill = new Region();
         HBox.setHgrow(rightFill, Priority.ALWAYS);
 
         HBox hbox = new HBox();
-        hbox.getChildren().addAll(rightFill, emptyButton, saveChanges, importCSV, leftFill);
+        hbox.getChildren().addAll(rightFill, emptyButton, saveChanges, leftFill);
         hbox.setSpacing(20);
         return hbox;
 
