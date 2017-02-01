@@ -58,7 +58,7 @@ public class Toevoegen extends TabPane{
     //SELECTION MENU
     public Keuzemenu choiceMenu;
 
-    public ScreenButtons saveExamBtn = new ScreenButtons("Toets opslaan");
+    public ScreenButtons saveExamBtn = new ScreenButtons("Update cessuur/gokkans");
 
     //EXAM PROPERTIES
     public CheckBox questionPropertyCheckBox;
@@ -69,7 +69,6 @@ public class Toevoegen extends TabPane{
 
     public ModuleTab moduleTab;
     private Button emptyButton;
-    private Button saveButton;
 
     private Button importCSV;
     private TableView pointsTable;
@@ -330,7 +329,8 @@ public class Toevoegen extends TabPane{
             questionAndCheckboxes.setHgap(10);
         }
 
-        private void extractQuestionsFromLines(String[] subQuestions,String[] accountAbility, String[] subQuestionsPoints) {
+        private void extractQuestionsFromLines(String[] subQuestions,String[] accountAbility,
+                                               String[] subQuestionsPoints) {
             /**
              * Extraheren van de juiste gegevens uit de variabelen questions,
              * subquestion en subquestionsPoints.
@@ -365,10 +365,8 @@ public class Toevoegen extends TabPane{
 
         public void setExamPropertiesScreen(String[] examProperties) {
             VBox vbox = new VBox();
-            VBox buttonBox = new VBox(saveExamBtn);
             vbox.getChildren().addAll(getExamInformationBoxes(examProperties,
-                    examID), getPointDistribution(examProperties), buttonBox);
-            buttonBox.setAlignment(Pos.CENTER);
+                    examID), getPointDistribution(examProperties));
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
             saveExamBtn.setAlignment(Pos.CENTER);
@@ -386,7 +384,9 @@ public class Toevoegen extends TabPane{
             pointDistributionBox.getChildren().addAll(new BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
             try {
                 DatabaseConn databaseConn = new DatabaseConn();
-                String[][] questionInfo  = databaseConn.GetTable("vraag", "toetsid = " + databaseConn.GetToetsID(examProperties[0],examProperties[1], examProperties[2], examProperties[3], examProperties[4], examProperties[5]));
+                String[][] questionInfo  = databaseConn.GetTable("vraag", "toetsid = " +
+                        databaseConn.GetToetsID(examProperties[0],examProperties[1], examProperties[2],
+                                examProperties[3], examProperties[4], examProperties[5]));
                 if (questionInfo.length == 0) {
                     throw new EmptyStackException();
                 }
@@ -440,8 +440,15 @@ public class Toevoegen extends TabPane{
             /**
              * Een vbox met informatie over de cijfer gegevens.
              */
+            Region leftSpring    = new Region();
+            Region rightSpring = new Region();
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"), getGradeData());
+            HBox hbox = new HBox();
+            hbox.getChildren().addAll(leftSpring, saveExamBtn, rightSpring);
+            hbox.setHgrow(leftSpring, Priority.ALWAYS);
+            hbox.setHgrow(rightSpring, Priority.ALWAYS);
+            hbox.setMaxWidth(vbox.getMaxWidth());
+            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"), getGradeData(), hbox);
             vbox.setSpacing(20);
             return vbox;
         }
