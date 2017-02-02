@@ -203,10 +203,10 @@ public class VergelijkKeuzemenu {
                     .filterTest("%", "%", "%", "%", "%", "%")));
         } else if (instance == 2) {
             selectionMenu.setItems(FXCollections.observableArrayList(d
-                    .getAllCourses()));
+                    .filterCourse("%", "%", "%")));
         } else if (instance == 3) {
             selectionMenu.setItems(FXCollections.observableArrayList(d
-                    .getAllBlocks()));
+                    .filterBlock("%", "%")));
         }
         VBox.setVgrow(selectionMenu, Priority.ALWAYS);
     }
@@ -268,46 +268,5 @@ public class VergelijkKeuzemenu {
         choiceMenu.setSpacing(20);
         choiceMenu.setAlignment(Pos.TOP_CENTER);
         choiceMenu.setPadding(new Insets(0, 20, 0, 0));
-    }
-
-
-
-    public void setYearContent(String... values) {
-        /**
-         * Stel inhoud van de "Jaar" comboBox in.
-         * Gebruik: Instantie.setYearContent("2014", "2015", "2016", ...);
-         */
-        for (String value : values) {
-            year.getItems().add(value);
-        }
-    }
-
-    public void setModuleContent(String... values) {
-        /**
-         * Stel inhoud van de "Module" comboBox in.
-         * Gebruik: Instantie.setModuleContent("Bapgc", "Bacf", "Bpsda", ...);
-         */
-        for (String value : values) {
-            course.getItems().add(value);
-        }
-    }
-
-    public void setChanceContent(String... values) {
-        /**
-         * Stel inhoud van de "Gelegenheid" comboBox in.
-         * Gebruik: Instantie.setChangeContent("1e kans", "2e kans", "3e kans", ...);
-         */
-        for (String value : values) {
-            attempt.getItems().add(value);
-        }
-    }
-
-    public void setSelectionMenuItems(String... selection) {
-        /**
-         * Stel inhoud van het paneel in het keuzemenu in.
-         * Gebruik: Instantie.setSelectionMenuItems("Toets1", "Toets2", "Toets3", ...);
-         */
-        selectionMenuItems = FXCollections.observableArrayList(selection);
-        selectionMenu.setItems(selectionMenuItems);
     }
 }

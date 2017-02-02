@@ -105,23 +105,22 @@ public class Vergelijken extends StackPane {
 
         try {
             for (String s : selection) {
-//                String[] parts = s.split(" ");
-//                String course = parts[0];
-//                String type = parts[1];
-//                String attempt = parts[2];
-//                String year = parts[3];
-//
-//                Integer testId = d.getTestIdTestTab(year, course, type, attempt);
-//                Object[] testStatisticsObj = Statistics.examStats(testId);
-//
-//                data.add(new TestRow(s.toString(),
-//                                (Double) testStatisticsObj[0],
-//                                (int) testStatisticsObj[1],
-//                                (int) testStatisticsObj[2],
-//                                (int) testStatisticsObj[3],
-//                                (Double) testStatisticsObj[4]));
-                data.add(new TestRow(s.toString(), r.nextDouble(), r.nextInt
-                        (), r.nextInt(), r.nextInt(), r.nextDouble()));
+                String[] parts = s.split(" ");
+                String course = parts[0];
+                String type = parts[1];
+                String attempt = parts[2];
+                String year = parts[3];
+
+                String testId = d.getTestID(year, course, type, attempt);
+                Object[] testStatisticsObj = Statistics.examStats
+                        (Integer.parseInt(testId));
+
+                data.add(new TestRow(s.toString(),
+                                (Double) testStatisticsObj[0],
+                                (int) testStatisticsObj[1],
+                                (int) testStatisticsObj[2],
+                                (int) testStatisticsObj[3],
+                                (Double) testStatisticsObj[4]));
             }
             testStatistics.fillTable(data);
         } catch(Exception e) {

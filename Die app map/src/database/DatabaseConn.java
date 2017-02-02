@@ -138,6 +138,9 @@ public class DatabaseConn {
             "FROM TOETS WHERE Jaar LIKE '%s' AND Schooljaar LIKE '%s';";
     private final String DELETESCORES = "DELETE FROM SCORE" +
             " WHERE VraagID=%s";
+    private final String TESTIDSQL = "SELECT ToetsID FROM TOETS WHERE " +
+            "Jaar='%s' AND ModuleCode='%s' AND Toetsvorm='%s' AND " +
+            "Gelegenheid='%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -908,6 +911,23 @@ public class DatabaseConn {
             throw new EmptyStackException();
         }
         return ConvertArrayListTable(table);
+    }
+
+    public String getTestID(String year, String course, String type,
+                                  String attempt) {
+        String testID = new String();
+        System.out.println("X");
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format
+                    (this.TESTIDSQL, year, course, type, attempt));
+            while (resultSet.next()) {
+                testID = resultSet.getString("ToetsID");
+            }
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return testID;
     }
 
     public List<String> getAllTest() {
