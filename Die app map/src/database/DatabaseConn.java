@@ -141,6 +141,9 @@ public class DatabaseConn {
     private final String TESTIDSQL = "SELECT ToetsID FROM TOETS WHERE " +
             "Jaar='%s' AND ModuleCode='%s' AND Toetsvorm='%s' AND " +
             "Gelegenheid='%s';";
+    private final String UPDATEMEEREKENSQL = "UPDATE VRAAG" +
+            " SET Meerekenen='%s'" +
+            " WHERE VraagID=%s;";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -1072,6 +1075,25 @@ public class DatabaseConn {
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(String.format(
                     this.DELETESCORES, questionID
+            ));
+            this.statement.close();
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+    }
+
+    public void UpdateMeereken(Integer vraagID, Boolean meerekenen){
+        /* Deze methode zorgt voor het updaten van de kolom meerekenen.
+         * Met behulp van de UPDATEMEEREKENSQL en de meegegeven
+         * vraag ID, en nieuwe waarde voor meerekenen, wordt
+         * het geupdate in de database.
+         * Met dezelfde reden als de constructor wordt het in een
+         * try-catch gedaan.
+         */
+        try {
+            this.statement = this.connection.createStatement();
+            this.statement.executeUpdate(String.format(
+                    this.UPDATEMEEREKENSQL, meerekenen, vraagID
             ));
             this.statement.close();
         } catch (Exception e) {
