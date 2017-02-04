@@ -35,12 +35,52 @@ import javafx.util.Callback;
 
 import javax.imageio.ImageIO;
 
-/* Deze class maakt een StackPane dat het inzage scherm bevat.
+/**
+ * Deze class maakt een StackPane dat het inzage scherm bevat.
  */
 public class ViewScreen extends StackPane{
+    /**
+     * De volgende golbale variabelen worden gedefineerd.
+     * - plotChoiceBox: Een ChoiceBox vor het selecteren van
+     *      het soort grafiek.
+     * - calculateBtn: Een knop voor het bereken van de
+     *      Cohen-Schotanus cesuur.
+     * - savePlotBtn: Een knop voor het opslaan van de grafiek.
+     * - exportBtn: Een knop voor het opslaan van een CSV.
+     * - qualityText: Een veld die text over de kwaliteit
+     *      van de toets bevat.
+     * - cohenText: Een veld die de statistiek met betrekking
+     *      tot de Cohen-Schotanus cesuur bevat
+     * - resultsText: Een veld die de statistiek met betrekking
+     *      tot de resultaten bevat.
+     * - statisticsText: Een veld die de algemene statistieken
+     *      bevat.
+     * - pointsTable: Een tabel voor de behaalde punten en cijfers.
+     * - tablePos: De geselecteerde positie van de tabel.
+     * - percentileSlider: De slider voor het kiezen van een
+     *      percentiel.
+     * - percentileLabel: Een label die het gekozen percentiel
+     *      bevat.
+     * - graphPane: Het gedeelte waar de grafiek in weergegeven
+     *      wordt.
+     * - barChart: De histogram.
+     * - lineGraph: De lijn grafiek.
+     * - boxplot: De boxplot.
+     * - choiceMenu: Het keuzemenu.
+     * - selectedGraph: De geselecteerde grafiek.
+     * - graphImange: Een object dat gebruikt wordt voor het opslaan
+     *      van de grafiek.
+     * - plotted: Een boolean die aanduid of er een grafiek
+     *       getekend is.
+     * - gradeTable: Een String[][] die de waardes van de tabel bevat.
+     * - questionLabels: Een array van de labels van de vragen.
+     * - questionData: Een array die informatie bevat over de vragen:
+     *      ID, nummer (label), maximum score, meerkenen (true of false)
+     * - examPoints: Een array die de cesuur, maximum score en
+     *      aantal punten door gokkans van de toets bevat.
+     */
     protected ChoiceBox plotChoiceBox;
     protected Button calculateBtn;
-    protected Button plotBtn;
     protected Button savePlotBtn;
     protected Button exportBtn;
     protected Text qualityText;
@@ -59,19 +99,20 @@ public class ViewScreen extends StackPane{
     protected String selectedGraph;
     protected WritableImage graphImage;
     protected boolean plotted;
-
     private String[][] gradeTable = null;
     private String[] questionLabels = null;
     private Object[][] questionData;
     private Integer[] examPoints;
 
-
-
-    /* Deze functie zet het scherm in elkaar. Eerst het selectie gedeelte,
-     * met een margin van 5 en een breedte van 150. Daarnaast wordt het
-     * rechter gedeelte gezet dat de rest van het scherm opvult.
-     */
     protected ViewScreen(){
+        /**
+         * Deze constuctor zet het scherm in elkaar.
+         * Eerst wordt het selectie gedeelte gemaakt en vervolgens het
+         * rechter gedeelte van het scherm. Deze twee gedeeltes zijn
+         * vboxs die aan een hbox worden toegevoegd.
+         * De functies van de toets weergeven en CSV exporteren knoppen
+         * worden toegevoegd en de hbox wordt aan het scherm toegevoegd.
+         */
         VBox selectionBox = makeSelectionBox();
         selectionBox.setMinWidth(150);
         selectionBox.setSpacing(20);
@@ -87,28 +128,27 @@ public class ViewScreen extends StackPane{
         this.getChildren().add(mainBox);
     }
 
-    /* Deze functie maakt een de dropdown menu's aan die gebruikt kunnen
-     * worden voor het selecteren van een toets. Ook wordt er een knop
-     * aangemaakt die gebruikt wordt voor het laden van een toets.
-     */
     private VBox makeSelectionBox(){
+        /**
+         * Deze methode maakt zet een label met de text "Keuzemenu"
+         * aan. Daaronder wordt een keuzemenu toegevoegd.
+         */
         Label label = new Label("Keuzemenu");
         label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(150);
         choiceMenu = new Keuzemenu();
-        Region fill = new Region();
-        VBox.setVgrow(fill, Priority.ALWAYS);
         return new VBox(label, choiceMenu.getChoiceMenuBox());
     }
     
-    /* Deze functie maakt de hbox waarin het percentiel gekozen kan worden.
-     * Eerst wordt er een label "percentiel" neergezet, vervolgens een
-     * slider en als laatst een label dat het percentiel weergeeft. 
-     * Er wordt daarna nog een listener toegevoegd aan de slider, die
-     * het percentiel label verandert als de slider verandert.
-     */
     private HBox makePercentileBox(){
+        /**
+         * Deze methode maakt de hbox waarin het percentiel gekozen kan worden.
+         * Eerst wordt er een label "percentiel" neergezet, vervolgens een
+         * slider en als laatst een label dat het percentiel weergeeft.
+         * Er wordt daarna nog een listener toegevoegd aan de slider, die
+         * het percentiel label veranderd als de slider veranderd.
+         */
         Label label = new Label("Percentiel:");
         this.percentileSlider = new Slider(0, 1, 0.95);
         this.percentileSlider.setShowTickLabels(true);
@@ -126,16 +166,17 @@ public class ViewScreen extends StackPane{
         return new HBox(label, this.percentileSlider, this.percentileLabel);
     }
     
-    /* Deze functie maakt de vbox aan, waarin de tekst neergezet wordt
-     * met statistieken over de betrouwbaarheid van de toets.
-     * Eerst wordt er een kop geplaatst, dan een stuk tekst. Vervolgens
-     * nog een kop en dan nog een stuk tekst.
-     * Deze stukken tekst moeten vervangen worden met de berekende 
-     * statistieken.
-     * Onder de tekst staat een hbox waarbinnen een percentiel gekozen kan
-     * worden en daaronder staat een knop om het berekenen uit te voeren.
-     */
     private VBox makeTopLeftBox(){
+        /**
+         * Deze methode maakt de vbox aan, waarin de tekst neergezet wordt
+         * met statistieken over de betrouwbaarheid van de toets.
+         * Eerst wordt er een kop geplaatst, dan een stuk tekst. Vervolgens
+         * nog een kop en dan nog een stuk tekst.
+         * Deze stukken tekst moeten vervangen worden met de berekende
+         * statistieken.
+         * Onder de tekst staat een hbox waarbinnen een percentiel gekozen kan
+         * worden en daaronder staat een knop om het berekenen uit te voeren.
+         */
         Label firstLabel = new Label("Betrouwbaarheid Toets");
         firstLabel.setFont(new Font("Arial", 18));
         this.qualityText = new Text("Variantie vragen:\nVariantie Toets:\n"
@@ -156,14 +197,15 @@ public class ViewScreen extends StackPane{
         return new VBox(firstLabel, this.qualityText, secondLabel, 
                 this.cohenText, percentileBox, this.calculateBtn);
     }
-    
-    /* Deze functie maakt een vbox aan waarin statistieken van de gemaakte
-     * toets weergegeven worden. Tweemaal staat er een kop met een stuk
-     * tekst eronder. Deze tekst moet veranderd worden naar de berekende
-     * statistieken voor de toets of een vraag als er een vraag
-     * geselecteerd wordt.
-     */
+
     private VBox makeTopMiddleBox(){
+        /**
+         * Deze methode maakt een vbox aan waarin statistieken van de gemaakte
+         * toets weergegeven worden. Tweemaal staat er een kop met een stuk
+         * tekst eronder. Deze tekst moet veranderd worden naar de berekende
+         * statistieken voor de toets of een vraag als er een vraag
+         * geselecteerd wordt.
+         */
         Label statisticsLabel = new Label("Statistieken");
         statisticsLabel.setFont(new Font("Arial", 18));
         this.statisticsText = new Text("Aantal vragen:\nMaximum punten:\n"
@@ -229,13 +271,14 @@ public class ViewScreen extends StackPane{
 
         return hBox;
     }
-    
-    /* Deze functie zet het bovenste gedeelte van het scherm in elkaar.
-     * Hierbij worden de twee statistiek stukken (TopLeft en TopMiddle)
-     * gebruikt om de hele breedte te vullen.
-     * Het bovenste gedeelte wordt als hbox terugggegeven.
-     */
+
     private HBox makeTopBox(){
+        /**
+         * Deze functie zet het bovenste gedeelte van het scherm in elkaar.
+         * Hierbij worden de twee statistiek stukken (TopLeft en TopMiddle)
+         * gebruikt om de hele breedte te vullen.
+         * Het bovenste gedeelte wordt als hbox terugggegeven.
+         */
         VBox leftBox = makeTopLeftBox();
         HBox.setHgrow(leftBox, Priority.ALWAYS);
         VBox middleBox = makeTopMiddleBox();
@@ -243,13 +286,14 @@ public class ViewScreen extends StackPane{
         VBox rightBox = makeTopRightBox();
         return new HBox(leftBox, middleBox, rightBox);
     }
-    
-    /* Deze functie maakt het stuk tussen de statistieken en de tabel in
-     * een hbox. Eerst wordt er een knop aangemaakt met een breedte van 235.
-     * Daarnaast wordt een label met "vragen" neergezet. Om dit label
-     * staan twee regio's die er voor zorgen dat het label gecentreerd staat.
-     */
+
     private HBox makeMiddleBox(){
+        /**
+         * Deze functie maakt het stuk tussen de statistieken en de tabel in
+         * een hbox. Eerst wordt er een knop aangemaakt met een breedte van 240.
+         * Daarnaast wordt een label met "vragen" neergezet. Om dit label
+         * staan twee regio's die er voor zorgen dat het label gecentreerd staat.
+         */
         this.exportBtn = new Button("Exporteer CSV");
         this.exportBtn.setPrefWidth(240);
         this.exportBtn.setPrefHeight(30);
@@ -263,6 +307,12 @@ public class ViewScreen extends StackPane{
     }
 
     private void setExportEvent(){
+        /**
+         * Deze methode voegt de functie van de export CSV knop toe.
+         * Als er een toets ingeladen in wordt er een fileChooser geopend
+         * waarin een csv bestand gekozen kan worden. Als er een bestand
+         * gekozen is wordt csvExport aangeroepen.
+         */
         this.exportBtn.setOnAction(e -> {
             if (this.gradeTable != null) {
                 FileChooser fileChooser = new FileChooser();
@@ -277,10 +327,13 @@ public class ViewScreen extends StackPane{
         });
     }
 
-    /* Deze functie schrijft en maakt een CSV bestand van de labels en 
-     * scores die meegegeven worden in het bestand dat meegegeven wordt.
-     */
     private void csvExport(String[][] scores, String[] labels, File file){
+        /**
+         * Deze methode schrijft en maakt een CSV bestand van de labels en
+         * scores die meegegeven worden in het bestand dat meegegeven wordt.
+         *
+         * Als er iets fout gaat wordt er een error weegegeven.
+         */
         try {
             FileWriter writer = new FileWriter(file);
             writer.write("Studentnr;Cijfer;Totaal;" + String.join(";", labels) + "\n");
@@ -289,22 +342,28 @@ public class ViewScreen extends StackPane{
             }
             writer.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Fout");
+            alert.setHeaderText("CSV kan niet worden opgeslagen door een onbekende fout.");
+            alert.setContentText("Dit kan komen doordat het bestand door een ander programma geopend is.");
+            ButtonType confirm = new ButtonType("OK");
+            alert.getButtonTypes().setAll(confirm);
+            alert.show();
         }
     }
-    
-    /* Deze functie maakt de tabel waar de punten ingezet moeten worden.
-     * Deze kan niet gewijzigd worden en vult de rest van het scherm.
-     *     
-     * Aangezien ik nog niet weet wat voor soort data (een class, string[],
-     * of iets anders?) gebruikt gaat worden en omdat het aantal kolommen,
-     * afhangt van de toets zijn er nog geen kolommen in de tabel gezet.
-     *
-     * Er staat een stuk onder voor het testen van het scherm. Hier worden
-     * kolommen toegevoegd en een aantal rijen. Dit is vrijwel letterlijk
-     * overgenomen van het internet en moet dus aangepast worden!
-     */
+
     private void makeTable(){
+        /**
+         * Deze functie maakt de tabel waar de punten ingezet moeten worden.
+         * Deze tabel vult het scherm verticaal.
+         * De selectie modes wordt zo gezet dat er meerdere cellen geselecteerd
+         * kunnen worden en selecties worden toegestaan.
+         * Vervolgens wordt er een ChangeListener toegevoegd voor als er een
+         * selectie gemaakt wordt. Als die gebeurt wordt de
+         * columnSelectionChange methode aangeroepen.
+         * Er wordt ook een ChangeListenere toegevoegd die er voor zorgt dat
+         * de volgorde van de kolomen die veranderen kan.
+         */
         this.pointsTable = new TableView<>();
         VBox.setVgrow(this.pointsTable, Priority.ALWAYS);
         this.pointsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -332,6 +391,22 @@ public class ViewScreen extends StackPane{
     }
 
     private void columnSelectionChange(TablePosition newValue) {
+        /**
+         * Deze methode zorgt ervoor dat als er op een cell in de
+         * tabel gedrukt wordt, dat de gehele kolom geselecteerd word
+         * en dat de grafiek en statistieken geupdate wordt.
+         * Als de kolom van geselecteerd cell niet null is wordt de
+         * gehele kolom geselecteerd. De globale variabele tablePos
+         * krijg als waarde de positie in de tabel waarop gedrukt is.
+         * Als de geslecteerde kolom de tweede kolom (cijfers) is
+         * word graphUpdateGrades aangeroepen on de grafiek te updaten.
+         * Als het de derde kolom (totaal) is wordt hetzelfde gedaan
+         * maar met graphUpdateTotal. Als een van de eerste drie
+         * kolomen geselecteerd is worden de statistieken voor
+         * de gehele toets weergegeven. Als een andere kolom
+         * geselecteerd word, worden de grafiek en de statistieken
+         * geupdate voor de waardes in de kolom.
+         */
         if (newValue.getTableColumn() != null) {
             pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
                     pointsTable.getItems().size(), newValue.getTableColumn());
@@ -410,13 +485,23 @@ public class ViewScreen extends StackPane{
         }
     }
 
-    /* Berekent de statistieken voor de geselecteerde vraag en update de weergave.
-     */
     private void questionSelectedUpdate(int i) {
+        /**
+         * Deze methode update de weergegeven statistieken als er een
+         * vraag geselecteerd word.
+         *
+         * i bevat de positie van de kolom die geselecteerd is.
+         * Deze positie word gebruikt om de behaald punten voor de
+         * vraag op te halen, Het totaal aantal punten wordt ook
+         * opfgehaald. Het gemiddelde wordt berekend. Vervolgens
+         * worden de verschillende statistieken berekend met de
+         * methodes in de Statistics class. Deze waardes worden
+         * direct meegegeven aan de methode die de text op het
+         * scherm aanpast.
+         */
         int[] points = Statistics.stringToIntArray(Statistics.getColumn(i, gradeTable), 0);
         int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
         double average = Statistics.mean(points);
-        String counts;
         updateStats(questionData[i-3][2].toString(), (boolean) questionData[i-3][3],
                 Integer.toString(Statistics.max(points)), Integer.toString(Statistics.min(points)),
                 Integer.toString(Statistics.count((int) questionData[i-3][2], points)),
@@ -427,9 +512,20 @@ public class ViewScreen extends StackPane{
                 Double.toString(Statistics.round(average /((int) questionData[i-3][2]), 2)));
     }
 
-    /* Bereken de statistieken voor de geselecteerde toets en update de weergave.
-     */
     private void examSelectedUpdate() {
+        /**
+         * Deze methode update de weergegevn statistieken als de kolom voor
+         * de cijfers, totaal aantal punten of student nummer geselecteerd
+         * word. Deze statistieken gaan over de toets als geheel.
+         *
+         * Eerst worden de cijfers opgehaald uit de String[][] die de data
+         * van de tabel bevat. Hier worden het aantal voldoendes uit
+         * bepaald. Het aantal onvoldoendes en het rendement worden
+         * uitgerkend. Vervolgens worden de verchillende statistieken
+         * uitgerekend met de methodes uit de Statistics class. Deze
+         * worden direct meegegeven aan de methode die de text update op
+         * het scherm.
+         */
         double[] grades = Statistics.stringToDoubleArray(Statistics.getColumn(1, gradeTable), 0);
         int passes = Statistics.getPasses(grades);
         int fails = gradeTable.length - passes;
@@ -444,11 +540,9 @@ public class ViewScreen extends StackPane{
                 Double.toString(Statistics.round(Statistics.mean(grades), 2)));
     }
 
-    //BOOKMARKTYPEOFTHINGY!!!!!!!!!!!!!!!!!!!!!!!!!!!!ABOVE STILL NEEDS TO BE DOCUMENTED PROPERLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     private VBox makeRightBox(){
         /**
-         * Deze functie zet het rechtergedeelte van het scherm in elkaar.
+         * Deze methode zet het rechtergedeelte van het scherm in elkaar.
          * Eerst het statistiekgedeelte, daaronder het tussenstuk en dan
          * de tabel. Het statistiekgedeelte heeft een vaste grote (280).
          * Dit alles wordt als vbox teruggegeven.
@@ -603,8 +697,8 @@ public class ViewScreen extends StackPane{
          * worden de label van de vragen, uit de eerder opgehaalde vraag, data
          * gehaald en deze gebruikt voor het aanmaken van de kolommen met
          * de methode setupTable. Vervolgens wordt de matrix aan de tabel
-         * toegevoegd, om er data in te zetten en die de kwaliteitsstatistieken
-         * updatet.
+         * toegevoegd, om er data in te zetten en worden de kwaliteitsstatistieken
+         * ge.
          */
         DatabaseConn d = new DatabaseConn();
         try {
@@ -727,6 +821,7 @@ public class ViewScreen extends StackPane{
             saveGraph(savePath);
         }
     }
+
     private void saveGraph(File savePath) {
         /**
          * Deze functie verandert de geselecteerde grafiek in een image
@@ -756,6 +851,7 @@ public class ViewScreen extends StackPane{
             displayErrorDialog();
         }
     }
+
     private void displayInformationDialog() {
         /**
          * Als er geen grafiek aangemaakt is, wordt er een informatiescherm
@@ -770,6 +866,7 @@ public class ViewScreen extends StackPane{
         alert.getButtonTypes().setAll(confirm);
         alert.show();
     }
+
     private void displayErrorDialog() {
         /**
          * Als het wegschrijven van het png bestand fout gaat, wordt er een
@@ -785,11 +882,12 @@ public class ViewScreen extends StackPane{
         alert.getButtonTypes().setAll(confirm);
         alert.show();
     }
+
     public void setLoadEvent(){
         /**
          * Deze methode zorgt ervoor dat het ID van de geselecteerde toets 
          * opgehaald wordt, als er op de toetsweergave knop gedrukt wordt, en 
-         * dat de fillTable aangeroepen wordt.
+         * dat de fillTable methode aangeroepen wordt.
          */
         this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
