@@ -59,6 +59,23 @@ public class Main extends Application {
         toevoeg.choiceMenu.examLoadButton.setOnAction(event -> {
             getExamPropertiesFromDatabase();
         });
+        toevoeg.updateAccountAbility.setOnAction(event -> {
+            updateAccountability();
+        });
+    }
+
+    private void updateAccountability() {
+        if (toevoeg.questionPropertyCheckBox.isSelected()) {
+            DatabaseConn databaseConn = new DatabaseConn();
+            for (String[] questionInfoArray : toevoeg.getQuestionInfo()) {
+                int vraagID = databaseConn.GetVraagID(questionInfoArray[0],
+                        toevoeg.examID);
+                databaseConn.UpdateMeereken(vraagID,
+                        questionInfoArray[2].equals("true") ? true : false);
+            }
+            databaseConn.CloseConnection();
+
+        }
     }
 
     private void putExamPropertiesInDatabase() {
@@ -73,14 +90,6 @@ public class Main extends Application {
         databaseConn.UpdateCesuurGok(toevoeg.examID, Integer.parseInt(
                 toevoeg.thresholdTextfield.getText()),
                 Integer.parseInt(toevoeg.chanceByGamblingTextfield.getText()));
-        if (toevoeg.questionPropertyCheckBox.isSelected()) {
-            databaseConn.DeleteVragenToets(toevoeg.examID);
-            for (String[] questionInfoArray : toevoeg.getQuestionInfo()) {
-                databaseConn.InputVraag(questionInfoArray[0],
-                        Integer.parseInt(questionInfoArray[1]), toevoeg.examID,
-                        questionInfoArray[2].equals("true") ? true : false);
-            }
-        }
         databaseConn.CloseConnection();
     }
 

@@ -39,6 +39,7 @@ import java.util.*;
  * 16-01-2017: Documenteren van methoden
  * 17-01-2017: Toets data aanpassingen
  * 30-01-2016: Documenteren & pep toepassen
+ * 04-01-2016: Vraag meerekenen functie implementeren
  */
 public class Toevoegen extends TabPane{
     /**
@@ -58,7 +59,8 @@ public class Toevoegen extends TabPane{
     //SELECTION MENU
     public Keuzemenu choiceMenu;
 
-    public ScreenButtons saveExamBtn = new ScreenButtons("Update cessuur/gokkans");
+    public Button saveExamBtn = new Button("Update cessuur/gokkans");
+    public Button updateAccountAbility = new Button("Update meerekenen");
 
     //EXAM PROPERTIES
     public CheckBox questionPropertyCheckBox;
@@ -146,8 +148,7 @@ public class Toevoegen extends TabPane{
          */
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Waarschuwing!");
-        alert.setHeaderText("Met deze actie worden alle vragen verwijderd! " +
-                "Ook uit de database als ze er al in stonden.");
+        alert.setHeaderText("Met deze actie worden alle vragen verwijderd uit de database!");
         alert.setContentText("Gaat u akkoord?");
         ButtonType buttonTypeOne = new ButtonType("Ja");
         ButtonType buttonTypeCancel = new ButtonType("Nee",
@@ -155,19 +156,32 @@ public class Toevoegen extends TabPane{
         alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeCancel);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeOne){
-            examTab.questionAndCheckboxes.getChildren().clear();
-            examTab.pointDistributionBox.getChildren().remove(
-                    examTab.questionAndCheckBoxesScrollpane);
-            DatabaseConn databaseConn = new DatabaseConn();
-            databaseConn.DeleteVragenToets(examID);
-            databaseConn.CloseConnection();
-            examTab.importCsvButton.setDisable(false);
-            examTab.resetPointDistributionButton.setDisable(true);
+            resetExamProperties();
         }
     }
 
-
-
+    private void resetExamProperties() {
+        /**
+         * Gegevens verwijderen uit de database als er op reset wordt gedrukt
+         *
+         * Gegevens worden verwijderd van de betreffende toets. Ook worden
+         * schermen leeg gemaakt die van belang waren bij deze gegevens.
+         * Tekstvelden van de gokkans en cessuur worden ook op 0 gezet.
+         * knoppen worden uitgezet zodat er niet meer op gedrukt kan worden
+         */
+        examTab.questionAndCheckboxes.getChildren().clear();
+        examTab.pointDistributionBox.getChildren().remove(
+                examTab.questionAndCheckBoxesScrollpane);
+        DatabaseConn databaseConn = new DatabaseConn();
+        databaseConn.UpdateCesuurGok(examID, 0, 0);
+        thresholdTextfield.setText("0");
+        chanceByGamblingTextfield.setText("0");
+        updateAccountAbility.setDisable(true);
+        databaseConn.DeleteVragenToets(examID);
+        databaseConn.CloseConnection();
+        examTab.importCsvButton.setDisable(false);
+        examTab.resetPointDistributionButton.setDisable(true);
+    }
 
 
     public class ExamTab extends Tab {
@@ -185,8 +199,8 @@ public class Toevoegen extends TabPane{
          */
         public BorderPane examPane = new BorderPane();
         private VBox selectionMenu;
-        public ScreenButtons importCsvButton = new ScreenButtons("Importeer CSV");
-        public ScreenButtons resetPointDistributionButton = new ScreenButtons("Reset");
+        public Button importCsvButton = new Button("Importeer CSV");
+        public Button resetPointDistributionButton = new Button("Reset");
         private VBox pointDistributionBox;
         private ScrollPane questionAndCheckBoxesScrollpane;
         public FlowPane questionAndCheckboxes;
@@ -270,6 +284,7 @@ public class Toevoegen extends TabPane{
                 importQuestionsFromCSV();
                 importCsvButton.setDisable(true);
                 resetPointDistributionButton.setDisable(false);
+                updateAccountAbility.setDisable(false);
             });
 
         }
@@ -364,9 +379,20 @@ public class Toevoegen extends TabPane{
 
 
         public void setExamPropertiesScreen(String[] examProperties) {
+            /**
+             * Deze functie wordt aangeroepen zodra er op de knop toetsweer
+             * geven wordt gedrukt.
+             *
+             * Met behulp van de verschillende eigenschappen van de toets
+             * worden de verschillende elementen gevuld. Ook worden er diverse
+             * opmaak aanpassingen gedaan aan de elementen.
+             */
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(getExamInformationBoxes(examProperties,
-                    examID), getPointDistribution(examProperties));
+            vbox.getChildren().addAll(getExamInformationBoxes(examProperties),
+                    getPointDistribution(examProperties),
+                    updateAccountAbility);
+            vbox.setAlignment(Pos.CENTER);
+            updateAccountAbility.setMinWidth(150);
             vbox.setVgrow(vbox.getChildren().get(1), Priority.ALWAYS);
             vbox.setPadding(new Insets(0, 20, 0, 20));
             saveExamBtn.setAlignment(Pos.CENTER);
@@ -377,6 +403,20 @@ public class Toevoegen extends TabPane{
         private VBox getPointDistribution(String[] examProperties) {
             /**
              * Aanmaken van de vbox die de puntenverdeling zal laten zien.
+             *
+             * Voor de try clause worden er diverse elementen aangemaakt
+             * en gevuld. In de try wordt er een database connectie gemaakt
+             * hierin worden de gegevens opgehaald van het toetsid uit de vraag
+             * tabel. In de if statement wordt er gecheckt of er data
+             * is teruggehaald uit de database. Er wordt door de variabel
+             * question info gelooped waarmee de nieuwe classes QuestionBox-
+             * WithCheck wordt aangemaakt met deze gegegvens.
+             *
+             * Hierna wordt de connectie gestopt en worden buttons aan en uit
+             * gezet. In de catch worden de buttons in hun oorspronkelijke
+             * staat gezet.
+             *
+             * De functie returnd de VBOX met punten informatie
              */
             setQuestionAndCheckboxesFlowpaneSettings();
             questionAndCheckBoxesScrollpane = new ScrollPane();
@@ -401,6 +441,7 @@ public class Toevoegen extends TabPane{
 
             } catch (EmptyStackException e) {
                 importCsvButton.setDisable(false);
+                updateAccountAbility.setDisable(true);
                 resetPointDistributionButton.setDisable(true);
             }
             return pointDistributionBox;
@@ -416,11 +457,13 @@ public class Toevoegen extends TabPane{
             HBox questionButtonBox = new HBox();
             questionButtonBox.getChildren().addAll(importCsvButton, resetPointDistributionButton);
             resetPointDistributionButton.setDisable(true);
+            importCsvButton.setMinWidth(150);
+            resetPointDistributionButton.setMinWidth(150);
             questionButtonBox.setAlignment(Pos.TOP_RIGHT);
             return questionButtonBox;
         }
 
-        public HBox getExamInformationBoxes(String[] examProperties, Integer examID) {
+        public HBox getExamInformationBoxes(String[] examProperties) {
             /**
              * Aanmaken van de box die eigenschappen bevat over de toets.
              *
@@ -577,6 +620,7 @@ public class Toevoegen extends TabPane{
                     } else {
                         pointDistributionBox.setVisible(false);
                         resetPointDistributionButton.setDisable(true);
+                        updateAccountAbility.setDisable(true);
                         importCsvButton.setDisable(false);
                         thresholdTextfield.setVisible(false);
                         chanceByGamblingTextfield.setVisible(false);
@@ -644,21 +688,6 @@ public class Toevoegen extends TabPane{
         }
     }
 
-    public class ScreenButtons extends Button {
-        /**
-         * Aanmaken van knoppen met de juiste layout
-         * @param text: Button text
-         */
-        public ScreenButtons(String text) {
-            super(text);
-            this.setMinWidth(150);
-
-        }
-
-        public String[] getSelectionProperties() {
-            return new String[0];
-        }
-    }
 
     public class QuestionBoxWithCheck extends HBox{
         /**
@@ -698,18 +727,6 @@ public class Toevoegen extends TabPane{
             this.setPrefHeight(20);
             this.setPrefWidth(125);
             this.setStyle("-fx-border-color: lightgrey");
-        }
-
-        public String getQuestion() {
-            return question;
-        }
-
-        public String getSubQuestionPoints() {
-            return subQuestionPoints;
-        }
-
-        public Boolean getAccountability() {
-            return this.accountable.isSelected();
         }
     }
 
