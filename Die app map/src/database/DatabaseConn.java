@@ -1004,6 +1004,7 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
+        Collections.sort(filteredTests.subList(1, filteredTests.size()));
         return filteredTests;
     }
 
@@ -1016,12 +1017,16 @@ public class DatabaseConn {
                             .COURSEFILTERSQL, year, schoolYear, block));
             filteredModules = new ArrayList<>();
             while (resultSet.next()) {
-                filteredModules.add(resultSet.getString("ModuleCode") + " " +
-                        resultSet.getString("Jaar"));
+                String result = new String(resultSet.getString("ModuleCode") +
+                        " " + resultSet.getString("Jaar"));
+                if (!filteredModules.contains(result)) {
+                    filteredModules.add(result);
+                }
             }
         } catch (Exception e) {
             throw new EmptyStackException();
         }
+        Collections.sort(filteredModules.subList(1, filteredModules.size()));
         return filteredModules;
     }
 
@@ -1043,6 +1048,7 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
+        Collections.sort(filteredBlocks.subList(1, filteredBlocks.size()));
         return filteredBlocks;
     }
 
