@@ -10,14 +10,14 @@ import javafx.scene.chart.LineChart;
 /**
  * Created by Samuel on 15-1-2017.
  */
-public class Lijngrafiek {
+public class LineGraph {
     private String xLabel;
     private String yLabel;
     private String title;
     private LineChart<String, Number> lineChart;
     private VBox chartBox;
 
-    public Lijngrafiek(String setxLabel, String setyLabel, String setTitle) {
+    public LineGraph(String setxLabel, String setyLabel, String setTitle) {
         xLabel = setxLabel;
         yLabel = setyLabel;
         title = setTitle;

@@ -9,8 +9,9 @@ import javafx.scene.layout.VBox;
 
 /**
  * Created by Samuel on 15-1-2017.
+ * Deze klasse maakt een histogram.
  */
-public class Histogram {
+public class Barchart {
     private String xLabel;
     private String yLabel;
     private String title;
@@ -19,7 +20,8 @@ public class Histogram {
     private VBox chartBox;
     private XYChart.Series series;
 
-    public Histogram(String setxLabel, String setyLabel, String setTitle, String setName) {
+    public Barchart(String setxLabel, String setyLabel, String setTitle, String
+            setName) {
         xLabel = setxLabel;
         yLabel = setyLabel;
         title = setTitle;

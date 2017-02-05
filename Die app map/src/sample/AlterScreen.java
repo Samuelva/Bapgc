@@ -55,7 +55,7 @@ final class AlterScreen extends StackPane {
     protected Label lbl1;
     protected Label lbl2;
     protected TableView pointsTable;
-    protected Keuzemenu choiceMenu;
+    protected ChoiceMenu choiceMenu;
     protected DatabaseConn d;
 
     private int[] questionIDs;
@@ -390,7 +390,7 @@ final class AlterScreen extends StackPane {
         lbl1 = maakObject(new Label(), "Keuzemenu");
         lbl1.setPrefWidth(150);
 
-        choiceMenu = new Keuzemenu();
+        choiceMenu = new ChoiceMenu();
 
         Region fill = new Region();
         VBox.setVgrow(fill, Priority.ALWAYS);

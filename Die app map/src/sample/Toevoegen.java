@@ -57,7 +57,7 @@ public class Toevoegen extends TabPane{
      * worden aangepast. Deze staan in choiceboxes.
      */
     //SELECTION MENU
-    public Keuzemenu choiceMenu;
+    public ChoiceMenu choiceMenu;
 
     public Button saveExamBtn = new Button("Update cessuur/gokkans");
     public Button updateAccountAbility = new Button("Update meerekenen");
@@ -253,7 +253,7 @@ public class Toevoegen extends TabPane{
              * volgt een layout stap met spacing, waarna de vbox teruggestuurd
              * wordt.
              */
-            choiceMenu = new Keuzemenu();
+            choiceMenu = new ChoiceMenu();
             VBox labelAndChoiceBoxesBox = new VBox();
             labelAndChoiceBoxesBox.getChildren().addAll(
                     new BoxHeaders("Keuzemenu"),

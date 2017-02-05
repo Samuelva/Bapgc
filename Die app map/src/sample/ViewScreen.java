@@ -92,10 +92,10 @@ public class ViewScreen extends StackPane{
     protected Slider percentileSlider;
     protected Label percentileLabel;
     protected StackPane graphPane;
-    protected Histogram barChart;
-    protected Lijngrafiek lineGraph;
+    protected Barchart barChart;
+    protected LineGraph lineGraph;
     protected Boxplot boxplot;
-    protected Keuzemenu choiceMenu;
+    protected ChoiceMenu choiceMenu;
     protected String selectedGraph;
     protected WritableImage graphImage;
     protected boolean plotted;
@@ -137,7 +137,7 @@ public class ViewScreen extends StackPane{
         label.setFont(new Font("Arial", 18));
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(150);
-        choiceMenu = new Keuzemenu();
+        choiceMenu = new ChoiceMenu();
         return new VBox(label, choiceMenu.getChoiceMenuBox());
     }
     
@@ -737,7 +737,7 @@ public class ViewScreen extends StackPane{
          * Deze functie maakt en vult de histogram met de geselecteerde data
          * uit de kolom.
          */
-        barChart = new Histogram("Student", yLabel, title, "");
+        barChart = new Barchart("Student", yLabel, title, "");
         graphPane.getChildren().clear();
         graphPane.getChildren().add(barChart.getBarChartBox());
 
@@ -757,7 +757,7 @@ public class ViewScreen extends StackPane{
          * Deze functie maakt en vult de lijngrafiek met de geselecteerde data
          * uit de kolom.
          */
-        lineGraph = new Lijngrafiek("Student", yLabel, title);
+        lineGraph = new LineGraph("Student", yLabel, title);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(lineGraph.getLineChartBox());
 

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Samuel on 24-1-2017.
  */
-public class Keuzemenu {
+public class ChoiceMenu {
     protected ComboBox yearChoiceBox;
     protected ComboBox schoolYearChoiceBox;
     protected ComboBox blockChoiceBox;
@@ -18,13 +18,13 @@ public class Keuzemenu {
     protected ComboBox typeChoiceBox;
     protected ComboBox attemptChoiceBox;
     public Button examLoadButton;
-    protected KeuzemenuDBVerbind choiceMenuDB;
+    protected ChoiceMenuDatabaseConnect choiceMenuDB;
     protected List<String> selection;
 
     protected VBox choiceMenuBox; // Box met het hele keuzemenu
 
-    public Keuzemenu() {
-        choiceMenuDB = new KeuzemenuDBVerbind();
+    public ChoiceMenu() {
+        choiceMenuDB = new ChoiceMenuDatabaseConnect();
         createButtons();
     }
 

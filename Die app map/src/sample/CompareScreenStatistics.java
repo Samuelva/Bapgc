@@ -23,7 +23,7 @@ import java.io.IOException;
  * Deze klasse regelt het statistiek gedeelte van het vegelijkscherm.
  * Dus alles van het vergelijkscherm behalve het keuzemenu.
  */
-public class VergelijkStatistieken {
+public class CompareScreenStatistics {
     // Geeft aan voor welke tab de klasse wordt aangeroepen. 1 = toetstab,
     // 2 = moduletab, 3 = periodetab.
     private Integer instance;
@@ -38,8 +38,8 @@ public class VergelijkStatistieken {
     // lijngrafiek, 3 = boxplot.
     private String selectedGraph;
 
-    private Lijngrafiek lineChart;
-    private Histogram barChart;
+    private LineGraph lineChart;
+    private Barchart barChart;
     private Boxplot boxplot;
     private WritableImage graphImage;
 
@@ -55,7 +55,7 @@ public class VergelijkStatistieken {
     private TablePosition tablePos;
     private boolean colSelected;
 
-    public VergelijkStatistieken(Integer instanceI) {
+    public CompareScreenStatistics(Integer instanceI) {
         /**
          * Roept functies aan welke de boxjes aanmaken en vullen met de
          * jusite inhoud (statistiek en grafiek)
@@ -361,7 +361,7 @@ public class VergelijkStatistieken {
     }
 
     private void setLineChart(String xAxis, String yAxis, String title) {
-        lineChart = new Lijngrafiek(xAxis, yAxis, title);
+        lineChart = new LineGraph(xAxis, yAxis, title);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(lineChart.getLineChartBox());
     }
@@ -373,7 +373,7 @@ public class VergelijkStatistieken {
 
     private void setBarChart(String xAxis, String yAxis, String title, String
             legend) {
-        barChart = new Histogram(xAxis, yAxis, title, legend);
+        barChart = new Barchart(xAxis, yAxis, title, legend);
         graphPane.getChildren().clear();
         graphPane.getChildren().add(barChart.getBarChartBox());
     }

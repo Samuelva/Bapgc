@@ -22,7 +22,7 @@ import java.util.List;
  * Deze klasse maakt het keuzemenu gedeelte aan en kan de inhoud van de keuzeknoppen
  * aanpassen.
  */
-public class VergelijkKeuzemenu {
+public class CompareScreenChoiceMenu {
     private VBox choiceMenu;
     private VBox choiceMenuSelectionBox;
     private HBox buttonBox;
@@ -35,7 +35,6 @@ public class VergelijkKeuzemenu {
     private ComboBox type;
     private ComboBox attempt;
     public ListView<String> selectionMenu;
-    public ObservableList<String> selectionMenuItems;
 
     public Button allButton;
     public Button resetButton;
@@ -50,7 +49,7 @@ public class VergelijkKeuzemenu {
     private int instance;
     private DatabaseConn d;
 
-    public VergelijkKeuzemenu(int instanceI) {
+    public CompareScreenChoiceMenu(int instanceI) {
         /**
          * Hoofd functies roept subfuncties aan om keuzemenu onderdelen te maken.
          */
@@ -111,7 +110,6 @@ public class VergelijkKeuzemenu {
     }
 
     private void boxClickEvent(ComboBox choiceBox) {
-        choiceBox.getItems().clear();
         switch (choiceBox.getPromptText()) {
             case "Jaar":
                 choiceBox.getItems().addAll(d.getItems("Jaar"));
@@ -136,6 +134,7 @@ public class VergelijkKeuzemenu {
 
     private void boxSelectedEvent(ObservableValue observable, ComboBox
             choiceBox) {
+        choiceBox.getItems().clear();
         if (choiceBox.getPromptText() == "Jaar") {
             yearSelection = (String) observable.getValue();
         } else if (choiceBox.getPromptText() == "Leerjaar") {

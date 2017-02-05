@@ -19,7 +19,7 @@ public class Main extends Application {
     private static ViewScreen view;
     private static Toevoegen toevoeg;
     private static AlterScreen invoer;
-    private static Vergelijken vergelijk;
+    private static CompareScreen vergelijk;
     private static TabPane tabPane;
     private static Tab toevoegen;
     private static Tab invoeren;
@@ -144,7 +144,7 @@ public class Main extends Application {
         view = new ViewScreen();
         inzien.setContent(view);
 
-        vergelijk = new Vergelijken();
+        vergelijk = new CompareScreen();
         vergelijken.setContent(vergelijk);
 
         frame.getChildren().addAll(tabPane);

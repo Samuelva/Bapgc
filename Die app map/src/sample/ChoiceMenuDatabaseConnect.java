@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by Samuel on 23-1-2017.
  */
-public class KeuzemenuDBVerbind {
+public class ChoiceMenuDatabaseConnect {
     protected DatabaseConn db;
 
     protected List<String> year;
@@ -30,7 +30,7 @@ public class KeuzemenuDBVerbind {
 
     protected List<String> selection;
 
-    public KeuzemenuDBVerbind() {
+    public ChoiceMenuDatabaseConnect() {
         db = new DatabaseConn();
     }
 
