@@ -1,6 +1,4 @@
-
 package sample;
-
 
 import java.io.File;
 import java.util.*;
@@ -30,25 +28,27 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
-
 /**
- * Deze class maakt het aanpassen scherm aan.
+ * Deze class maakt het aanpasscherm aan.
  */
 final class AlterScreen extends StackPane {
     /**
-     * Er worden drie buttons geinitialiseerd:
+     * Er worden drie buttons geïnitialiseerd:
      * - emptyButton, voor het leegmaken van de tabel.
      * - saveButton, voor het opslaan van de data.
-     * - importCSV, voor hetr inladen van data.
+     * - importCSV, voor het inladen van data.
      * Er worden twee labels, een TabelView, een Keuzemenu en database connectie
-     * geinitialiseerd.
-     * Vervolgens worden er een aantal variabelen geinitialiseerd:
-     * - questionIDs: Een int array die de de IDs van de vragen bevat (zodra deze gevuld wordt
-     * zullen de IDs dezelfde volgorde hebben als de kolomen).
-     * - emptied: Een boolean die aanduid of de tabel leeggemaakt is.
-     * - changes: Een HashMap die gebruikt wordt om de veranderingen in de tabel bij te houden.
-     * De keys zijn de student nummers (als String) en de waardes zijn HashMaps die als key
-     * de ID van vragen bevatten met als waarde de nieuwe waarde voor de vraag.
+     * geïnitialiseerd.
+     * Vervolgens worden er een aantal variabelen geïnitialiseerd:
+     * - questionIDs: Een int array die de de IDs van de vragen bevat (zodra 
+     * deze gevuld wordt zullen de IDs dezelfde volgorde hebben als de 
+     * kolommen).
+     * - emptied: Een boolean die aanduidt of de tabel leeggemaakt is.
+     * - changes: Een HashMap die gebruikt wordt om de veranderingen in de tabel 
+     * bij te houden.
+     * De keys zijn de studentnummers (als String) en de waardes zijn HashMaps,
+     * die als key de ID van vragen bevatten met als waarde de nieuwe waarde 
+     * voor de vraag.
      */
     protected Button emptyButton;
     protected Button saveChanges;
@@ -66,11 +66,13 @@ final class AlterScreen extends StackPane {
         /**
          *  De methode menuUnder wordt aangeroepen en maakt een HBox aan met
          *  drie knoppen.
-         *  De methode MenuMaken wordt aangeroepen, deze maakt het keuzemenu aan.
+         *  De methode MenuMaken wordt aangeroepen, deze maakt het keuzemenu 
+         *  aan.
          *  De methode makeTable maakt vervolgens de tabel aan.
-         *  BozenVullen zet vervolgens het scherm in elkaar.
-         *  Daarna worden er vier methodes gebruikt om de knoppen functies te geven.
-         *  Er wordt een connectie geopened met de database.
+         *  BoxenVullen zet vervolgens het scherm in elkaar.
+         *  Daarna worden er vier methodes gebruikt om de knoppen functies te 
+         *  geven.
+         *  Er wordt een connectie geopend met de database.
          */
         HBox hbox = menuUnder();
         VBox vbox2 = MenuMaken();
@@ -86,25 +88,24 @@ final class AlterScreen extends StackPane {
 
     private void setEmptyEvent() {
         /**
-         * Als op emptyButton wordt geklikt,
-         * wordt een Alert aangemaakt om een pop-up waarschuwing weer te geven.
+         * Als op emptyButton wordt geklikt, wordt een Alert aangemaakt om een 
+         * pop-up waarschuwing weer te geven.
          * De titel wordt op 'Waarschuwing' gezet.
-         * De tekst van de header bevat een zin of je het bestand echt wilt maken.
-         * Een tekst eronder geeft instructies, druk op OK als je het zeker weet,
-         * anders druk je op cancel.
+         * De tekst van de header bevat een zin of je het bestand echt wilt 
+         * maken. Een tekst eronder geeft instructies, druk op OK als je het 
+         * zeker weet, anders druk je op cancel.
          * Er worden twee button types aangemaakt: OK en Cancel.
          * De button types worden toegevoegd aan alert.
          * De optionele buttontype krijgt de naam result,
          * als waarde krijgt hij showAndWait, dit betekent dat de pop-up wacht
          * tot er input van de gebruiker volgt.
-         * Er volgt een if-else statement.
-         * Als result gelijk is aan 'OK' moet alles gewist worden,
-         * Dit wordt gedaan door de rijen leeg te maken.
-         * Ook wordt de importCSV knop weer actief gemaakt,
-         * zo kan er opnieuw een CSV worden geïmporteerd.
-         * Ook wordt de globale boolean 'emptied' op true gezet. Ook wordt de
-         * opslaan knop klikbaar gemaakt en de leegmaak knop onklikbaar.
-         * Als result niet gelijk is aan 'OK' wordt de pop-up afgesloten.
+         * Er volgt een if-else statement. Als result gelijk is aan 'OK' moet 
+         * alles gewist worden. Dit wordt gedaan door de rijen leeg te maken.
+         * Ook wordt de importCSV knop weer actief gemaakt, zo kan er opnieuw 
+         * een CSV worden geïmporteerd.Ook wordt de globale boolean 'emptied' 
+         * op true gezet. Verder wordt de opslaanknop klikbaar gemaakt en de 
+         * leegmaakknop onklikbaar. Als result niet gelijk is aan 'OK' wordt 
+         * de pop-up afgesloten.
          */
         emptyButton.setOnAction(e -> {
             Alert alert = new Alert(AlertType.WARNING);
@@ -129,8 +130,8 @@ final class AlterScreen extends StackPane {
     protected void setupTable(String[] columns) {
         /**
          * Deze methode zet de tabel in elkaar.
-         * Eerst wordt de tabel geheel leeg gemaakt. Vervolgens worden
-         * de kolomen gemaakt en toegevoegd aan de tabel.
+         * Eerst wordt de tabel geheel leeggemaakt. Vervolgens worden
+         * de kolommen gemaakt en toegevoegd aan de tabel.
          */
         this.pointsTable.getItems().clear();
         this.pointsTable.getColumns().clear();
@@ -145,11 +146,11 @@ final class AlterScreen extends StackPane {
         /**
          * Deze methode maakt een kolom aan.
          * Eerst wordt er een kolom gemaakt. Vervolgens wordt
-         * de CellValyeFactory zo gezet dat de rijen een waarde
-         * als String[] kunnen acepteren.
-         * Als het de eerste kolom is krijgt die een breedte van
-         * 80, anders van 40 en worden de cellen textvelden gemaakt.
-         * Ook wordt er dan een EventHandeler toegevoegd voor als
+         * de CellValueFactory zo gezet dat de rijen een waarde
+         * als String[] kunnen accepteren.
+         * Als het de eerste kolom is, krijgt die een breedte van
+         * 80, anders van 40 en worden van de cellen textvelden gemaakt.
+         * Ook wordt er dan een EventHandler toegevoegd voor als
          * het textveld gewijzigd wordt.
          */
         TableColumn column = new TableColumn(columnLabel);
@@ -182,16 +183,16 @@ final class AlterScreen extends StackPane {
         /**
          * Deze methode verwerkt de wijzigingen.
          * Eerst wordt de nieuwe waarde omgezet naar een int. Als deze groter
-         * is dan 9999 of kleiner dan 0 is word er een NumberFormatException
+         * is dan 9999 of kleiner dan 0, wordt er een NumberFormatException
          * gegooid. Dit gebeurt ook als er iets anders dan cijfer zijn ingevuld.
-         * Vervolgens wordt er voor gezorgt dat de nieuwe waarde in de tabel komt
-         * te staan en wordt de wijziging in de Map gezet die de wijzigingen
-         * bijhoud met behulp van de storeChange methode. Ook wordt de opslaan
-         * knop klikbaar gemaakt.
+         * Vervolgens wordt er voor gezorgt dat de nieuwe waarde in de tabel 
+         * komt te staan en wordt de wijziging in de Map gezet die de 
+         * wijzigingen bijhoudt met behulp van de storeChange methode. 
+         * Ook wordt de opslaan knop klikbaar gemaakt.
          *
-         * Als er een NumberFormatException plaatsvind gebeurt het bovenstaande niet.
-         * De kolom wordt dan onzichtbaar en weer zichtbaar gemaakt, zodat de oude
-         * waarde weer in de tabel staat.
+         * Als er een NumberFormatException plaatsvindt gebeurt het 
+         * bovenstaande niet. De kolom wordt dan onzichtbaar en weer zichtbaar 
+         * gemaakt, zodat de oude waarde weer in de tabel staat.
          */
         try {
             int newValue = Integer.parseInt(event.getNewValue().toString());
@@ -213,7 +214,7 @@ final class AlterScreen extends StackPane {
 
     private String[] compileColumns(String[] columns) {
         /**
-         * Deze methode voegd de String "Student nr." toe
+         * Deze methode voegt de String "Student nr." toe
          * aan de String met kolom labels.
          */
         String[] columnsTotal = new String[columns.length + 1];
@@ -226,9 +227,9 @@ final class AlterScreen extends StackPane {
 
     private void storeChange(String studentID, int i, Integer newValue) {
         /**
-         * Deze methode houd de wijzigingen bij.
+         * Deze methode houdt de wijzigingen bij.
          * Als er nog geen wijzigingen gemaakt zijn voor een student
-         * wordt deze student aan de Map die de wijzigingen bijhoud
+         * wordt deze student aan de Map die de wijzigingen bijhoudt
          * toegevoegd. Vervolgens wordt de wijziging in de Map gezet.
          * In de Map staat per student een Map met als keys de vraag
          * IDs en als waarde de nieuwe waarde.
@@ -244,11 +245,11 @@ final class AlterScreen extends StackPane {
     protected void fillTable(int examID) {
         /**
          * Deze methode vult de tabel in.
-         * Eerst word de informatie over de vragen opgehaald.
-         * Als er geen informatie bekend is wordt er een waarchuwing
+         * Eerst wordt de informatie over de vragen opgehaald.
+         * Als er geen informatie bekend is, wordt er een waarschuwing
          * getoond. Anders worden de IDs en labels van de vragen
          * uit de informatie gehaald en wordt de tabel in elkaar gezet
-         * met setupTabke. Vervolgens worden de behaalde scores
+         * met setupTable. Vervolgens worden de behaalde scores
          * opgehaald en als deze bekend zijn toegevoegd aan de
          * tabel. Ook wordt de variabele emptied op false gezet.
          */
@@ -273,7 +274,7 @@ final class AlterScreen extends StackPane {
 
     private void warnNoData() {
         /**
-         * Deze methode laad een waarchuwing zien voor
+         * Deze methode laadt een waarchuwing zien voor
          * als er geen data is voor een toets.
          */
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -285,19 +286,17 @@ final class AlterScreen extends StackPane {
 
 
     public HBox menuUnder() {
-        /*
-        Er wordt een regio gemaakt voor centreren van de knoppen.
-        emptyButton krijgt de label Leeg maken en de afmetingen 150 bij 30 worden
-        meegegeven aan de methode maakObject.
-        saveChanges krijgt de label Wijzigingen opslaan en de afmetingen 150 bij 30
-        worden meegegeven aan de methode maakObject.
-        importCSV krijgt de label Import CSV en de ametingen 150 bij 30 worden
-        meegegeven aan de methode Import CSV.
-        Er wort nog een regio gemaakt voor het centreren van de knoppen.
-        Er wordt een HBox aangemaakt met de naam hbox.
-        Vervolgens worden alle knoppen en regios toegevoegd aan de hbox.
-        De spacing in hbox wordt op 20 gezet.
-        hbox wordt terug gegeven.
+        /**
+         * Er wordt een regio gemaakt voor centreren van de knoppen. 
+         * emptyButton krijgt de label "Leeg maken" en de afmetingen 150 bij 30
+         * worden meegegeven aan de methode maakObject. saveChanges krijgt de 
+         * label "Wijzigingen opslaan" en de afmetingen 150 bij 30 worden 
+         * meegegeven aan de methode maakObject. importCSV krijgt de label 
+         * "Import CSV" en de ametingen 150 bij 30 worden meegegeven aan de 
+         * methode ImportCSV. Er wordt nog een regio gemaakt voor het centreren 
+         * van de knoppen. Er wordt een HBox aangemaakt met de naam hbox.
+         * Vervolgens worden alle knoppen en regio's toegevoegd aan de hbox.
+         * De spacing in hbox wordt op 20 gezet. hbox wordt teruggegeven.
         */
         Region leftFill = new Region();
         HBox.setHgrow(leftFill, Priority.ALWAYS);
@@ -319,8 +318,8 @@ final class AlterScreen extends StackPane {
 
     public Button maakObject(Button btn, String tekst, double hoogte,
                              double breedte) {
-        /*
-        Deze functie zet de naam, hoogte en breedte van de knoppen.
+        /**
+         * Deze functie stelt de naam, hoogte en breedte in van de knoppen.
         */
         btn.setText(tekst);
         btn.setPrefHeight(hoogte);
@@ -331,9 +330,9 @@ final class AlterScreen extends StackPane {
     }
 
     public Label maakObject(Label lbl, String tekst) {
-        /*
-        Deze functie zet de naam van de labels, laat ze centreren en
-        geeft ze het font Arial met grootte 18.
+        /**
+         * Deze functie stelt de naam van de labels in, laat ze centreren en
+         * geeft ze het font Arial met grootte 18.
         */
         lbl.setText(tekst);
         lbl.setAlignment(Pos.CENTER);
@@ -345,8 +344,8 @@ final class AlterScreen extends StackPane {
         /**
          * Deze methode maakt de tabel aan.
          * De tabel wordt aangemaakt, aanpasbaar gemaakt en
-         * wordt zo gezet dat die het scherm verticaal vult.
-         * Vervolgens wordt er voor gezorgt dat de kolommen
+         * wordt zo gezet dat deze het scherm verticaal vult.
+         * Vervolgens wordt ervoor gezorgd dat de kolommen
          * niet van volgorde gewijzigd kunnen worden.
          */
         pointsTable = new TableView();
@@ -371,27 +370,22 @@ final class AlterScreen extends StackPane {
 
     @SuppressWarnings("unchecked")
     public VBox MenuMaken() {
-        /*
-        In deze functie wordt het menu aan de linkerkant gemaakt.
-        lbl1 krijgt de tekst Keuzemnu, de breedte wordt op 150 gezet.
-        De eerste ChoiceBox is year.
-        De tweede ChioceBox is studyyear: de items zijn: jaar 1, jaar 2,
-        jaar 3 of jaar 4.
-        De derde ChoiceBox is periode: de items zijn: periode 1, periode 2.
-        periode 3, periode 4 en periode 5.
-        De vierde ChoiceBox is module, er zijn hier nog geen items,
-        dit wordt nader bepaald.
-        De vijfde ChoiceBox is toetsvorm, de items zijn: theorietoets,
-        praktijktoets, opdracht, aanwezigheid, logboek en project.
-        De laatste ChoiceBox is gelegenheid, de items zijn: 1e kans en
-        2e kans.
-        Alle ChoiceBoxes krijgen een hoogte van 30 en een breedte van 150.
-        er wordt een Region gemaakt die (door VGrow) btn1 naar beneden duwt.
-        btn1 krijgt het label Toets laden, een hoogte van 30 en een breedte
-        van 150.
-        De choiceboxes en btn1 worden toegevoegd aan een vbox.
-        De spacing van de vbox wordt op 20 gezet.
-        De vbox wordt terug gegeven.
+        /**
+         * In deze functie wordt het menu aan de linkerkant gemaakt.
+         * lbl1 krijgt de tekst Keuzemnu, de breedte wordt op 150 gezet.
+         * De eerste ChoiceBox is year. De tweede ChoiceBox is studyyear. De 
+         * items zijn: jaar 1, jaar 2, jaar 3 of jaar 4. De derde ChoiceBox is 
+         * periode. De items zijn: periode 1, periode 2. periode 3, periode 4 
+         * en periode 5. De vierde ChoiceBox is module, er zijn hier nog geen 
+         * items, dit wordt nader bepaald. De vijfde ChoiceBox is toetsvorm. 
+         * De items zijn: theorietoets, praktijktoets, opdracht, aanwezigheid, 
+         * logboek en project. De laatste ChoiceBox is gelegenheid, de items 
+         * zijn: 1e kans, 2e kans en 3e kans.
+         * Alle ChoiceBoxes krijgen een hoogte van 30 en een breedte van 150.
+         * Er wordt een Region gemaakt die (door VGrow) btn1 naar beneden duwt.
+         * btn1 krijgt het label "Toets laden", een hoogte van 30 en een breedte
+         * van 150. De choiceboxes en btn1 worden toegevoegd aan een vbox.
+         * De spacing van de vbox wordt op 20 gezet. De vbox wordt teruggegeven.
         */
         lbl1 = maakObject(new Label(), "Keuzemenu");
         lbl1.setPrefWidth(150);
@@ -412,21 +406,19 @@ final class AlterScreen extends StackPane {
     }
 
     public void BoxenVullen(VBox vbox2, HBox hbox) {
-        /*
-        Er wordt eerst een label aangemaakt met de naam: Vragen.
-        Er wordt een HBox aangemaakt, de label worden toegevoegd
-        aan een hbox, same met twee Region die er voor zorgen
-        dat het label gecentreerd wordt. Er wordt een VBox aangemaakt,
-        de pointsTable wordt toegevoegd aan de vbox. Aan de vbox wordt
-        ook de hbox met het label toegevoegd en de hbox die als parameter
-        meegegeven wordt. De vbox krijgt een spacing van 10. Er wordt nog
-        een HBox aangemaakt, aan deze hbox wordt de vbox met het keuzemenu
-        toegevoegd, ook wordt de vbox toegevoegd met de pointsTable,
-        knoppen en label die net is gemaakt.
-        Hiervoor worden margins van 5 om beide vboxes gezet.
-        De laatste hbox krijget een spacing van 20.
-        Ten slotte wordt de hbox toegepast aan this, hierdoor kan
-        deze klasse ook gebruikt worden in de main.
+        /**
+        * Er wordt eerst een label aangemaakt met de naam "Vragen". Er wordt een 
+        * HBox aangemaakt, de label wordt toegevoegd aan een hbox, samen met 
+        * twee Regions die er voor zorgen dat het label gecentreerd wordt. 
+        * Er wordt een VBox aangemaakt, de pointsTable wordt toegevoegd aan de 
+        * vbox. Aan de vbox wordt ook de hbox met het label toegevoegd en de 
+        * hbox die als parameter meegegeven wordt. De vbox krijgt een spacing 
+        * van 10. Er wordt nog een HBox aangemaakt, aan deze hbox wordt de vbox 
+        * met het keuzemenu toegevoegd. Ook wordt de vbox toegevoegd met de 
+        * pointsTable, knoppen en label die net zijn gemaakt. Hiervoor worden 
+        * margins van 5 om beide vboxes gezet. De laatste hbox krijgt een 
+        * spacing van 20. Ten slotte wordt de hbox toegepast aan this, hierdoor 
+        * kan deze klasse ook gebruikt worden in de main.
         */
 
         Region fillLeft = new Region();
@@ -451,9 +443,9 @@ final class AlterScreen extends StackPane {
 
     protected void setSaveChangesEvent() {
         /**
-         * Deze methode voegt de functionaliteit van de opslaan knop toe.
-         * Er wordt eerst een waarschuwing getoond, die vraagd of er echt
-         * opgeslage moet worden. Als er op OK gedrukt wordt worden
+         * Deze methode voegt de functionaliteit van de opslaanknop toe.
+         * Er wordt eerst een waarschuwing getoond, die vraagt of er echt
+         * opgeslagen moet worden. Als er op OK gedrukt wordt, worden
          * de wijzigingen opgeslagen.
          */
         this.saveChanges.setOnAction(new EventHandler<ActionEvent>() {
@@ -478,14 +470,13 @@ final class AlterScreen extends StackPane {
 
     private void saveChanges() {
         /**
-         * Deze methode slaat de wijzigingen op.
-         * Als emptied true is wordt clearScores aangeroepen.
-         * Anders word er door de wijzigingen heen geloopt.
-         * Voor iedere student wordt het ID bepaald (deze staat als
-         * String in de Map) en wordt er door de veranderede scores van
-         * die studient geloopd. Deze wijzigingen worden opgeslagen.
-         * Daarna wordt de Map die de wijzigingen bevat leeg gemaakt
-         * emptied op false gezet en do opslaan knop onklilbaar gemaakt.
+         * Deze methode slaat de wijzigingen op. Als "emptied" true is, wordt 
+         * clearScores aangeroepen. Anders wordt er door de wijzigingen heen 
+         * geloopt. Voor iedere student wordt het ID bepaald (deze staat als
+         * String in de Map) en wordt er door de veranderde scores van
+         * die student heen geloopt. Deze wijzigingen worden opgeslagen.
+         * Daarna wordt de Map die de wijzigingen bevat leeggemaakt,
+         * emptied op "false" gezet en de opslaanknop onklikbaar gemaakt.
          */
         if (this.emptied) {
             clearScores();
@@ -507,7 +498,7 @@ final class AlterScreen extends StackPane {
 
     private void clearScores() {
         /**
-         * Deze methode verwijderd alle gehaalde scores voor
+         * Deze methode verwijdert alle gehaalde scores voor
          * alle vragen van de ingeladen toets.
          */
         DatabaseConn d = new DatabaseConn();
@@ -519,14 +510,14 @@ final class AlterScreen extends StackPane {
 
     private void setLoadEvent() {
         /**
-         * Deze methode voegt de functonaliteit van de laad knop toe.
-         * Als er een toets geladen wordt, worde de globale variabele
-         * emptied op false gezet. De Map die de aangepaste waardes bevat
-         * wordt leeg gemaakt. Er wordt een connectie gemaakt met de
-         * database. Het ID van de geselecteerde topets wordt bepaald en
+         * Deze methode voegt de functonaliteit van de laadknop toe.
+         * Als er een toets geladen wordt, wordt de globale variabele
+         * emptied op "false" gezet. De Map die de aangepaste waardes bevat
+         * wordt leeggemaakt. Er wordt een connectie gemaakt met de
+         * database. Het ID van de geselecteerde toets wordt bepaald en
          * meegegeven aan fillTable om de tabel te vullen.
-         * De leeg maak knop wordt klikbaar gemaakt en de opslaan knop
-         * onknlikbaar.
+         * De leegmaakknop wordt klikbaar gemaakt en de opslaanknop
+         * onklikbaar.
          */
         this.choiceMenu.examLoadButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
