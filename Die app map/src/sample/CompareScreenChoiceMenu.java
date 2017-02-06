@@ -39,7 +39,6 @@ public class CompareScreenChoiceMenu {
     public ListView<String> selectionMenu;
 
     public Button allButton;
-    public Button reloadButton;
     public Button resetButton;
 
     private String yearSelection;
@@ -154,9 +153,7 @@ public class CompareScreenChoiceMenu {
         updateSelectionMenu();
     }
 
-    private void updateSelectionMenu() {
-        System.out.println(yearSelection + " " + schoolYearSelection + " " +
-                " " + blockSelection + " " + courseSelection);
+    public void updateSelectionMenu() {
         selectionMenu.getItems().clear();
         if (instance == 1) {
             selectionMenu.getItems().addAll(d.filterTest(yearSelection,
@@ -176,20 +173,11 @@ public class CompareScreenChoiceMenu {
          * Creërt het keuzemenu gedeelte met de "Alles" en "Reset" knoppen.
          */
         allButton = new Button("Alles");
-        Image buttonImage = new Image(getClass().getResourceAsStream
-                ("Reload.png"));
-        reloadButton = new Button("", new ImageView(buttonImage));
         resetButton = new Button("Reset");
 
         allButton.setPrefWidth(75);
         allButton.setMinHeight(30);
-        reloadButton.setMinWidth(30);
-        reloadButton.setMinHeight(30);
-        reloadButton.setOnAction(event -> {
-            updateSelectionMenu();
-            System.out.println(yearSelection + " " + schoolYearSelection + " " +
-                    " " + blockSelection + " " + courseSelection);
-        });
+
         resetButton.setPrefWidth(75);
         resetButton.setMinHeight(30);
         resetButton.setOnAction(event -> {
@@ -226,7 +214,7 @@ public class CompareScreenChoiceMenu {
 
     private HBox buttonBox() {
         buttonBox = new HBox();
-        buttonBox.getChildren().addAll(allButton, reloadButton, resetButton);
+        buttonBox.getChildren().addAll(allButton, resetButton);
         buttonBox.setSpacing(5);
         return buttonBox;
     }

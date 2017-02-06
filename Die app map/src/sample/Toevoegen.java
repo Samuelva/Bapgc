@@ -773,6 +773,7 @@ public class Toevoegen extends TabPane{
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == OK) {
                         emptyDatabase();
+                        Main.updateSelectionMenu();
                     } else {
                         alert.close();
                     }
@@ -826,6 +827,7 @@ public class Toevoegen extends TabPane{
                     System.out.println(file);
                     Object moduleReader = new ModuleReader(file.toString());
                     fillTable();
+                    Main.updateSelectionMenu();
                 }
             });
         }

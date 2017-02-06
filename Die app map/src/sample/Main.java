@@ -158,4 +158,10 @@ public class Main extends Application {
         window.show();
     }
 
+    public static void updateSelectionMenu() {
+        vergelijk.testChoiceMenu.updateSelectionMenu();
+        vergelijk.courseChoiceMenu.updateSelectionMenu();
+        vergelijk.blockChoiceMenu.updateSelectionMenu();
+    }
+
 }
