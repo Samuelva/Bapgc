@@ -1004,7 +1004,9 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
-        Collections.sort(filteredTests.subList(1, filteredTests.size()));
+        if (filteredTests.size() > 0) {
+            Collections.sort(filteredTests.subList(1, filteredTests.size()));
+        }
         return filteredTests;
     }
 
@@ -1026,7 +1028,9 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
-        Collections.sort(filteredModules.subList(1, filteredModules.size()));
+        if (filteredModules.size() > 0) {
+            Collections.sort(filteredModules.subList(1, filteredModules.size()));
+        }
         return filteredModules;
     }
 
@@ -1048,7 +1052,9 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
-        Collections.sort(filteredBlocks.subList(1, filteredBlocks.size()));
+        if (filteredBlocks.size() > 0) {
+            Collections.sort(filteredBlocks.subList(1, filteredBlocks.size()));
+        }
         return filteredBlocks;
     }
 
