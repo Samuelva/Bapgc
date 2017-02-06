@@ -564,7 +564,7 @@ public class ViewScreen extends StackPane{
          */
         this.statisticsText.setText("Aantal vragen: " + questions + "\nMaximum punten: " + maxPoints +
                 "\nPunten door gokkans: " + guessPoints + "\nTotaal te verdienen: " + earnablePoints + "" +
-                "\nBeheersgraad: " + degree + "%\nCensuur: " + threshold + "\n");
+                "\nBeheersgraad: " + degree + "%\nCesuur: " + threshold + "\n");
         this.resultsText.setText("Aantal deelnemers: " + participants + "\nAantal voldoendes: " + passes +
                 "\nAantal onvoldoendes: " + fails + "\nRendement: " + performance + "\nGemiddelde cijfer: " +
                 average + "\n");
@@ -687,36 +687,49 @@ public class ViewScreen extends StackPane{
     protected void fillTable(int examID){
         /**
          * Deze methode vult de tabel.
+         * Kijk eersy of er data bekend is voor de toets. Als dit niet zo is
+         * geef dan een waarchuwing. Anders wordt het volgende gedaan:
          * De vragen, maximum aantal punten, punten door gokkans en cesuur
          * worden opgehaald voor de meegegeven toets. De scores die behaald
          * zijn voor de vragen worden ook opgehaald en de cijfers worden hier
          * direct berekend. Dit resulteert in een matrix met alle data die
-         * in de tabel moet komen. Als er hier een EcptyStackException of een
-         * NumberFormatException plaatsvindt, is er geen data bekend voor
-         * de toets en wordt er een waarschuwing getoond. Anders
-         * worden de label van de vragen, uit de eerder opgehaalde vraag, data
-         * gehaald en deze gebruikt voor het aanmaken van de kolommen met
-         * de methode setupTable. Vervolgens wordt de matrix aan de tabel
-         * toegevoegd, om er data in te zetten en worden de 
+         * in de tabel moet komen. De label van de vragen worden uit de eerder
+         * opgehaalde vraag data gehaald en deze gebruikt voor het aanmaken van
+         * de kolommen met de methode setupTable. Vervolgens wordt de matrix aan
+         * de tabel toegevoegd, om er data in te zetten en worden de
          * kwaliteitsstatistieken gegenereerd.
          */
         DatabaseConn d = new DatabaseConn();
-        try {
+        if (checkIfDataExists(examID, d)) {
             this.questionData = d.GetVragenVanToets(examID);
             this.examPoints = d.GetCesuurMaxGok(examID);
             this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.examPoints[0],
                     this.examPoints[1]);
-        } catch (EmptyStackException | NumberFormatException e) {
+            this.questionLabels = Statistics.getColumn(1, questionData);
+            setupTable(this.questionLabels);
+            ObservableList<String[]> data = FXCollections.observableArrayList();
+            data.addAll(Arrays.asList(this.gradeTable));
+            this.pointsTable.setItems(data);
+            updateQualityStats();
+            d.CloseConnection();
+        } else {
             warnNoData();
-            return;
         }
-        this.questionLabels = Statistics.getColumn(1, questionData);
-        setupTable(this.questionLabels);
-        ObservableList<String[]> data = FXCollections.observableArrayList();
-        data.addAll(Arrays.asList(this.gradeTable));
-        this.pointsTable.setItems(data);
-        updateQualityStats();
-        d.CloseConnection();
+    }
+
+    private boolean checkIfDataExists(int examID, DatabaseConn d) {
+        /**
+         * Probeer de data van de meegegevn toets op te halen.
+         * Als er een error plaatsvind, return false, anders true.
+         */
+        try {
+            d.GetVragenVanToets(examID);
+            d.GetCesuurMaxGok(examID);
+            d.GetStudentScores(examID);
+            return true;
+        } catch (EmptyStackException | NumberFormatException e) {
+            return false;
+        }
     }
 
     private void warnNoData() {
