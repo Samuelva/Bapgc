@@ -3,6 +3,7 @@ package sample;
 import database.DatabaseConn;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
@@ -17,7 +18,7 @@ public class Main extends Application {
     private static Scene scene;
     private static VBox frame;
     private static ViewScreen view;
-    private static Toevoegen toevoeg;
+    private static AddScreen toevoeg;
     private static AlterScreen invoer;
     private static CompareScreen vergelijk;
     private static TabPane tabPane;
@@ -98,19 +99,46 @@ public class Main extends Application {
          * Als er op de toets weergeven knop wordt gedrukt zal de selectie
          * worden teruggehaald. Hiermee wordt de toetsID opgehaald waarna
          * de gegevens in de klasse toets hiermee kunnen worden opgehaald.
+         *
+         * Als er geen data wordt gevonden wordt er een pop-up weergeven
+         * met een waarshuwing dat er geen data is gevonden
          */
+
         DatabaseConn databaseConn = new DatabaseConn();
-        List<String> selection = toevoeg.choiceMenu.getSelection();
-        Integer examID = databaseConn.GetToetsID(selection.get(0),
-                selection.get(1), selection.get(2), selection.get(3),
-                selection.get(4), selection.get(5));
-        toevoeg.examID = examID;
-        toevoeg.examTab.setExamPropertiesScreen(selection.toArray(
-                new String[0]));
+        try {
+            List<String> selection = toevoeg.choiceMenu.getSelection();
+            Integer examID = databaseConn.GetToetsID(selection.get(0),
+                    selection.get(1), selection.get(2), selection.get(3),
+                    selection.get(4), selection.get(5));
+            toevoeg.examID = examID;
+            toevoeg.examTab.setExamPropertiesScreen(selection.toArray(
+                    new String[0]));
+        } catch (Exception e) {
+            toevoeg.examTab.examPane.setCenter(new VBox());
+            warnNoData();
+        }
         databaseConn.CloseConnection();
     }
 
+    private void warnNoData() {
+        /**
+         * Deze methode toont een pop-up met een waarchuwing als er geen
+         * data bekend is voor een toets die geladen wordt.
+         */
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Waarschuwing!");
+        alert.setHeaderText("Er is geen data bekend voor deze toets!");
+        alert.setContentText("U kunt alleen toetsen waarvoor scores bekend zijn inzien.");
+        alert.showAndWait();
+    }
+
     private static void initLayout(){
+        /**
+         * Initieren van de layout voor het hoofdscherm
+         * Er wordt een policy gezet op de tabs dat deze niet kunnen worden
+         * afgesloten. De verschillende tabs worden aangemaakt en krijgen namen
+         *
+         */
         frame = new VBox();
 
         tabPane = new TabPane();
@@ -134,7 +162,7 @@ public class Main extends Application {
 
 
     private static void initTabs(){
-        toevoeg = new Toevoegen();
+        toevoeg = new AddScreen();
         toevoegen.setContent(toevoeg);
 
 
