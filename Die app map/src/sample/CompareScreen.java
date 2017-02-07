@@ -99,7 +99,6 @@ public class CompareScreen extends StackPane {
     }
 
     private void fillTestTable(ObservableList<String> selection) {
-        Random r = new Random();
         testStatistics.clearTable();
         ObservableList<TestRow> data = FXCollections.observableArrayList();
 

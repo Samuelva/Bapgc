@@ -587,6 +587,9 @@ public class Statistics {
         int number = 0;
         for (String course: courses){
             CourseStatsCalculator courseStats = new CourseStatsCalculator(course);
+            if (Double.toString(courseStats.getAverageGrade()) == "NaN") {
+                continue;
+            }
             passes.add(courseStats.getPasses());
             participants.add(courseStats.getParticipant());
             for (String key: courseStats.finalGrades.keySet()){
