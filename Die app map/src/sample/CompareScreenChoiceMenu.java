@@ -89,12 +89,12 @@ public class CompareScreenChoiceMenu {
     }
 
     private void setSelections() {
-        yearSelection = "%";
-        schoolYearSelection = "%";
-        blockSelection = "%";
-        courseSelection = "%";
-        typeSelection = "%";
-        attemptSelection = "%";
+        yearSelection = new String("%");
+        schoolYearSelection = new String("%");
+        blockSelection = new String("%");
+        courseSelection = new String("%");
+        typeSelection = new String("%");
+        attemptSelection = new String("%");
     }
 
     private void setButtons(ComboBox choiceBox, String promptText) {
@@ -104,17 +104,20 @@ public class CompareScreenChoiceMenu {
         choiceBox.setPromptText(promptText);
         choiceBox.setPrefWidth(150);
         choiceBox.setMinHeight(30);
-        choiceBox.setOnMouseClicked(event -> {
+        choiceBox.setOnMousePressed(event -> {
             boxClickEvent(choiceBox);
         });
         choiceBox.valueProperty().addListener((observable, oldValue,
                                                newValue) -> {
-            boxSelectedEvent(observable, choiceBox);
+            if (observable.getValue() != null) {
+                boxSelectedEvent(observable, choiceBox);
+            }
         });
     }
 
     private void boxClickEvent(ComboBox choiceBox) {
         choiceBox.getItems().clear();
+        clearSelectionOnPress(choiceBox);
         List<String> selection = new ArrayList<>();
         selection.addAll(Arrays.asList(yearSelection, schoolYearSelection,
                 blockSelection, courseSelection, typeSelection,
@@ -122,21 +125,31 @@ public class CompareScreenChoiceMenu {
 
         if (choiceBox.getPromptText() == "Jaar") {
             choiceBox.getItems().addAll(d.getItems("Jaar", selection));
+            clearComboBoxes(studyYear, block, course, type, attempt);
         } else if (choiceBox.getPromptText() == "Leerjaar") {
             choiceBox.getItems().addAll(d.getItems("Schooljaar", selection));
+            clearComboBoxes(block, course, type, attempt);
         } else if (choiceBox.getPromptText() == "Periode") {
             choiceBox.getItems().addAll(d.getItems("Periode", selection));
+            clearComboBoxes(course, type, attempt);
+
         } else if (choiceBox.getPromptText() == "Module") {
             choiceBox.getItems().addAll(d.getItems("ModuleCode", selection));
+            clearComboBoxes(type, attempt);
+
         } else if (choiceBox.getPromptText() == "Toetsvorm") {
             choiceBox.getItems().addAll(d.getItems("Toetsvorm", selection));
+            clearComboBoxes(attempt);
+
         } else if (choiceBox.getPromptText() == "Gelegenheid") {
             choiceBox.getItems().addAll(d.getItems("Gelegenheid", selection));
         }
+
     }
 
     private void boxSelectedEvent(ObservableValue observable, ComboBox
             choiceBox) {
+        clearSelectionOnClick(choiceBox);
         if (choiceBox.getPromptText() == "Jaar") {
             yearSelection = (String) observable.getValue();
         } else if (choiceBox.getPromptText() == "Leerjaar") {
@@ -152,6 +165,68 @@ public class CompareScreenChoiceMenu {
         }
         updateSelectionMenu();
     }
+
+    private void clearComboBoxes(ComboBox... comboBoxes) {
+        for (ComboBox i : comboBoxes) {
+            i.getItems().clear();
+        }
+    }
+
+    private void clearSelectionOnPress(ComboBox choiceBox) {
+        if (choiceBox.getPromptText() == "Jaar") {
+            yearSelection = "%";
+            schoolYearSelection = "%";
+            blockSelection = "%";
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Leerjaar") {
+            schoolYearSelection = "%";
+            blockSelection = "%";
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Periode") {
+            blockSelection = "%";
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Module") {
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Toetsvorm") {
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Gelegenheid") {
+            attemptSelection = "%";
+        }
+    }
+
+    private void clearSelectionOnClick(ComboBox choiceBox) {
+        if (choiceBox.getPromptText() == "Jaar") {
+            schoolYearSelection = "%";
+            blockSelection = "%";
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Leerjaar") {
+            blockSelection = "%";
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Periode") {
+            courseSelection = "%";
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Module") {
+            typeSelection = "%";
+            attemptSelection = "%";
+        } else if (choiceBox.getPromptText() == "Toetsvorm") {
+            attemptSelection = "%";
+        }
+    }
+
 
     public void updateSelectionMenu() {
         selectionMenu.getItems().clear();
