@@ -6,7 +6,8 @@ import java.sql.*;
 import java.util.*;
 
 public class DatabaseConn {
-    /* Deze klasse is de connectie met de database.
+    /**
+     * Deze klasse is de connectie met de database.
      * Eerst staat een lijst met de tabellen die in de database
      * zouden moeten zitten gedefineerd. Dan staan een aantal strings
      * met daarin de query's omde tabellen aan te maken. Hierna volgen
@@ -156,7 +157,8 @@ public class DatabaseConn {
     private InputScore inputScore;
 
     public DatabaseConn() {
-        /* Deze methode is de contructor van de class.
+        /**
+         * Deze methode is de contructor van de class.
          * Eerst wordt de driver van psql geladen. Dan wordt de
          * connection gemaakt met de inlognaam en password.
          * Een statement wordt aangemaakt, zodat query's uitgevoert
@@ -191,7 +193,8 @@ public class DatabaseConn {
     }
 
     private void MakeTables() {
-        /* Deze methode zorgt voor het aanmaken van de tabellen.
+        /**
+         * Deze methode zorgt voor het aanmaken van de tabellen.
          * Er wordt een tabelnaam meegegeven welke in de switch-case
          * gaat. Per tabel wordt er dan een specifieke SQL query
          * Aangeroepen dat zorgt voor de aanmaak van die tabel
@@ -238,13 +241,15 @@ public class DatabaseConn {
     }
 
     public Connection getConnection() {
-        /* Deze methode zorgt voor het returnen van de connectie.
+        /**
+         * Deze methode zorgt voor het returnen van de connectie.
          */
         return this.connection;
     }
 
     public void CloseConnection() {
-        /* Deze methode zorgt voor het sluiten van de connectie
+        /**
+         * Deze methode zorgt voor het sluiten van de connectie
          * Wederom staat hier de try-catch, zoals eerder beschreven.
          */
         try {
@@ -256,7 +261,8 @@ public class DatabaseConn {
 
     public void InputModule(String moduleCode, String omschrijving,
                             Integer ec) {
-        /* Deze methode zorgt voor het invoegen van data in de module
+        /**
+         * Deze methode zorgt voor het invoegen van data in de module
          * tabel. Dit gebeurt via het object inputModule dat eerder
          * aangemaakt is.
          * In module worden de module code, omschrijving en het ec
@@ -272,7 +278,8 @@ public class DatabaseConn {
                            String periode, String moduleCode, String toetsvorm,
                            String gelegenheid, Integer cesuur,
                            Integer puntenDoorGokKans) {
-        /* Deze methode zorgt voor het invoegen van data in de toets
+        /**
+         * Deze methode zorgt voor het invoegen van data in de toets
          * tabel. Dit gebeurt via het object inputToets dat eerder
          * aangemaakt is.
          * In toets worden het id, het jaar, schooljaar, periode,
@@ -292,7 +299,8 @@ public class DatabaseConn {
 
     public void InputVraag(String vraagnummer, Integer maxScore,
                            Integer toetsID, boolean meerekenen) {
-        /* Deze methode zorgt voor het invoegen van data in de vragen
+        /**
+         * Deze methode zorgt voor het invoegen van data in de vragen
          * tabel. Dit gebeurt door middel van het object inputVraag dat
          * eerder is aangemaakt.
          * In Vraag worden het id, vraagnummer, maxscore, toets id,
@@ -307,7 +315,8 @@ public class DatabaseConn {
     }
 
     public void InputStudent(Integer studentID, String naam, String klasID) {
-        /* Deze methode zorgt voor het invoegen van data in de student
+        /**
+         * Deze methode zorgt voor het invoegen van data in de student
          * tabel. Dit gebeurt door middel van het object inputStudent
          * dat eerder is aangemaakt.
          * In student worden het student id, naam en klas id
@@ -321,7 +330,8 @@ public class DatabaseConn {
     }
 
     public void InputScore(Integer studentID, Integer vraagID, Integer score) {
-        /* Deze methode zorgt voor het invoegen van data in de score
+        /**
+         * Deze methode zorgt voor het invoegen van data in de score
          * tabel. Dit gebeurt door middel van het object inputScore dat
          * eerder is aangemaakt.
          * In Vraag worden het student id, vraag id en score opgeslagen.
@@ -335,7 +345,8 @@ public class DatabaseConn {
 
     public void UpdateScore(Integer studentID, Integer vraagID,
                             Integer score) {
-        /* Deze methode zorgt voor het veranderen van een score voor een
+        /**
+         * Deze methode zorgt voor het veranderen van een score voor een
          * vraag voor een student.
          * Hierbij zijn de vraag id en student id nodig, waarbij
          * score de nieuwe score is.
@@ -348,7 +359,8 @@ public class DatabaseConn {
     }
 
     private String[][] ConvertArrayListTable(ArrayList<ArrayList<String>> table){
-        /* Deze methode zorgt voor het converteren van een 2D
+        /**
+         * Deze methode zorgt voor het converteren van een 2D
          * arrayList naar een 2D string array.
          * Eerst maakt het de 2D string array aan. Dan wordt geloopt
          * door de top-level ArrayList en wordt een naar array
@@ -364,7 +376,7 @@ public class DatabaseConn {
     }
 
     private Object[][] ConvertArrayMixTable(ArrayList<ArrayList<Object>> table){
-        /* Deze methode zorgt voor het converteren van een 2D
+        /**Deze methode zorgt voor het converteren van een 2D
          * arrayList naar een 2D object array.
          * Eerst maakt het de 2D objectt array aan. Dan wordt geloopt
          * door de top-level ArrayList en wordt een naar array
@@ -382,7 +394,8 @@ public class DatabaseConn {
     public Integer GetToetsID(
             String moduleCode, String jaar, String schoolJaar,
             String periode, String gelegenheid, String toetsVorm){
-        /* Deze methode geeft een id van een toets terug als de
+        /**
+         * Deze methode geeft een id van een toets terug als de
          * gegevens van die toets worden meegegeven.
          * Eerst opent het de connectie met de database. Dan maakt
          * het een resultset op basis van de GETTOETSIDSQL query.
@@ -413,7 +426,8 @@ public class DatabaseConn {
 
     public Integer GetVraagID(
             String vraagnummer, int toetsID){
-        /* Deze methode geeft een id van een vraag terug als de
+        /**
+         * Deze methode geeft een id van een vraag terug als de
          * gegevens van die vraag worden meegegeven.
          * Eerst opent het de connectie met de database. Dan maakt
          * het een resultset op basis van de GETVRAAGIDSQL query.
@@ -442,7 +456,8 @@ public class DatabaseConn {
     }
 
     public String[][] GetTable(String tableName) {
-        /* Deze methode zorgt voor het returnen van een tabel.
+        /**
+         * Deze methode zorgt voor het returnen van een tabel.
          * Omdat de output variabel van grootte kan zijn wordt een
          * arraylist aangemaakt.
          * Dan wordt een statement aangemaakt, waarna de query
@@ -477,7 +492,8 @@ public class DatabaseConn {
     }
 
     public String[][] GetTable(String tableName, String whereClause) {
-        /* Deze methode zorgt voor het returnen van een tabel, waarbij
+        /**
+         * Deze methode zorgt voor het returnen van een tabel, waarbij
          * een where clause wordt gebruikt.
          * Omdat de output variabel van grootte kan zijn wordt een
          * arraylist aangemaakt.
@@ -513,7 +529,8 @@ public class DatabaseConn {
     }
 
     public String[][] GetAllJoined() {
-        /* Deze methode zorgt voor het returnen van alle tabellen
+        /**
+         * Deze methode zorgt voor het returnen van alle tabellen
          * gejoined met elkaar.
          * Eerst maakt het een nieuwe arraylist in arraylist aan,
          * omdat de output van variabele grootte kan zijn. Vervolgens
@@ -548,7 +565,8 @@ public class DatabaseConn {
     }
 
     public String[][] GetStudentScores(Integer toetsID) {
-        /* Deze methode zorgt voor het returnen van een tabel met
+        /**
+         * Deze methode zorgt voor het returnen van een tabel met
          * alle scores per student voor een bepaalde toets.
          * Hierbij wordt eerst een arraylist in een arraylist
          * aangemaakt, omdat nog niet bekend is hoelang de lijsten
@@ -587,7 +605,8 @@ public class DatabaseConn {
     }
 
     public Integer[] GetCesuurMaxGok(Integer toetsID) {
-        /* Deze methode zorgt voor het returnen van de volgende
+        /**
+         * Deze methode zorgt voor het returnen van de volgende
          * waarden in een array:
          * -0 Cesuur
          * -1 Max punten
@@ -615,7 +634,8 @@ public class DatabaseConn {
 
     public void UpdateCesuurGok(Integer toetsID, Integer cesuur,
                                 Integer gokpunten){
-        /* Deze methode zorgt voor het updaten van de cesuur en het
+        /**
+         * Deze methode zorgt voor het updaten van de cesuur en het
          * aantal gokpunten voor een toets.
          * Met behulp van de CESUURGOKUPDATE sql en de meegegeven
          * toets ID, en nieuwe waarden voor cesuur en gokpunten, wordt
@@ -635,7 +655,8 @@ public class DatabaseConn {
     }
 
     public void DeleteVragenToets(Integer toetsID){
-        /* Deze methode zorgt voor het deleten van alle vragen
+        /**
+         * Deze methode zorgt voor het deleten van alle vragen
          * en bijbehorende scores uit de database aan de and van
          * de meegegeven toetsID.
          * Met dezelfde reden als de constructor wordt het in een
@@ -653,7 +674,8 @@ public class DatabaseConn {
     }
 
     public Object[][] GetVragenVanToets(Integer toetsID){
-        /* Deze methode zorgt voor het terugkeren van de vragen
+        /**
+         * Deze methode zorgt voor het terugkeren van de vragen
          * van een specifieke toets.
          * De volgorde van de arrays is als volgt:
          * -0 vraagID
@@ -689,7 +711,8 @@ public class DatabaseConn {
     }
 
     public String[] GetModulecodesPerPeriode(char periode){
-        /* Deze methode returned een array met alle modulecodes voor een
+        /**
+         * Deze methode returned een array met alle modulecodes voor een
          * opgegeven periode.
          * Eerst voert het de query uit, waarna het de array extract.
          * De statement wordt gesloten en de array gereturned.
@@ -712,7 +735,8 @@ public class DatabaseConn {
     }
 
     public Object[][] GetToetsKansen(String modulecode){
-        /* Deze methode returned een tabel waarin per toetsvorm staat:
+        /**
+         * Deze methode returned een tabel waarin per toetsvorm staat:
          * - Toetsvorm
          * - Toets ID van kans1 (als aanwezig)
          * - Toets ID van kans2 (als aanwezig)
@@ -869,7 +893,8 @@ public class DatabaseConn {
     }
 
     public void ResetTables(){
-        /* Deze methode zorgt voor het legen van de hele database.
+        /**
+         * Deze methode zorgt voor het legen van de hele database.
          * Eerst gaat het alle tabellen langs en delete het elke
          * tabel in een loop. Vervolgens roept het de functie
          * MakeTables() aan, zodat weer nieuwe lege tabellen worden
@@ -1098,7 +1123,8 @@ public class DatabaseConn {
     }
 
     public void UpdateMeereken(Integer vraagID, Boolean meerekenen){
-        /* Deze methode zorgt voor het updaten van de kolom meerekenen.
+        /**
+         * Deze methode zorgt voor het updaten van de kolom meerekenen.
          * Met behulp van de UPDATEMEEREKENSQL en de meegegeven
          * vraag ID, en nieuwe waarde voor meerekenen, wordt
          * het geupdate in de database.
