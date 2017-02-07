@@ -132,6 +132,12 @@ public class Main extends Application {
         alert.showAndWait();
     }
 
+    public static void updateSelectionMenu() {
+        vergelijk.testChoiceMenu.updateSelectionMenu();
+        vergelijk.courseChoiceMenu.updateSelectionMenu();
+        vergelijk.blockChoiceMenu.updateSelectionMenu();
+    }
+
     private static void initLayout(){
         /**
          * Initieren van de layout voor het hoofdscherm
