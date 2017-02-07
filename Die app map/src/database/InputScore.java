@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 public class InputScore {
+    /**
+     * Deze klasse verzorgt het invullen van de score tabel in de
+     * database. Hierbij is een sql opgesteld en worden de
+     * connectie en statement gedefineerd. Ook is er een sql
+     * opgesteld die de scores kan updaten.
+     */
     private final String SCORESQL1 = "INSERT INTO SCORE" +
             " (StudentID, VraagID, Score)" +
             " VALUES (%s, %s, %s);";
@@ -14,14 +20,16 @@ public class InputScore {
     private Statement statement;
 
     public InputScore(Connection connection) {
-        /* Deze methode is de constructor van de class en slaat
+        /**
+         * Deze methode is de constructor van de class en slaat
          * de connectie met de database op.
          */
         this.connection = connection;
     }
 
     public boolean Insert(Integer studentID, Integer vraagID, Integer score) {
-        /* Deze methode zorgt ervoor dat de meegegeven waarden
+        /**
+         * Deze methode zorgt ervoor dat de meegegeven waarden
          * worden opgeslagen in de database.
          * Een statement wordt aangemaakt, waarna de query
          * met behulp van de meegegeven waarden
@@ -45,7 +53,8 @@ public class InputScore {
     }
 
     private boolean Catcher (Exception e) {
-        /* Deze methode zorgt voor het printen van de juiste message,
+        /**
+         * Deze methode zorgt voor het printen van de juiste message,
          * afhankelijk van de soort exception. Hierna wordt false
          * gereturned.
          */
@@ -66,7 +75,8 @@ public class InputScore {
 
     public boolean UpdateScore(Integer studentID, Integer vraagID,
                                Integer score) {
-        /* Deze methode zorgt voor het updaten van de scores.
+        /**
+         * Deze methode zorgt voor het updaten van de scores.
          * Eerst wordt een statement aangemaakt, waarna de query
          * wordt uitgevoerd aan de hand van de meegegeven waarden.
          * Als dit goed verloopt, wordt true gereturned.

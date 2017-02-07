@@ -4,6 +4,11 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 class InputVraag {
+    /**
+     * Deze klasse verzorgt het invullen van de vraag tabel in de
+     * database. Hierbij is een sql opgesteld en worden de
+     * connectie en de QueryStrings die nodig zijn gedefineerd.
+     */
     private final String MODULESQL = "INSERT INTO VRAAG" +
             " (Vraagnummer, MaxScore, ToetsID, Meerekenen)" +
             " VALUES (%s, %s, %s, %s);";
@@ -11,7 +16,8 @@ class InputVraag {
     private QueryString vraagnummer = new QueryString();
 
     public InputVraag(Connection connection) {
-        /* Deze methode is de constructor van de class en slaat
+        /**
+         * Deze methode is de constructor van de class en slaat
          * de connectie met de database op.
          */
         this.connection = connection;
@@ -19,7 +25,8 @@ class InputVraag {
 
     public boolean insert(String vraagnummerString, Integer max,
                           Integer toetsID, boolean meerekenen) {
-        /* Deze methode zorgt ervoor dat de meegegeven waarden
+        /**
+         * Deze methode zorgt ervoor dat de meegegeven waarden
          * worden opgeslagen in de database.
          * De meegegeven strings worden in een QueryString object
          * opgeslagen. Een statement wordt aangemaakt, waarna de query
@@ -47,7 +54,8 @@ class InputVraag {
     }
 
     private boolean Catcher (Exception e) {
-        /* Deze methode zorgt voor het printen van de juiste message,
+        /**
+         * Deze methode zorgt voor het printen van de juiste message,
          * afhankelijk van de soort exception. Hierna wordt false
          * gereturned.
          */

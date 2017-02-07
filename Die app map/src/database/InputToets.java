@@ -5,6 +5,12 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 class InputToets {
+    /**
+     * Deze klasse verzorgt het invullen van de toets tabel in de
+     * database. Hierbij is een sql opgesteld voor het invullen en
+     * één voor het checken of het bestaat. De connectie en de
+     * QueryStrings die nodig zijn worden gedefineerd.
+     */
     private final String MODULESQL = "INSERT INTO TOETS" +
             " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
             " Gelegenheid, Cesuur, PuntenDoorGokKans)" +
@@ -26,7 +32,8 @@ class InputToets {
     private QueryString gelegenheid = new QueryString();
 
     public InputToets(Connection connection) {
-        /* Deze methode is de constructor van de class en slaat
+        /**
+         * Deze methode is de constructor van de class en slaat
          * de connectie met de database op.
          */
         this.connection = connection;
@@ -37,7 +44,8 @@ class InputToets {
                           String moduleCodeString, String toetsvormString,
                           String gelegenheidString, Integer cesuur,
                           Integer puntenDoorGokKans) {
-        /* Deze methode zorgt ervoor dat de meegegeven waarden
+        /**
+         * Deze methode zorgt ervoor dat de meegegeven waarden
          * worden opgeslagen in de database.
          * De meegegeven strings worden in een QueryString object
          * opgeslagen. Een statement wordt aangemaakt, waarna
@@ -77,7 +85,8 @@ class InputToets {
     }
 
     private boolean Catcher (Exception e) {
-        /* Deze methode zorgt voor het printen van de juiste message,
+        /**
+         * Deze methode zorgt voor het printen van de juiste message,
          * afhankelijk van de soort exception. Hierna wordt false
          * gereturned.
          */
@@ -96,7 +105,8 @@ class InputToets {
     }
 
     private Boolean CheckExist(){
-        /* Deze methode checkt of de toets al bestaat.
+        /**
+         * Deze methode checkt of de toets al bestaat.
          * Er wordt een statement aangemaakt, waarbij een query wordt
          * uitgevoerd met behulp van de QueryStrings. Hieruit komt een
          * ResultSet. Als de eerste entry hiervan leeg is, wordt
