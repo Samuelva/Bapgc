@@ -1,6 +1,4 @@
-package database; /**
- * Created by tim.
- */
+package database;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -16,10 +14,21 @@ public class InputScore {
     private Statement statement;
 
     public InputScore(Connection connection) {
+        /* Deze methode is de constructor van de class en slaat
+         * de connectie met de database op.
+         */
         this.connection = connection;
     }
 
     public boolean Insert(Integer studentID, Integer vraagID, Integer score) {
+        /* Deze methode zorgt ervoor dat de meegegeven waarden
+         * worden opgeslagen in de database.
+         * Een statement wordt aangemaakt, waarna de query
+         * met behulp van de meegegeven waarden
+         * uitgevoerd wordt. Als dit goed verloopt wordt true
+         * gereturned.
+         * Bij een exception wordt de Catcher methode uitgevoert.
+         */
         try {
             this.statement = connection.createStatement();
             String query = String.format(
@@ -28,28 +37,42 @@ public class InputScore {
                     vraagID,
                     score
             );
-            System.out.println(query);
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            if (e.getMessage().contains(
-                    "key value violates unique constraint \"score_pkey\""
-            )) {
-                System.out.println("Primary key exists");
-            }
-            else if (e.getMessage().contains("violates not-null constraint")) {
-                System.out.println("False input vars");
-            } else {
-                System.err.println(
-                        e.getClass().getName() + ": " + e.getMessage()
-                );
-            }
-            return false;
+            return Catcher(e);
         }
+    }
+
+    private boolean Catcher (Exception e) {
+        /* Deze methode zorgt voor het printen van de juiste message
+         * liggend aan wat de exception is. Hierna wordt false
+         * gereturned.
+         */
+        if (e.getMessage().contains(
+                "key value violates unique constraint \"score_pkey\""
+        )) {
+            System.out.println("Primary key exists");
+        }
+        else if (e.getMessage().contains("violates not-null constraint")) {
+            System.out.println("False input vars");
+        } else {
+            System.err.println(
+                    e.getClass().getName() + ": " + e.getMessage()
+            );
+        }
+        return false;
     }
 
     public boolean UpdateScore(Integer studentID, Integer vraagID,
                                Integer score) {
+        /* Deze methode zorgt voor het updaten van de scores.
+         * Eerst wordt een statement aangemaakt, waarna de query
+         * wordt uitgevoert aan de hand van de meegegeven waarden.
+         * Als dit goed verloopt wordt tru gereturned.
+         * Bij een exception wordt een error geprint en false
+         * gereturned.
+         */
         try {
             this.statement = connection.createStatement();
             String query = String.format(
@@ -58,7 +81,6 @@ public class InputScore {
                     studentID,
                     vraagID
             );
-            System.out.println(query);
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
