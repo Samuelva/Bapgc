@@ -2,8 +2,6 @@ package database;/*
  * Created by Timothy.
  */
 
-import sun.invoke.empty.Empty;
-
 import java.sql.*;
 import java.util.*;
 
@@ -144,6 +142,10 @@ public class DatabaseConn {
     private final String UPDATEMEEREKENSQL = "UPDATE VRAAG" +
             " SET Meerekenen='%s'" +
             " WHERE VraagID=%s;";
+    private final String GETITEMSSQL = "SELECT %s FROM TOETS WHERE Jaar " +
+            "LIKE '%s' AND Schooljaar LIKE '%s' AND Periode LIKE '%s' AND " +
+            "ModuleCode LIKE '%s' AND Toetsvorm LIKE '%s' AND Gelegenheid " +
+            "LIKE '%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -919,7 +921,6 @@ public class DatabaseConn {
     public String getTestID(String year, String course, String type,
                                   String attempt) {
         String testID = new String();
-        System.out.println("X");
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format
@@ -1059,12 +1060,14 @@ public class DatabaseConn {
     }
 
 
-    public List<String> getItems(String item) {
+    public List<String> getItems(String item, List<String> selection) {
         List<String> items;
         try {
             this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery("SELECT " +
-                    item + " FROM TOETS");
+            ResultSet resultSet = this.statement.executeQuery(String.format
+                    (this.GETITEMSSQL, item, selection.get(0), selection.get(1),
+                            selection.get(2), selection.get(3), selection.get
+                                    (4), selection.get(5)));
             items = new ArrayList<>();
             while (resultSet.next()) {
                 if (!items.contains(resultSet.getString(item))) {

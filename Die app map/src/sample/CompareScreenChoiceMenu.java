@@ -16,6 +16,8 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import database.DatabaseConn;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -113,25 +115,23 @@ public class CompareScreenChoiceMenu {
 
     private void boxClickEvent(ComboBox choiceBox) {
         choiceBox.getItems().clear();
-        switch (choiceBox.getPromptText()) {
-            case "Jaar":
-                choiceBox.getItems().addAll(d.getItems("Jaar"));
-                break;
-            case "Leerjaar":
-                choiceBox.getItems().addAll(d.getItems("Schooljaar"));
-                break;
-            case "Periode":
-                choiceBox.getItems().addAll(d.getItems("Periode"));
-                break;
-            case "Module":
-                choiceBox.getItems().addAll(d.getItems("ModuleCode"));
-                break;
-            case "Toetsvorm":
-                choiceBox.getItems().addAll(d.getItems("Toetsvorm"));
-                break;
-            case "Gelegenheid":
-                choiceBox.getItems().addAll(d.getItems("Gelegenheid"));
-                break;
+        List<String> selection = new ArrayList<>();
+        selection.addAll(Arrays.asList(yearSelection, schoolYearSelection,
+                blockSelection, courseSelection, typeSelection,
+                attemptSelection));
+
+        if (choiceBox.getPromptText() == "Jaar") {
+            choiceBox.getItems().addAll(d.getItems("Jaar", selection));
+        } else if (choiceBox.getPromptText() == "Leerjaar") {
+            choiceBox.getItems().addAll(d.getItems("Schooljaar", selection));
+        } else if (choiceBox.getPromptText() == "Periode") {
+            choiceBox.getItems().addAll(d.getItems("Periode", selection));
+        } else if (choiceBox.getPromptText() == "Module") {
+            choiceBox.getItems().addAll(d.getItems("ModuleCode", selection));
+        } else if (choiceBox.getPromptText() == "Toetsvorm") {
+            choiceBox.getItems().addAll(d.getItems("Toetsvorm", selection));
+        } else if (choiceBox.getPromptText() == "Gelegenheid") {
+            choiceBox.getItems().addAll(d.getItems("Gelegenheid", selection));
         }
     }
 
@@ -154,8 +154,6 @@ public class CompareScreenChoiceMenu {
     }
 
     public void updateSelectionMenu() {
-        System.out.println(yearSelection + " " + schoolYearSelection + " " +
-                " " + blockSelection + " " + courseSelection);
         selectionMenu.getItems().clear();
         if (instance == 1) {
             selectionMenu.getItems().addAll(d.filterTest(yearSelection,
