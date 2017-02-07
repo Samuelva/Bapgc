@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-/**
- * Created by Timothy.
- */
 class InputToets {
     private final String MODULESQL = "INSERT INTO TOETS" +
             " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +
@@ -29,6 +26,9 @@ class InputToets {
     private QueryString gelegenheid = new QueryString();
 
     public InputToets(Connection connection) {
+        /* Deze methode is de constructor van de class en slaat
+         * de connectie met de database op.
+         */
         this.connection = connection;
     }
 
@@ -37,6 +37,17 @@ class InputToets {
                           String moduleCodeString, String toetsvormString,
                           String gelegenheidString, Integer cesuur,
                           Integer puntenDoorGokKans) {
+        /* Deze methode zorgt ervoor dat de meegegeven waarden
+         * worden opgeslagen in de database.
+         * De meegegeven strings worden in een QueryString object
+         * opgeslagen. Een statement wordt aangemaakt, waarna
+         * gechecked wordt of de toets al bestaat.
+         * Daarna wordt de query
+         * met behulp van de QueryStrings en andere meegegeven waarden
+         * uitgevoerd. Als dit goed verloopt wordt true
+         * gereturned.
+         * Bij een exception wordt de Catcher methode uitgevoert.
+         */
         this.jaar.insert(jaarString);
         this.schooljaar.insert(schooljaarString);
         this.periode.insert(periodeString);
@@ -57,28 +68,42 @@ class InputToets {
                         cesuur,
                         puntenDoorGokKans
                 );
-                System.out.println(query);
                 statement.executeUpdate(query);
                 return true;
             } catch (Exception e) {
-                if (e.getMessage().contains(
-                        "key value violates unique constraint \"toets_pkey\""
-                )) {
-                    System.out.println("Primary key exists");
-                } else if (e.getMessage().contains("violates not-null constraint")) {
-                    System.out.println("False input vars");
-                } else {
-                    System.err.println(
-                            e.getClass().getName() + ": " + e.getMessage()
-                    );
-                }
-                return false;
+                return Catcher(e);
             }
         }
         return false;
     }
 
+    private boolean Catcher (Exception e) {
+        /* Deze methode zorgt voor het printen van de juiste message
+         * liggend aan wat de exception is. Hierna wordt false
+         * gereturned.
+         */
+        if (e.getMessage().contains(
+                "key value violates unique constraint \"toets_pkey\""
+        )) {
+            System.out.println("Primary key exists");
+        } else if (e.getMessage().contains("violates not-null constraint")) {
+            System.out.println("False input vars");
+        } else {
+            System.err.println(
+                    e.getClass().getName() + ": " + e.getMessage()
+            );
+        }
+        return false;
+    }
+
     private Boolean CheckExist(){
+        /* Deze methode checked of de toets al bestaat.
+         * Er wordt een statement aangemaakt, waarbij een query wordt
+         * uitgevoert met behulp van de QueryStrings. Hieruit komt een
+         * ResultSet en als de eerste entry hiervan leeg is, dan wordt
+         * false gereturned, anders true.
+         * Bij een exception wordt zowiezo false gereturned.
+         */
         try {
             Statement statement = connection.createStatement();
             String query = String.format(

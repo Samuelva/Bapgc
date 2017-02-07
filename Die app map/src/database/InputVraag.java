@@ -3,10 +3,6 @@ package database;
 import java.sql.Connection;
 import java.sql.Statement;
 
-/**
- * Created by Timothy.
- */
-
 class InputVraag {
     private final String MODULESQL = "INSERT INTO VRAAG" +
             " (Vraagnummer, MaxScore, ToetsID, Meerekenen)" +
@@ -15,11 +11,23 @@ class InputVraag {
     private QueryString vraagnummer = new QueryString();
 
     public InputVraag(Connection connection) {
+        /* Deze methode is de constructor van de class en slaat
+         * de connectie met de database op.
+         */
         this.connection = connection;
     }
 
     public boolean insert(String vraagnummerString, Integer max,
                           Integer toetsID, boolean meerekenen) {
+        /* Deze methode zorgt ervoor dat de meegegeven waarden
+         * worden opgeslagen in de database.
+         * De meegegeven strings worden in een QueryString object
+         * opgeslagen. Een statement wordt aangemaakt, waarna de query
+         * met behulp van de QueryStrings en andere meegegeven waarden
+         * uitgevoerd wordt. Als dit goed verloopt wordt true
+         * gereturned.
+         * Bij een exception wordt de Catcher methode uitgevoert.
+         */
         try {
             this.vraagnummer.insert(vraagnummerString);
 
@@ -31,23 +39,30 @@ class InputVraag {
                     toetsID,
                     meerekenen
             );
-            System.out.println(query);
             statement.executeUpdate(query);
             return true;
         } catch (Exception e) {
-            if (e.getMessage().contains(
-                    "key value violates unique constraint \"vraag_pkey\""
-            )) {
-                System.out.println("Primary key exists");
-            }
-            else if (e.getMessage().contains("violates not-null constraint")) {
-                System.out.println("False input vars");
-            } else {
-                System.err.println(
-                        e.getClass().getName() + ": " + e.getMessage()
-                );
-            }
-            return false;
+            return Catcher(e);
         }
+    }
+
+    private boolean Catcher (Exception e) {
+        /* Deze methode zorgt voor het printen van de juiste message
+         * liggend aan wat de exception is. Hierna wordt false
+         * gereturned.
+         */
+        if (e.getMessage().contains(
+                "key value violates unique constraint \"vraag_pkey\""
+        )) {
+            System.out.println("Primary key exists");
+        }
+        else if (e.getMessage().contains("violates not-null constraint")) {
+            System.out.println("False input vars");
+        } else {
+            System.err.println(
+                    e.getClass().getName() + ": " + e.getMessage()
+            );
+        }
+        return false;
     }
 }
