@@ -552,6 +552,7 @@ public class Statistics {
         out[1] = calculator.getParticipant().size();
         out[3] = calculator.getPasses().size();
         out[2] = (int) out[1] - (int) out[3];
+        System.out.println(Arrays.deepToString(out));
         out[4] = round(percentage((int) out[3], (int) out[1]), 2);
         return out;
     }
@@ -580,8 +581,8 @@ public class Statistics {
         DatabaseConn d = new DatabaseConn();
         List<String> courses = d.getCourses(selectedYear, selectedSchoolYear, selectedBlock);
         d.CloseConnection();
-        List<Set> passes = new ArrayList();
-        List<Set> participants = new ArrayList();
+        List<Set<String>> passes = new ArrayList();
+        List<Set<String>> participants = new ArrayList();
         double sum = 0;
         int number = 0;
         for (String course: courses){
@@ -598,7 +599,8 @@ public class Statistics {
         return determinePeriodStats(sum, number, passes, participants);
     }
 
-    private static Object[] determinePeriodStats(double sum, int number, List<Set> passes, List<Set> participants) {
+    private static Object[] determinePeriodStats(double sum, int number, List<Set<String>> passes,
+                                                 List<Set<String>> participants) {
         /**
          * Deze methode bepaald de statistieken voor een periode met de meegegeven waardes.
          * De volgende waardes worden bepaald en terug gegeven:
@@ -621,11 +623,12 @@ public class Statistics {
         return out;
     }
 
-    public static Set<String> multipleSetIntersect(List<Set> setList){
+    public static <T> Set<T> multipleSetIntersect(List<Set<T>> setList){
         /**
          * Deze methode bepaald welke waardes er in iedere Set in setList voorkomen.
          * Eerst wordt de eerste Set in setList apart genomen en een Set out aangemaakt.
-         * vervolgens wordt er door die eerste Set heen geloopd en voor iedere andere set
+         * Als firstSet leeg is wordt er een lege Set terug gegeven.
+         * Vervolgens wordt er door die eerste Set heen geloopd en voor iedere andere set
          * gecontroleerd of de waarde ook in iedere andere Set zit. Als de waarde niet in
          * een van de Sets zit wordt de boolean include op false bezet wordt er gestopt
          * met controleren. Zodra alle Sets gecontroleerd zijn wordt er gekeken of include
@@ -633,9 +636,14 @@ public class Statistics {
          * toegevoegd. Zodra alle waardes gecontroleerd zijn wordt out terug gegeven, deze
          * Set bevat nu alle waardes die in iedere Set in setList zat.
          */
-        Set firstSet = setList.get(0);
-        Set out = new HashSet();
-        for (Object value: firstSet) {
+        Set<T> firstSet;
+        Set<T> out = new HashSet();
+        try {
+            firstSet = setList.get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return out;
+        }
+        for (T value: firstSet) {
             boolean include = true;
             for (int i = 1; i < setList.size(); ++i) {
                 if (! (setList.get(i).contains(value))) {

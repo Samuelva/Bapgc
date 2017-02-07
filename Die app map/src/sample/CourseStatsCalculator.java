@@ -42,6 +42,7 @@ public class CourseStatsCalculator {
         this.d = new DatabaseConn();
         this.attempts = d.GetToetsKansen(courseID);
         compileFinalGrades();
+        removeEmptyExams();
         determineInclusion();
         d.CloseConnection();
     }
@@ -72,6 +73,54 @@ public class CourseStatsCalculator {
         }
     }
 
+    private void removeEmptyExams(){
+        /**
+         * Verwijder volledig niet gemakte toetsen uit de Map met cijfer.
+         * Maak een List nullIndex. Loop door de studenten en maak voor iedere
+         * student een Set met de posities waar een null waarde staat.
+         * Voeg deze toe aan nullIndex.
+         * Intersect alle Sets in nullIndex om te achterhalen welke positie
+         * altijd een null waarde heeft. Vervijder deze positie voor iedere
+         * student uit de Map die de cijfers bevat.
+         */
+        List<Set<Integer>> nullIndex = new ArrayList();
+        for (String key: this.initialGrades.keySet()){
+            Set<Integer> innerNullIndex = new HashSet();
+            Double[] grades = this.initialGrades.get(key);
+            for (int i = 0; i < grades.length; ++i){
+                if (grades[i] == null){
+                    innerNullIndex.add(i);
+                }
+            }
+            nullIndex.add(innerNullIndex);
+        }
+        List<Integer> remove = new ArrayList(Statistics.multipleSetIntersect(nullIndex));
+        for (String key : this.initialGrades.keySet()) {
+            Double[] newValue = removeIndices(this.initialGrades.get(key), remove);
+            this.initialGrades.replace(key, newValue);
+        }
+    }
+
+    private Double[] removeIndices(Double[] values, List<Integer> indices){
+        /**
+         * Verwijder de posities in indices uit values.
+         * Maak een List. Loop door values en voeg ze de waardes toe
+         * aan de List out als de positie niet in indices staat.
+         * Converteer de List out naar een Double[] en geef die terug.
+         */
+        List<Double> out = new ArrayList<>();
+        for(int i = 0; i < values.length; ++i){
+            if (! indices.contains(i)){
+                out.add(values[i]);
+            }
+        }
+        Double[] outArray = new Double[out.size()];
+        for (int i = 0; i < out.size(); ++i){
+            outArray[i] = out.get(i);
+        }
+        return outArray;
+    }
+
     private void compileFinalGrades() {
         /**
          * Deze method bepaalt de cijfers die voor iedere toets door iedere
@@ -93,7 +142,7 @@ public class CourseStatsCalculator {
                     grades = Statistics.updateGradeTableArray(d.GetStudentScores(
                             (int) this.attempts[examPos][chance]), values[0], values[1]);
                 } catch (EmptyStackException e){
-                    break;
+                    continue;
                 }
                 for (int student = 0; student < grades.length; ++student) {
                     Double grade = Double.parseDouble(grades[student][1]);
@@ -184,6 +233,6 @@ public class CourseStatsCalculator {
                 out.add(key);
             }
         }
-        return new HashSet(out);
+        return new HashSet<String>(out);
     }
 }
