@@ -41,12 +41,11 @@ class InputToets {
          * worden opgeslagen in de database.
          * De meegegeven strings worden in een QueryString object
          * opgeslagen. Een statement wordt aangemaakt, waarna
-         * gechecked wordt of de toets al bestaat.
-         * Daarna wordt de query
-         * met behulp van de QueryStrings en andere meegegeven waarden
-         * uitgevoerd. Als dit goed verloopt wordt true
+         * gecheckt wordt of de toets al bestaat.
+         * Daarna wordt de query met behulp van de QueryStrings en andere 
+         * meegegeven waarden uitgevoerd. Als dit goed verloopt, wordt true
          * gereturned.
-         * Bij een exception wordt de Catcher methode uitgevoert.
+         * Bij een exception wordt de Catcher methode uitgevoerd.
          */
         this.jaar.insert(jaarString);
         this.schooljaar.insert(schooljaarString);
@@ -78,8 +77,8 @@ class InputToets {
     }
 
     private boolean Catcher (Exception e) {
-        /* Deze methode zorgt voor het printen van de juiste message
-         * liggend aan wat de exception is. Hierna wordt false
+        /* Deze methode zorgt voor het printen van de juiste message,
+         * afhankelijk van de soort exception. Hierna wordt false
          * gereturned.
          */
         if (e.getMessage().contains(
@@ -97,12 +96,12 @@ class InputToets {
     }
 
     private Boolean CheckExist(){
-        /* Deze methode checked of de toets al bestaat.
+        /* Deze methode checkt of de toets al bestaat.
          * Er wordt een statement aangemaakt, waarbij een query wordt
-         * uitgevoert met behulp van de QueryStrings. Hieruit komt een
-         * ResultSet en als de eerste entry hiervan leeg is, dan wordt
-         * false gereturned, anders true.
-         * Bij een exception wordt zowiezo false gereturned.
+         * uitgevoerd met behulp van de QueryStrings. Hieruit komt een
+         * ResultSet. Als de eerste entry hiervan leeg is, wordt
+         * false gereturned. Anders wordt true gereturned.
+         * Bij een exception wordt altijd false gereturned.
          */
         try {
             Statement statement = connection.createStatement();

@@ -25,9 +25,9 @@ class InputStudent {
          * De meegegeven strings worden in een QueryString object
          * opgeslagen. Een statement wordt aangemaakt, waarna de query
          * met behulp van de QueryStrings en andere meegegeven waarden
-         * uitgevoerd wordt. Als dit goed verloopt wordt true
+         * uitgevoerd wordt. Als dit goed verloopt, wordt true
          * gereturned.
-         * Bij een exception wordt de Catcher methode uitgevoert.
+         * Bij een exception wordt de Catcher methode uitgevoerd.
          */
         try {
             this.naam.insert(naamString);
@@ -48,8 +48,8 @@ class InputStudent {
     }
 
     private boolean Catcher (Exception e) {
-        /* Deze methode zorgt voor het printen van de juiste message
-         * liggend aan wat de exception is. Hierna wordt false
+        /* Deze methode zorgt voor het printen van de juiste message,
+         * afhankelijk van de soort exception. Hierna wordt false
          * gereturned.
          */
         if (e.getMessage().contains(

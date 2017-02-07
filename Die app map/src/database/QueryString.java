@@ -14,16 +14,16 @@ public class QueryString {
 
     public void insert(String string) {
         /* Deze methode zorgt voor het opslaan van een String.
-         * Daarna wordt de string gechecked m.b.v checkString().
+         * Daarna wordt de string gecheckt m.b.v checkString().
          */
         this.string = string;
         checkString();
     }
 
     private void checkString() {
-        /* Deze methode zorgt voor het geodzetten van de string.
+        /* Deze methode zorgt voor het goed zetten van de string.
          * Als deze leeg is of er staat NULL, dan wordt het NULL.
-         * Anders worden allen illegale tekens weggehaald en twee
+         * Anders worden alle illegale tekens weggehaald en twee
          * aanhalingstekens toegevoegd.
          */
         if (this.string.isEmpty() || this.string.equals("NULL")) {

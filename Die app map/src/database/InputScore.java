@@ -25,9 +25,9 @@ public class InputScore {
          * worden opgeslagen in de database.
          * Een statement wordt aangemaakt, waarna de query
          * met behulp van de meegegeven waarden
-         * uitgevoerd wordt. Als dit goed verloopt wordt true
+         * uitgevoerd wordt. Als dit goed verloopt, wordt true
          * gereturned.
-         * Bij een exception wordt de Catcher methode uitgevoert.
+         * Bij een exception wordt de Catcher methode uitgevoerd.
          */
         try {
             this.statement = connection.createStatement();
@@ -45,8 +45,8 @@ public class InputScore {
     }
 
     private boolean Catcher (Exception e) {
-        /* Deze methode zorgt voor het printen van de juiste message
-         * liggend aan wat de exception is. Hierna wordt false
+        /* Deze methode zorgt voor het printen van de juiste message,
+         * afhankelijk van de soort exception. Hierna wordt false
          * gereturned.
          */
         if (e.getMessage().contains(
@@ -68,8 +68,8 @@ public class InputScore {
                                Integer score) {
         /* Deze methode zorgt voor het updaten van de scores.
          * Eerst wordt een statement aangemaakt, waarna de query
-         * wordt uitgevoert aan de hand van de meegegeven waarden.
-         * Als dit goed verloopt wordt tru gereturned.
+         * wordt uitgevoerd aan de hand van de meegegeven waarden.
+         * Als dit goed verloopt, wordt true gereturned.
          * Bij een exception wordt een error geprint en false
          * gereturned.
          */
