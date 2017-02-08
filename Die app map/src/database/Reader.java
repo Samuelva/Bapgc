@@ -31,11 +31,11 @@ public class Reader {
             deelvraag = br.readLine();
             meerekenen = br.readLine();
             punten = br.readLine();
-            Writer(toetsID);
             while ((line = br.readLine()) != null) {
                 String[] lijn = line.split(";");
                 scores.add(lijn);
             }
+            Writer(toetsID);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
