@@ -721,11 +721,15 @@ public class ViewScreen extends StackPane{
         /**
          * Probeer de data van de meegegevn toets op te halen.
          * Als er een error plaatsvind, return false, anders true.
+         * Als er geen scores ophelaad worden return dan ook false.
          */
         try {
             d.GetVragenVanToets(examID);
             d.GetCesuurMaxGok(examID);
-            d.GetStudentScores(examID);
+            String[][] scores = d.GetStudentScores(examID);
+            if (scores[0][0] == null){
+                return false;
+            }
             return true;
         } catch (EmptyStackException | NumberFormatException e) {
             return false;
