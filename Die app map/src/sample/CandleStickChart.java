@@ -53,6 +53,9 @@ import javafx.util.Duration;
  *
  * The Data Y value is used for the opening price and then the close, high and low values are stored in the Data's
  * extra value property using a CandleStickExtraValues object.
+ *
+ * Afkomstig van de javafx ensemble samples.
+ * Beschikbaar op http://www.oracle.com/technetwork/java/javase/overview/javafx-samples-2158687.html
  */
 public class CandleStickChart extends XYChart<Number, Number> {
 

@@ -1,25 +1,16 @@
 package sample;
 
-import com.sun.org.apache.bcel.internal.generic.Select;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import database.DatabaseConn;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 /**
  * Created by Samuel on 4-12-2016.
@@ -89,6 +80,10 @@ public class CompareScreenChoiceMenu {
     }
 
     private void setSelections() {
+        /**
+         * Reset de keuzemenu selectie waarden naar %, wat 'alles' voor een
+         * query betekent.
+         */
         yearSelection = new String("%");
         schoolYearSelection = new String("%");
         blockSelection = new String("%");
@@ -99,7 +94,9 @@ public class CompareScreenChoiceMenu {
 
     private void setButtons(ComboBox choiceBox, String promptText) {
         /**
-         * Maakt een combobox en returned deze met de opgegeven weergeef waarde.
+         * Maakt een combobox en returned deze met de opgegeven weergeef
+         * waarde. De event voor op het klikken van de combobox en het
+         * selecteren van een combobox worden hier ook geregeld.
          */
         choiceBox.setPromptText(promptText);
         choiceBox.setPrefWidth(150);
@@ -116,6 +113,13 @@ public class CompareScreenChoiceMenu {
     }
 
     private void boxClickEvent(ComboBox choiceBox) {
+        /**
+         * Regelt de event voor als er op een combobox wordt geklikt. De
+         * selectie waarden van de andere comboboxen (indien geselecteerd)
+         * worden in een lijst gestopt en meegegeven aan de functie welke
+         * comboboxen vult en leegmaakt afhankelijk van de geselecteerde
+         * combobox.
+         */
         choiceBox.getItems().clear();
         clearSelectionOnPress(choiceBox);
         List<String> selection = new ArrayList<>();
@@ -123,6 +127,21 @@ public class CompareScreenChoiceMenu {
                 blockSelection, courseSelection, typeSelection,
                 attemptSelection));
 
+        boxClickEventCase(choiceBox, selection);
+    }
+
+    private void boxClickEventCase(ComboBox choiceBox, List<String> selection) {
+        /**
+         * Event handler voor als er op een combobox wordt gedrukt.
+         * Afhankelijk van op welke combobox er gedrukt wordt, worden alle
+         * boxjes boven deze combobox gereset. De combobox waar zelf op
+         * gedrukt wordt, wordt gelijk gevuld met data waaruit gekozen kan
+         * worden. De comboboxen werken zo dat de inhoud die door hun getoond
+         * wordt, ook gefilterd wordt afhankelijk van de selectie in andere
+         * comboboxen. Dus als er in de periode combobox, periode 1 wordt
+         * geselecteerd, en dan op de module combobox wordt gedrukt, toont
+         * deze alleen de modules uit periode 1.
+         */
         if (choiceBox.getPromptText() == "Jaar") {
             choiceBox.getItems().addAll(d.getItems("Jaar", selection));
             clearComboBoxes(studyYear, block, course, type, attempt);
@@ -132,23 +151,25 @@ public class CompareScreenChoiceMenu {
         } else if (choiceBox.getPromptText() == "Periode") {
             choiceBox.getItems().addAll(d.getItems("Periode", selection));
             clearComboBoxes(course, type, attempt);
-
         } else if (choiceBox.getPromptText() == "Module") {
             choiceBox.getItems().addAll(d.getItems("ModuleCode", selection));
             clearComboBoxes(type, attempt);
-
         } else if (choiceBox.getPromptText() == "Toetsvorm") {
             choiceBox.getItems().addAll(d.getItems("Toetsvorm", selection));
             clearComboBoxes(attempt);
-
         } else if (choiceBox.getPromptText() == "Gelegenheid") {
             choiceBox.getItems().addAll(d.getItems("Gelegenheid", selection));
         }
-
     }
 
     private void boxSelectedEvent(ObservableValue observable, ComboBox
             choiceBox) {
+        /**
+         * Event handles voor als er op een waarde in de combobox is gedrukt.
+         * Bij selectie, wordt de waarde opgeslagen in de juiste variabele.
+         * Het selectiemenu wordt geupdate afhankelijk van de geselecteerde
+         * waarden.
+         */
         clearSelectionOnClick(choiceBox);
         if (choiceBox.getPromptText() == "Jaar") {
             yearSelection = (String) observable.getValue();
@@ -167,12 +188,20 @@ public class CompareScreenChoiceMenu {
     }
 
     private void clearComboBoxes(ComboBox... comboBoxes) {
-        for (ComboBox i : comboBoxes) {
+        /**
+         * Maakt de inhoud van de opgegeven comboboxen leeg.
+         */
+        for (ComboBox i: comboBoxes) {
             i.getItems().clear();
         }
     }
 
     private void clearSelectionOnPress(ComboBox choiceBox) {
+        /**
+         * Reset de selectie variabelen afhankelijk van op welke combobox er
+         * gedrukt wordt. De waarden voor de comboboxen boven de ingedrukte
+         * combobox worden en van de ingedrukte combobox zelf worden gereset.
+         */
         if (choiceBox.getPromptText() == "Jaar") {
             yearSelection = "%";
             schoolYearSelection = "%";
@@ -191,7 +220,15 @@ public class CompareScreenChoiceMenu {
             courseSelection = "%";
             typeSelection = "%";
             attemptSelection = "%";
-        } else if (choiceBox.getPromptText() == "Module") {
+        }
+        clearSelectionOnPress2(choiceBox);
+    }
+
+    private void clearSelectionOnPress2(ComboBox choiceBox) {
+        /**
+         * Verlenging van de clearSelectionOnPress() functie.
+         */
+        if (choiceBox.getPromptText() == "Module") {
             courseSelection = "%";
             typeSelection = "%";
             attemptSelection = "%";
@@ -204,6 +241,13 @@ public class CompareScreenChoiceMenu {
     }
 
     private void clearSelectionOnClick(ComboBox choiceBox) {
+        /**
+         * Reset de selectie variabelen afhankelijk van op welke combobox er
+         * gedrukt wordt. De waarden voor de comboboxen boven de ingedrukte
+         * combobox worden gereset. Verschilt van de vorige functie doordat
+         * hier de selectie waarden van de geselecteerde combobox niet
+         * gereset wordt.
+         */
         if (choiceBox.getPromptText() == "Jaar") {
             schoolYearSelection = "%";
             blockSelection = "%";
@@ -227,8 +271,13 @@ public class CompareScreenChoiceMenu {
         }
     }
 
-
     public void updateSelectionMenu() {
+        /**
+         * Afhankelijk voor welke tab het keuzemenu gemakt is (toets, module
+         * of periode) wordt het selectiemenu geupdate met de juiste
+         * geselecteerde combobox waarden als filter. Elke tab gebruikt
+         * andere waarden en halen data op hun eigen manier op.
+         */
         selectionMenu.getItems().clear();
         if (instance == 1) {
             selectionMenu.getItems().addAll(d.filterTest(yearSelection,
@@ -263,6 +312,10 @@ public class CompareScreenChoiceMenu {
     }
 
     private void clearSelections() {
+        /**
+         * Reset de geselecteerde waarden van de comboboxen, wordt
+         * aangeroepen als er op de resetknop gedrukt wordt.
+         */
         year.getSelectionModel().clearSelection();
         studyYear.getSelectionModel().clearSelection();
         block.getSelectionModel().clearSelection();
@@ -272,8 +325,13 @@ public class CompareScreenChoiceMenu {
     }
 
     private void createSelectionMenu() {
+        /**
+         * Maakt het selectiemenu en vult deze gelijk met data, indien
+         * beschikbaar.
+         */
         selectionMenu = new ListView<>();
-        selectionMenu.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        selectionMenu.getSelectionModel().setSelectionMode(SelectionMode
+                .MULTIPLE);
         if (instance == 1) {
             selectionMenu.setItems(FXCollections.observableArrayList(d
                     .filterTest("%", "%", "%", "%", "%", "%")));
@@ -288,6 +346,9 @@ public class CompareScreenChoiceMenu {
     }
 
     private HBox buttonBox() {
+        /**
+         * Returned een box met de alles en reset knop.
+         */
         buttonBox = new HBox();
         buttonBox.getChildren().addAll(allButton, resetButton);
         buttonBox.setSpacing(5);

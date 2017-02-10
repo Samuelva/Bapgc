@@ -43,7 +43,7 @@ public class CompareScreenStatistics {
     private Boxplot boxplot;
     private WritableImage graphImage;
 
-    private TableView<TestRow> table;
+    private TableView<Row> table;
     private TableColumn testCol;
     private TableColumn moduleCol;
     private TableColumn periodCol;
@@ -133,7 +133,7 @@ public class CompareScreenStatistics {
         passedCol = new TableColumn("Voldoendes");
         passRateCol = new TableColumn("Rendement");
 
-        testCol.setCellValueFactory(new PropertyValueFactory<>("test"));
+        testCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         moduleCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         periodCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         averageGradeCol.setCellValueFactory(new PropertyValueFactory<>

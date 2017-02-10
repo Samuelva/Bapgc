@@ -220,7 +220,8 @@ public class ViewScreen extends StackPane{
     }
     
     private VBox makeTopRightBox(){
-        /* Deze functie maakt een vbox aan die een afbeelding weergeeft van 
+        /**
+         * Deze functie maakt een vbox aan die een afbeelding weergeeft van
          * 400x250. Daaronder staan dropdown menu's om te kiezen welke
          * afbeelding weergegeven moet worden. Eén voor het soort plot en één
          * voor de data die gebruikt moet worden (een vraag, cijfer of totaal).
@@ -236,7 +237,8 @@ public class ViewScreen extends StackPane{
     }
 
     private HBox makeGraphButtons() {
-        /* Maakt de grafiekkeuze en opslaanknop, plaatst deze in een box, en
+        /**
+         * Maakt de grafiekkeuze en opslaanknop, plaatst deze in een box, en
          * returnt ze.
          */
         this.plotChoiceBox = new ChoiceBox(FXCollections.observableArrayList(
@@ -426,7 +428,7 @@ public class ViewScreen extends StackPane{
     }
 
     private void updateGraph() {
-        /*
+        /**
          * Deze functie zorgt ervoor dat de grafieksoort gelijk veranderd wordt,
          * als deze wordt aangepast in de grafiekkeuze combobox.
          */
@@ -442,7 +444,7 @@ public class ViewScreen extends StackPane{
     }
 
     private void graphUpdateGrades(TablePosition newValue) {
-        /*
+        /**
          * Roept de functies aan om de grafieken te maken als de cijfer kolom
          * geselecteerd is.
          */
@@ -456,7 +458,7 @@ public class ViewScreen extends StackPane{
     }
 
     private void graphUpdateTotal(TablePosition newValue) {
-        /*
+        /**
          * Roept de functies aan om de grafieken te maken als de totaal kolom
          * geselecteerd is.
          */
@@ -472,7 +474,7 @@ public class ViewScreen extends StackPane{
     }
 
     private void graphUpdateQuestions(TablePosition newValue) {
-        /*
+        /**
          * Roept de functies aan om de grafieken te maken als een vraag kolom
          * geselecteerd is.
          */
@@ -801,7 +803,7 @@ public class ViewScreen extends StackPane{
          * vervolgens geplot worden.
          */
         double[] points = new double[pointsTable.getItems().size()];
-        for (int i=0; i<pointsTable.getItems().size(); i++) {
+        for (int i = 0; i<pointsTable.getItems().size(); i++) {
             points[i] = Double.parseDouble((String) newValue.getTableColumn()
                     .getCellObservableValue(i).getValue());
         }

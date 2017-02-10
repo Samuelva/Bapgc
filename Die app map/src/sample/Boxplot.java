@@ -1,25 +1,15 @@
 package sample;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 /**
  * Created by Samuel on 11-12-2016.
+ * Deze klasse maakt een boxplot met de opgegeven data.
  */
 public class Boxplot {
     private VBox vBox;
@@ -30,9 +20,12 @@ public class Boxplot {
     private String yLabel;
     private boolean setXAxis;
 
-    public Boxplot(double[][] dataI, String graphTitleI, String xLabelI, String
-            yLabelI,
-                   boolean setXAxisI) {
+    public Boxplot(double[][] dataI, String graphTitleI, String xLabelI,
+                   String yLabelI, boolean setXAxisI) {
+        /**
+         * Main functie. Slaat de meegegeven data, x-as label, y-as label en
+         * titel op.
+         */
         data = dataI;
         xLabel = xLabelI;
         yLabel = yLabelI;
@@ -41,6 +34,9 @@ public class Boxplot {
     }
 
     public VBox makeBoxPlot() {
+        /**
+         * Deze functie maakt de boxplot en returned deze in een box.
+         */
         NumberAxis xAxis;
         NumberAxis yAxis;
 
@@ -60,8 +56,11 @@ public class Boxplot {
     }
 
     public void addData() {
+        /**
+         * Met deze functie kan er een boxplot toegevoegd worden aan de grafiek.
+         */
         XYChart.Series<Number,Number> series = new XYChart.Series<Number,Number>();
-        for (int i=0; i< data.length; i++) {
+        for (int i = 0; i < data.length; i++) {
             double[] day = data[i];
             series.getData().add(
                     new XYChart.Data<>(day[0],day[1],new CandleStickExtraValues(day[2],day[3],day[4],day[5]))
@@ -77,6 +76,10 @@ public class Boxplot {
     }
 
     public CandleStickChart getBoxPlot() {
+        /**
+         * Returned de boxplot variabele. Wordt gebruikt om de grafiek te
+         * kunnen opslaan.
+         */
         return chart;
     }
 }

@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 
 /**
  * Created by Samuel on 15-1-2017.
- * Deze klasse maakt een histogram.
+ * Deze klasse maakt een histogram met de opgegeven data en returned deze.
  */
 public class Barchart {
     private String xLabel;
@@ -22,6 +22,10 @@ public class Barchart {
 
     public Barchart(String setxLabel, String setyLabel, String setTitle, String
             setName) {
+        /**
+         * Main functie. De x-as label, y-as label, titel en grafiek naam
+         * worden meegegeven waarmee de grafiek gemaakt wordt.
+         */
         xLabel = setxLabel;
         yLabel = setyLabel;
         title = setTitle;
@@ -30,6 +34,9 @@ public class Barchart {
     }
 
     public void makeBarChart() {
+        /**
+         * Deze functie maakt de histogram aan met de opgegeven data.
+         */
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
         barChart = new BarChart<>(xAxis, yAxis);
@@ -44,10 +51,17 @@ public class Barchart {
     }
 
     public void addBar(String xValue, double yValue) {
+        /**
+         * Met deze functie kan er een 'staaf' toegevoegd worden aan de
+         * histogram.
+         */
         series.getData().add(new XYChart.Data(xValue, yValue));
     }
 
     public VBox getBarChartBox() {
+        /**
+         * Returned de grafiek in een box.
+         */
         chartBox = new VBox();
         chartBox.getChildren().addAll(barChart);
         chartBox.setVgrow(barChart, Priority.ALWAYS);
@@ -55,6 +69,10 @@ public class Barchart {
     }
 
     public BarChart<String, Number> getBarChart() {
+        /**
+         * Returned de grafiek variabele, wordt gebruikt om de grafiek op te
+         * slaan.
+         */
         return barChart;
     }
 }

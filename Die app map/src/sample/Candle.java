@@ -36,7 +36,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 
-/** Candle node used for drawing a candle */
+/** Candle node used for drawing a candle
+ * Afkomstig van de javafx ensemble samples.
+ * Beschikbaar op http://www.oracle.com/technetwork/java/javase/overview/javafx-samples-2158687.html
+ */
 public class Candle extends Group {
     private Line highLowLine = new Line();
     private Region bar = new Region();
@@ -51,7 +54,6 @@ public class Candle extends Group {
         this.seriesStyleClass = seriesStyleClass;
         this.dataStyleClass = dataStyleClass;
         updateStyleClasses();
-//        tooltip.setGraphic(new TooltipContent());
         Tooltip.install(bar, tooltip);
     }
 
@@ -75,12 +77,6 @@ public class Candle extends Group {
             bar.resizeRelocate(-candleWidth / 2, closeOffset, candleWidth, closeOffset * -1);
         }
     }
-
-//    public void updateTooltip(double open, double close, double high, double low) {
-//        TooltipContent tooltipContent = (TooltipContent) tooltip.getGraphic();
-//        tooltipContent.update(open, close, high, low);
-////                    tooltip.setText("Open: "+open+"\nClose: "+close+"\nHigh: "+high+"\nLow: "+low);
-//    }
 
     private void updateStyleClasses() {
         getStyleClass().setAll("candlestick-candle", seriesStyleClass, dataStyleClass);

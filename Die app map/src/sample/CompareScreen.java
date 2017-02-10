@@ -14,7 +14,7 @@ import javafx.scene.layout.*;
 import java.util.Random;
 
 /**
- * Klasse voor het vergelijkscherm.
+ * Klasse welke het vergelijkscherm aanmaakt.
  */
 public class CompareScreen extends StackPane {
 
@@ -57,6 +57,11 @@ public class CompareScreen extends StackPane {
     }
 
     private void selectionMenuEvent() {
+        /**
+         * Event handler voor als er data geselecteerd wordt in het
+         * selectiemenu. Selectie wordt toegekend aan een variabele en
+         * doorgegeven aan de functie welke de tabel in elke tab vult.
+         */
         testChoiceMenu.selectionMenu.setOnMouseClicked(event -> {
             ObservableList<String> selection = testChoiceMenu.selectionMenu
                     .getSelectionModel().getSelectedItems();
@@ -78,6 +83,12 @@ public class CompareScreen extends StackPane {
     }
 
     private void choiceMenuAllButtonEvent() {
+        /**
+         * Event voor de alles knop. Zorgt ervoor dat alles in het
+         * selectiemenu geselecteerd wordt, deze waardes toegekend worden aan
+         * een variabele, en de tabel in de 3 tabjes gevuld worden met de
+         * data voor de selectie.
+         */
         testChoiceMenu.allButton.setOnAction(event -> {
             testChoiceMenu.selectionMenu.getSelectionModel().selectAll();
             ObservableList<String> selection = testChoiceMenu.selectionMenu
@@ -100,10 +111,17 @@ public class CompareScreen extends StackPane {
 
     private void fillTestTable(ObservableList<String> selection) {
         testStatistics.clearTable();
-        ObservableList<TestRow> data = FXCollections.observableArrayList();
+        /**
+         * Deze functie voegt data toe aan de tabel voor de toetstab.
+         * Als er een of meerdere waarden worden geselecteerd in het
+         * selectiemenu, worden de toetsstatistieken hiervoor opgehaald en
+         * toegevoegd aan de tabel. Als er geen data beschikbaar is voor de
+         * toets, wordt er een melding weergegeven.
+         */
+        ObservableList<Row> data = FXCollections.observableArrayList();
 
         try {
-            for (String s : selection) {
+            for (String s: selection) {
                 String[] parts = s.split(" ");
                 String course = parts[0];
                 String type = parts[1];
@@ -113,8 +131,7 @@ public class CompareScreen extends StackPane {
                 String testId = d.getTestID(year, course, type, attempt);
                 Object[] testStatisticsObj = Statistics.examStats
                         (Integer.parseInt(testId));
-
-                data.add(new TestRow(s.toString(),
+                data.add(new Row(s.toString(),
                                 (Double) testStatisticsObj[0],
                                 (int) testStatisticsObj[1],
                                 (int) testStatisticsObj[2],
@@ -128,16 +145,25 @@ public class CompareScreen extends StackPane {
     }
 
     private void fillModuleTable(ObservableList<String> selection) {
+        /**
+         * Deze functie voegt data toe aan de tabel voor de moduletab.
+         * Als er een of meerdere waarden worden geselecteerd in het
+         * selectiemenu, worden de modulestatistieken hiervoor opgehaald en
+         * toegevoegd aan de tabel. Als er geen data beschikbaar is voor de
+         * module, wordt er een melding weergegeven.
+         */
         courseStatistics.clearTable();
         ObservableList<Row> data = FXCollections.observableArrayList();
 
         try {
-            for (String s : selection) {
+            for (String s: selection) {
                 String courseId = s.split(" ")[0];
                 Object[] courseStatisticsObj = Statistics.courseStats(courseId);
 
-                data.add(new Row(s.toString(), (double) courseStatisticsObj[0],
-                        (int) courseStatisticsObj[1], (int) courseStatisticsObj[2],
+                data.add(new Row(s.toString(),
+                        (double) courseStatisticsObj[0],
+                        (int) courseStatisticsObj[1],
+                        (int) courseStatisticsObj[2],
                         (int) courseStatisticsObj[3],
                         (double) courseStatisticsObj[4]));
             }
@@ -149,10 +175,17 @@ public class CompareScreen extends StackPane {
 
     private void fillBlockTable(ObservableList<String> selection) {
         blockStatistics.clearTable();
+        /**
+         * Deze functie voegt data toe aan de tabel voor de periodetab.
+         * Als er een of meerdere waarden worden geselecteerd in het
+         * selectiemenu, worden de periodestatistieken hiervoor opgehaald en
+         * toegevoegd aan de tabel. Als er geen data beschikbaar is voor de
+         * periode, wordt er een melding weergegeven.
+         */
         ObservableList<Row> data = FXCollections.observableArrayList();
 
         try {
-            for (String s : selection) {
+            for (String s: selection) {
                 String[] parts = s.split(" ");
                 String year = parts[4];
                 String schoolYear = parts[3];
@@ -245,6 +278,10 @@ public class CompareScreen extends StackPane {
     }
 
     private void displayWarning(String selected) {
+        /**
+         * Functie welke een waarschuwing weergeeft voor elke tab als er geen
+         * data beschikbaar is voor de geselecteerde toets in het selectiemenu.
+         */
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Fout");
         alert.setHeaderText("De geselecteerde " + selected + " kan niet " +

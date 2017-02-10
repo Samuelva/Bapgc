@@ -31,7 +31,10 @@
  */
 package sample;
 
-/** Data extra values for storing close, high and low. */
+/** Data extra values for storing close, high and low.
+ * Afkomstig van de javafx ensemble samples.
+ * Beschikbaar op http://www.oracle.com/technetwork/java/javase/overview/javafx-samples-2158687.html
+ */
 public class CandleStickExtraValues  {
     private double close;
     private double high;

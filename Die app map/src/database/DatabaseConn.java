@@ -66,7 +66,8 @@ public class DatabaseConn {
     private final String GETVRAAGIDSQL = "SELECT VraagID" +
             " FROM VRAAG" +
             " WHERE Vraagnummer='%s' AND ToetsID=%s;";
-    private final String ALLJOINSQL = "SELECT P.StudentID, Naam, Klas, V.VraagID," +
+    private final String ALLJOINSQL = "SELECT P.StudentID, Naam, Klas, V" +
+            ".VraagID," +
             " Vraagnummer, Score, MaxScore, Gokvraag, T.ToetsID, ModuleCode," +
             " Jaar, Schooljaar, Periode, ToetsVorm, Gelegenheid, Cesuur" +
             " FROM TOETS T" +
@@ -82,7 +83,8 @@ public class DatabaseConn {
             " FULL OUTER JOIN STUDENT P ON P.StudentID=S.StudentID" +
             " WHERE T.ToetsID=%s" +
             " GROUP BY P.StudentID;";
-    private final String CESUURMAXGOKSQL = "SELECT Cesuur, sum(MaxScore), PuntenDoorGokKans" +
+    private final String CESUURMAXGOKSQL = "SELECT Cesuur, sum(MaxScore), " +
+            "PuntenDoorGokKans" +
             " FROM TOETS T" +
             " FULL OUTER JOIN VRAAG V ON T.ToetsID=V.ToetsID" +
             " WHERE T.ToetsID=%s AND V.Meerekenen='true'" +
@@ -107,7 +109,8 @@ public class DatabaseConn {
             " WHERE VRAAG.ToetsID=%s;" +
             " DELETE FROM VRAAG" +
             " WHERE ToetsID=%s;";
-    private final String JAARTALLENSQL = "SELECT Jaar FROM TOETS ORDER BY Jaar;";
+    private final String JAARTALLENSQL = "SELECT Jaar FROM TOETS ORDER BY " +
+            "Jaar;";
     private final String SCHOOLJAARSQL = "SELECT Schooljaar FROM TOETS" +
             " WHERE TOETS.Jaar='%s';";
     private final String PERIODESQL = "SELECT Periode FROM TOETS" +
@@ -115,16 +118,19 @@ public class DatabaseConn {
     private final String MODULESSQL = "SELECT ModuleCode FROM TOETS" +
             " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s';";
     private final String TYPESQL = "SELECT Toetsvorm FROM TOETS" +
-            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s';";
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND " +
+            "ModuleCode='%s';";
     private final String CHANCESQL = "SELECT Gelegenheid FROM TOETS" +
-            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND ModuleCode='%s' AND Toetsvorm='%s';";
+            " WHERE Jaar='%s' AND Schooljaar='%s' AND Periode='%s' AND " +
+            "ModuleCode='%s' AND Toetsvorm='%s';";
     private final String GETALLTOETS = "SELECT ToetsID, Jaar, ModuleCode, " +
             "Toetsvorm, Gelegenheid FROM TOETS;";
     private final String GETALLMODULES = "SELECT DISTINCT ModuleCode, Jaar " +
             "FROM TOETS";
     private final String GETALLBLOCKS = "SELECT DISTINCT Jaar, Schooljaar, " +
             "Periode FROM TOETS";
-    private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar, Periode, Schooljaar" +
+    private final String GETTOETSDATASQL = "SELECT DISTINCT ModuleCode, Jaar," +
+            " Periode, Schooljaar" +
             " FROM TOETS";
     private final String TESTFILTERSQL = "SELECT ToetsID, Jaar, ModuleCode, " +
             "Toetsvorm, Gelegenheid FROM TOETS WHERE Jaar LIKE '%s' AND " +
@@ -358,7 +364,8 @@ public class DatabaseConn {
         );
     }
 
-    private String[][] ConvertArrayListTable(ArrayList<ArrayList<String>> table){
+    private String[][] ConvertArrayListTable(ArrayList<ArrayList<String>>
+                                                     table){
         /**
          * Deze methode zorgt voor het converteren van een 2D
          * arrayList naar een 2D string array.
@@ -479,7 +486,8 @@ public class DatabaseConn {
             while (resultSet.next()) {
                 ArrayList<String> row = new ArrayList<String>();
                 //opslaan
-                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1;
+                     i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -516,7 +524,8 @@ public class DatabaseConn {
             while (resultSet.next()) {
                 ArrayList<String> row = new ArrayList<String>();
                 //opslaan
-                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1;
+                     i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -552,7 +561,8 @@ public class DatabaseConn {
             while (resultSet.next()) {
                 ArrayList<String> row = new ArrayList<String>();
                 //opslaan
-                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1; i++) {
+                for (int i=1; i<resultSet.getMetaData().getColumnCount()+1;
+                     i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -773,6 +783,10 @@ public class DatabaseConn {
         return ConvertArrayMixTable(table);
     }
     public List<String> getYears() {
+        /**
+         * Deze functie wordt gebruikt in de ChoiceMenuDatabaseConnect klasse.
+         * De beschikbare jaren in de database wordt gereturned.
+         */
         List<String> years;
         try {
             this.statement = this.connection.createStatement();
@@ -792,6 +806,11 @@ public class DatabaseConn {
     }
 
     public List<String> getSchoolYears(String selectedYear) {
+        /**
+         * Deze functie wordt gebruikt in de ChoiceMenuDatabaseConnect klasse.
+         * De beschikbare schooljaren worden gereturned, welke bij het
+         * opgegeven jaar horen.
+         */
         List<String> schoolYears;
         try {
             this.statement = this.connection.createStatement();
@@ -811,7 +830,13 @@ public class DatabaseConn {
         return schoolYears;
     }
 
-    public List<String> getBlocks(String selectedYear, String selectedStudyYear) {
+    public List<String> getBlocks(String selectedYear, String
+            selectedStudyYear) {
+        /**
+         * Deze functie wordt gebruikt in de ChoiceMenuDatabaseConnect klasse.
+         * De beschikbare periodes worden gereturned, afhankelijk van het
+         * opgegeven jaar en schooljaar.
+         */
         List<String> blocks;
         try {
             this.statement = this.connection.createStatement();
@@ -832,12 +857,19 @@ public class DatabaseConn {
         return blocks;
     }
 
-    public List<String> getCourses(String selectedYear, String selectedSchoolYear, String selectedBlock) {
+    public List<String> getCourses(String selectedYear, String
+            selectedSchoolYear, String selectedBlock) {
+        /**
+         * Deze functie wordt gebruikt in de ChoiceMenuDatabaseConnect klasse.
+         * De beschikbare modules worden gereturned afhankelijk van het
+         * opgegeven jaar, schooljaar en de periode.
+         */
         List<String> courses;
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
-                    this.MODULESSQL, selectedYear, selectedSchoolYear, selectedBlock
+                    this.MODULESSQL, selectedYear, selectedSchoolYear,
+                    selectedBlock
             ));
             courses = new ArrayList<String>();
             while (resultSet.next()) {
@@ -852,12 +884,19 @@ public class DatabaseConn {
         return courses;
     }
 
-    public List<String> getTypes(String selectedYear, String selectedSchoolYear, String selectedBlock, String selectedCourse) {
+    public List<String> getTypes(String selectedYear, String
+            selectedSchoolYear, String selectedBlock, String selectedCourse) {
+        /**
+         * Deze functie wordt gebruikt in de ChoiceMenuDatabaseConnect klasse.
+         * De beschikbare toetsvormen worden gereturned afhankelijk van het
+         * opgegeven jaar, schooljaar, de periode en module.
+         */
         List<String> types;
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
-                    this.TYPESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse
+                    this.TYPESQL, selectedYear, selectedSchoolYear,
+                    selectedBlock, selectedCourse
             ));
             types = new ArrayList<String>();
             while (resultSet.next()) {
@@ -872,12 +911,20 @@ public class DatabaseConn {
         return types;
     }
 
-    public List<String> getAttempts(String selectedYear, String selectedSchoolYear, String selectedBlock, String selectedCourse, String selectedType) {
+    public List<String> getAttempts(String selectedYear, String
+            selectedSchoolYear, String selectedBlock, String selectedCourse,
+                                    String selectedType) {
+        /**
+         * Deze functie wordt gebruikt in de ChoiceMenuDatabaseConnect klasse.
+         * De beschikbare gelegenheden worden gereturned afhankelijk van het
+         * opgegeven jaar, schooljaar, de periode, module en toetsvorm.
+         */
         List<String> attempts;
         try {
             this.statement = this.connection.createStatement();
             ResultSet resultSet = this.statement.executeQuery(String.format(
-                    this.CHANCESQL, selectedYear, selectedSchoolYear, selectedBlock, selectedCourse, selectedType
+                    this.CHANCESQL, selectedYear, selectedSchoolYear,
+                    selectedBlock, selectedCourse, selectedType
             ));
             attempts = new ArrayList<String>();
             while (resultSet.next()) {
@@ -931,7 +978,8 @@ public class DatabaseConn {
             ResultSet resultSet = this.statement.executeQuery(this.GETTOETSDATASQL);
             while (resultSet.next()) {
                 ArrayList<String> row = new ArrayList<String>();
-                for (int i = 1; i < resultSet.getMetaData().getColumnCount() + 1; i++) {
+                for (int i = 1; i < resultSet.getMetaData().getColumnCount()
+                        + 1; i++) {
                     row.add(resultSet.getString(i));
                 }
                 table.add(row);
@@ -945,6 +993,13 @@ public class DatabaseConn {
 
     public String getTestID(String year, String course, String type,
                                   String attempt) {
+        /**
+         * Deze functie wordt in het vergelijkscherm gebruikt in de toetstab.
+         * Als er een selectie wordt gemaakt in het selectiemenu, wordt de
+         * selectie meegegeven en returned deze functie het toets id wat bij
+         * de selectie hoort. De toetsid wordt vervolgens gebruikt om de
+         * toetsstatistieken te verkrijgen in het vergelijkscherm.
+         */
         String testID = new String();
         try {
             this.statement = this.connection.createStatement();
@@ -959,61 +1014,14 @@ public class DatabaseConn {
         return testID;
     }
 
-    public List<String> getAllTest() {
-        List<String> tests;
-        try {
-            this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery(this.GETALLTOETS);
-            tests = new ArrayList<>();
-            while (resultSet.next()) {
-                tests.add(resultSet.getString("ModuleCode") + " " +
-                        resultSet.getString("Toetsvorm") + " " +
-                        resultSet.getString("Gelegenheid") + " " +
-                        resultSet.getString("Jaar"));
-            }
-        } catch (Exception e) {
-            throw new EmptyStackException();
-        }
-        return tests;
-    }
-
-    public List<String> getAllCourses() {
-        List<String> modules;
-        try {
-            this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery(this
-                    .GETALLMODULES);
-            modules = new ArrayList<>();
-            while (resultSet.next()) {
-                modules.add(resultSet.getString("ModuleCode") + " " +
-                        resultSet.getString("Jaar"));
-            }
-        } catch (Exception e) {
-            throw new EmptyStackException();
-        }
-        return modules;
-    }
-
-    public List<String> getAllBlocks() {
-        List<String> blocks;
-        try {
-            this.statement = this.connection.createStatement();
-            ResultSet resultSet = this.statement.executeQuery(this
-                    .GETALLBLOCKS);
-            blocks = new ArrayList<>();
-            while (resultSet.next()) {
-                blocks.add("Periode " + resultSet.getString("Periode") +
-                        " jaar " + resultSet.getString("Schooljaar") +
-                        " " + resultSet.getString("Jaar"));
-            }
-        } catch (Exception e) {
-            throw new EmptyStackException();
-        }
-        return blocks;
-    }
-
     public List<String> filterTest(String year, String schoolYear, String
             block, String course, String type, String attempt) {
+        /**
+         * Deze functie wordt gebruikt in het vergelijkscherm keuzemenu. De
+         * toetsen worden gereturned uit de database afhankelijk van de
+         * combobox selectie, welke als filters dienen en worden weergegeven
+         * in het selectiemenu.
+         */
         List<String> filteredTests;
         try {
             this.statement = this.connection.createStatement();
@@ -1038,6 +1046,11 @@ public class DatabaseConn {
 
     public List<String> filterCourse(String year, String schoolYear, String
             block) {
+        /**
+         * Deze functie wordt gebruikt in het vergelijkscherm keuzemenu.
+         * De modules worden uit de database gereturned, afhankelijk van de
+         * combobox selectie en wordten weergegeven in het selectiemenu.
+         */
         List<String> filteredModules;
         try {
             this.statement = this.connection.createStatement();
@@ -1055,12 +1068,18 @@ public class DatabaseConn {
             throw new EmptyStackException();
         }
         if (filteredModules.size() > 0) {
-            Collections.sort(filteredModules.subList(1, filteredModules.size()));
+            Collections.sort(filteredModules.subList(1, filteredModules.size
+                    ()));
         }
         return filteredModules;
     }
 
     public List<String> filterBlock(String year, String schoolYear) {
+        /**
+         * Deze functie wordt gebruikt door het vergelijkscherm keuzemenu. De
+         * functie returned de periodes uit de database, afhankelijk van de
+         * combobox selectie en worden weergegeven in het selectiemenu.
+         */
         List<String> filteredBlocks;
         try {
             this.statement = this.connection.createStatement();
@@ -1084,8 +1103,16 @@ public class DatabaseConn {
         return filteredBlocks;
     }
 
-
     public List<String> getItems(String item, List<String> selection) {
+        /**
+         * Deze functie wordt door het vergelijkscherm keuzemenu gebruikt.
+         * De gebruikte query is dynamisch en de data welke wordt opgehaald
+         * (jaar, leerjaar, periode, module, toetsvorm, gelegenheid)
+         * is afhankelijk van de geselecteerde combobox in het vergelijkscherm.
+         * De lijst selection bevat waardes met de selectie van het keuzemenu
+         * . Als niet alles in het keuzemenu is geselecteerd, wordt er %
+         * meegegeven wat "Alles" betekent.
+         */
         List<String> items;
         try {
             this.statement = this.connection.createStatement();
