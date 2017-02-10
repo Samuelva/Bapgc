@@ -1,4 +1,5 @@
-package database;/*
+package database;
+ /*
  * Created by Timothy.
  */
 
@@ -8,14 +9,14 @@ import java.util.*;
 public class DatabaseConn {
     /**
      * Deze klasse is de connectie met de database.
-     * Eerst staat een lijst met de tabellen die in de database
-     * zouden moeten zitten gedefinieerd. Dan staan een aantal strings
-     * met daarin de query's om de tabellen aan te maken. Hierna volgen
-     * een aantal gespecialiseerde query's.
+     * Eerst wordt er een lijst met de tabellen die in de database
+     * zouden moeten zitten gedefinieerd. Dan staan er een aantal strings
+     * met daarin de queries om de tabellen aan te maken. Hierna volgen
+     * een aantal gespecialiseerde queries.
      * Hierna staat een set gedefinieerd, waarin de huidig beschikbare
      * tabellen worden opgeslagen. Daarna volgen een connection en een
      * statement variabele.
-     * Als laatst worden de inputclasses geïnstantieert.
+     * Als laatst worden de inputclasses geïnstantieerd.
      */
     private final List<String> TABLES = Arrays.asList(
             "student", "module", "toets", "vraag", "score"
@@ -166,16 +167,16 @@ public class DatabaseConn {
         /**
          * Deze methode is de contructor van de class.
          * Eerst wordt de driver van psql geladen. Dan wordt de
-         * connection gemaakt met de inlognaam en password.
-         * Een statement wordt aangemaakt, zodat query's uitgevoerd
+         * connectie gemaakt met de inlognaam en wachtwoord.
+         * Een statement wordt aangemaakt, zodat queries uitgevoerd
          * kunnen worden.
-         * Met de metadata van de database wordt dan in een loop door
+         * Met de metadata van de database wordt dan in een loop in
          * de tabellen gecheckt of alles aanwezig is. Zodra een tabel
          * niet aanwezig is, wordt deze aangemaakt.
          * Als laatst worden alle classes die bij de tabellen horen
          * geïnstantieerd.
          * De Try-catch moet bij elke functie gedaan worden waar
-         * met de database geïnteract wordt.
+         * met de database een interactie gedaan wordt.
          */
         try {
             Class.forName("org.postgresql.Driver");
@@ -199,10 +200,10 @@ public class DatabaseConn {
     private void MakeTables() {
         /**
          * Deze methode zorgt voor het aanmaken van de tabellen.
-         * Er wordt een tabelnaam meegegeven welke in de switch-case
+         * Er wordt een tabelnaam meegegeven die in de switch-case
          * gaat. Per tabel wordt er dan een specifieke SQL query
-         * Aangeroepen dat zorgt voor de aanmaak van die tabel
-         * Vervolgens wordt er in een message aangegeven welke
+         * aangeroepen, die zorgt voor de aanmaak van die tabel.
+         * Vervolgens wordt er in een bericht aangegeven welke
          * tabel aangemaakt is.
          * Wederom staat hier de try-catch, zoals eerder beschreven.
          */
@@ -268,7 +269,7 @@ public class DatabaseConn {
          * Deze methode zorgt voor het invoegen van data in de module
          * tabel. Dit gebeurt via het object inputModule dat eerder
          * aangemaakt is.
-         * In module worden de module code, omschrijving en het ec
+         * In module worden de module code, omschrijving en het EC
          * punten aantal opgeslagen.
          */
         inputModule.Insert(
@@ -380,10 +381,11 @@ public class DatabaseConn {
     }
 
     private Object[][] ConvertArrayMixTable(ArrayList<ArrayList<Object>> table){
-        /**Deze methode zorgt voor het converteren van een 2D
+        /**
+         * Deze methode zorgt voor het converteren van een 2D
          * arrayList naar een 2D object array.
-         * Eerst maakt het de 2D objectt array aan. Dan wordt geloopt
-         * door de top-level ArrayList en wordt een naar array
+         * Eerst maakt het de 2D object array aan. Dan wordt geloopt
+         * door de top-level ArrayList en wordt er een naar array
          * geconverteerde rij toegevoegd aan de 2D array.
          * Na de loop wordt de 2D array gereturned.
          */
@@ -406,7 +408,7 @@ public class DatabaseConn {
          * Het wordt geformat met de meegegeven toets kenmerken.
          * Vervolgens wordt het eerste resultaat in de eerste kolom
          * eruit gehaald (aangezien dit het enige is in de output
-         * van de query). Dit is Het ID
+         * van de query). Dit is het ID.
          * De statement wordt dan gesloten en tot slot wordt het ID
          * gereturned.
          * Met dezelfde reden als de constructor wordt het in een
@@ -438,7 +440,7 @@ public class DatabaseConn {
          * Het wordt geformat met de meegegeven vraag kenmerken.
          * Vervolgens wordt het eerste resultaat in de eerste kolom
          * eruit gehaald (aangezien dit het enige is in de output
-         * van de query). Dit is Het ID
+         * van de query). Dit is het ID.
          * De statement wordt dan gesloten en tot slot wordt het ID
          * gereturned.
          * Met dezelfde reden als de constructor wordt het in een
@@ -462,7 +464,7 @@ public class DatabaseConn {
     public String[][] GetTable(String tableName) {
         /**
          * Deze methode zorgt voor het returnen van een tabel.
-         * Omdat de output variabel van grootte kan zijn wordt een
+         * Omdat de output variabel van grootte kan zijn, wordt een
          * arraylist aangemaakt.
          * Dan wordt een statement aangemaakt, waarna de query
          * uitgevoerd wordt en opgeslagen in een resultset.
@@ -499,7 +501,7 @@ public class DatabaseConn {
     public String[][] GetTable(String tableName, String whereClause) {
         /**
          * Deze methode zorgt voor het returnen van een tabel, waarbij
-         * een where clause wordt gebruikt.
+         * een where-clause wordt gebruikt.
          * Omdat de output variabel van grootte kan zijn wordt een
          * arraylist aangemaakt.
          * Dan wordt een statement aangemaakt, waarna de query
@@ -646,7 +648,7 @@ public class DatabaseConn {
          * aantal gokpunten voor een toets.
          * Met behulp van de CESUURGOKUPDATE sql en de meegegeven
          * toets ID, en nieuwe waarden voor cesuur en gokpunten, wordt
-         * het geupdate in de database.
+         * het geüpdate in de database.
          * Met dezelfde reden als de constructor wordt het in een
          * try-catch gedaan.
          */
@@ -664,7 +666,7 @@ public class DatabaseConn {
     public void DeleteVragenToets(Integer toetsID){
         /**
          * Deze methode zorgt voor het deleten van alle vragen
-         * en bijbehorende scores uit de database aan de and van
+         * en bijbehorende scores uit de database aan de hand van
          * de meegegeven toetsID.
          * Met dezelfde reden als de constructor wordt het in een
          * try-catch gedaan.
@@ -690,9 +692,9 @@ public class DatabaseConn {
          * -2 max score
          * -3 meerekenen
          *
-         * EerstVoert het de query uit met behulp van de meegegeven
+         * Eerst voert het de query uit met behulp van de meegegeven
          * toets ID. Vervolgens haalt het in een loop, per vraag, de
-         * 4 waarden op.
+         * vier waarden op.
          * Met dezelfde reden als de constructor wordt het in een
          * try-catch gedaan.
          */
@@ -753,7 +755,7 @@ public class DatabaseConn {
          * De query hiervoor wordt eerst uitgevoerd, waarna door de
          * rijen van de tabel wordt geloopt. Dan slaat het in een
          * tijdelijke arraylist eerst de toesvorm op en dan in een
-         * extra loop alle kansen. de rij wordt aan de tabel
+         * extra loop alle kansen. De rij wordt aan de tabel
          * toegevoegd en het wordt geconverteerd naar array gereturned.
          * Met dezelfde reden als de constructor wordt het in een
          * try-catch gedaan.
@@ -1106,8 +1108,8 @@ public class DatabaseConn {
          * De gebruikte query is dynamisch en de data welke wordt opgehaald
          * (jaar, leerjaar, periode, module, toetsvorm, gelegenheid)
          * is afhankelijk van de geselecteerde combobox in het vergelijkscherm.
-         * De lijst selection bevat waardes met de selectie van het keuzemenu
-         * . Als niet alles in het keuzemenu is geselecteerd, wordt er %
+         * De lijst selection bevat waardes met de selectie van het keuzemenu.
+         * Als niet alles in het keuzemenu is geselecteerd, wordt er %
          * meegegeven wat "Alles" betekent.
          */
         List<String> items;
