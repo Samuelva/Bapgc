@@ -36,7 +36,7 @@ import javafx.util.Callback;
 import javax.imageio.ImageIO;
 
 /**
- * Deze class maakt een StackPane dat het inzage scherm bevat.
+ * Deze class maakt een StackPane dat het inzagescherm bevat.
  */
 public class ViewScreen extends StackPane{
     /**
@@ -72,8 +72,8 @@ public class ViewScreen extends StackPane{
      *      van de grafiek.
      * - plotted: Een boolean die aanduidt of er een grafiek
      *       getekend is.
-     * - gradeTable: Een String[][] die de waardes van de tabel bevat.
-     * - questionLabels: Een array van de labels van de vragen.
+     * - gradeTable: Een String[][] die de waarden van de tabel bevat.
+     * - questionLabels: Een array van de labels van de vragen bevat.
      * - questionData: Een array die informatie bevat over de vragen:
      *      ID, nummer (label), maximum score, meerekenen (true of false)
      * - examPoints: Een array die de cesuur, maximum score en
@@ -107,7 +107,7 @@ public class ViewScreen extends StackPane{
     protected ViewScreen(){
         /**
          * Deze constuctor zet het scherm in elkaar.
-         * Eerst wordt het selectie gedeelte gemaakt en vervolgens het
+         * Eerst wordt het selectiegedeelte gemaakt en vervolgens het
          * rechterdeel van het scherm. Deze twee gedeeltes zijn
          * vboxs die aan een hbox worden toegevoegd.
          * De functies van de toets weergeven en CSV exporteren knoppen
