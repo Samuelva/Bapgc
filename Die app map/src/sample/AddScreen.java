@@ -830,7 +830,6 @@ public class AddScreen extends TabPane{
                 fileChooser.setTitle("Open Toets Bestand");
                 File file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
-                    System.out.println(file);
                     Object moduleReader = new ModuleReader(file.toString());
                     fillTable();
                     Main.updateSelectionMenu();

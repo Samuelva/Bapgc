@@ -552,7 +552,6 @@ public class Statistics {
         out[1] = calculator.getParticipant().size();
         out[3] = calculator.getPasses().size();
         out[2] = (int) out[1] - (int) out[3];
-        System.out.println(Arrays.deepToString(out));
         out[4] = round(percentage((int) out[3], (int) out[1]), 2);
         return out;
     }

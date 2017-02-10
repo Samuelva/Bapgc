@@ -183,8 +183,6 @@ public class DatabaseConn {
                     "jdbc:postgresql://localhost:5432/postgres",
                     "postgres", "1234");
             this.statement = this.connection.createStatement();
-            System.out.println("Opened database successfully");
-
 
             MakeTables();
             this.statement.close();
@@ -238,7 +236,6 @@ public class DatabaseConn {
                         default:
                             break;
                     }
-                    System.out.printf("Table: %s is made.\n", table);
                 }
             }
         } catch (Exception e) {
