@@ -46,7 +46,7 @@ public class CompareScreenChoiceMenu {
 
     public CompareScreenChoiceMenu(int instanceI) {
         /**
-         * Hoofd functies roept subfuncties aan om keuzemenu onderdelen te maken.
+         * Hoofdfuncties roept subfuncties aan om keuzemenu onderdelen te maken.
          */
         d = new DatabaseConn();
         instance = instanceI;
@@ -94,7 +94,7 @@ public class CompareScreenChoiceMenu {
 
     private void setButtons(ComboBox choiceBox, String promptText) {
         /**
-         * Maakt een combobox en returned deze met de opgegeven weergeef
+         * Maakt een combobox en returned deze met de opgegeven weergeef-
          * waarde. De event voor op het klikken van de combobox en het
          * selecteren van een combobox worden hier ook geregeld.
          */
@@ -166,8 +166,8 @@ public class CompareScreenChoiceMenu {
             choiceBox) {
         /**
          * Event handles voor als er op een waarde in de combobox is gedrukt.
-         * Bij selectie, wordt de waarde opgeslagen in de juiste variabele.
-         * Het selectiemenu wordt geupdate afhankelijk van de geselecteerde
+         * Bij selectie wordt de waarde opgeslagen in de juiste variabele.
+         * Het selectiemenu wordt geüpdate afhankelijk van de geselecteerde
          * waarden.
          */
         clearSelectionOnClick(choiceBox);
@@ -198,7 +198,7 @@ public class CompareScreenChoiceMenu {
 
     private void clearSelectionOnPress(ComboBox choiceBox) {
         /**
-         * Reset de selectie variabelen afhankelijk van op welke combobox er
+         * Reset de selectievariabelen afhankelijk van op welke combobox er
          * gedrukt wordt. De waarden voor de comboboxen boven de ingedrukte
          * combobox worden en van de ingedrukte combobox zelf worden gereset.
          */
@@ -242,10 +242,10 @@ public class CompareScreenChoiceMenu {
 
     private void clearSelectionOnClick(ComboBox choiceBox) {
         /**
-         * Reset de selectie variabelen afhankelijk van op welke combobox er
+         * Reset de selectievariabelen afhankelijk van op welke combobox er
          * gedrukt wordt. De waarden voor de comboboxen boven de ingedrukte
          * combobox worden gereset. Verschilt van de vorige functie doordat
-         * hier de selectie waarden van de geselecteerde combobox niet
+         * hier de selectiewaarden van de geselecteerde combobox niet
          * gereset wordt.
          */
         if (choiceBox.getPromptText() == "Jaar") {
@@ -273,9 +273,9 @@ public class CompareScreenChoiceMenu {
 
     public void updateSelectionMenu() {
         /**
-         * Afhankelijk voor welke tab het keuzemenu gemakt is (toets, module
-         * of periode) wordt het selectiemenu geupdate met de juiste
-         * geselecteerde combobox waarden als filter. Elke tab gebruikt
+         * Afhankelijk voor welke tab het keuzemenu gemaakt is (toets, module
+         * of periode) wordt het selectiemenu geüpdate met de juiste
+         * geselecteerde comboboxwaarden als filter. Elke tab gebruikt
          * andere waarden en halen data op hun eigen manier op.
          */
         selectionMenu.getItems().clear();
