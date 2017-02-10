@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Created by Samuel on 24-1-2017.
- * Deze klasse maakt het keuzemenu aan voor het toevoeg, aanpas en
+ * Deze klasse maakt het keuzemenu aan voor het toevoeg-, aanpas- en
  * inzienscherm. De klasse zorgt ervoor dat de juiste waardes in de
  * comboboxen worden getoond bij de verschillende selecties.
  */
@@ -37,7 +37,7 @@ public class ChoiceMenu {
 
     private void createButtons() {
         /**
-         * De comboboxen en toets weergeven knop worden hier geinitieerd en
+         * De comboboxen en toets weergeven knop worden hier geïnitieerd en
          * aangemaakt met een functie.
          */
         yearChoiceBox = new ComboBox();
@@ -110,8 +110,8 @@ public class ChoiceMenu {
     private void boxSelectedEventCheck(ObservableValue observable, ComboBox
             comboBox) {
         /**
-         * Als er een waarde in de combobox wordt geselecteert, wordt er
-         * eerst gekeken of deze niet null is (voor een of andere reden wordt
+         * Als er een waarde in de combobox wordt geselecteerd, wordt er
+         * eerst gekeken of deze niet null is (om een of andere reden wordt
          * de geselecteerde waarde soms als null gezien wat problemen
          * veroorzaakt).
          */
@@ -156,7 +156,7 @@ public class ChoiceMenu {
     private void disable(boolean bool1, boolean bool2, boolean bool3, boolean
             bool4, boolean bool5, boolean bool6, boolean bool7) {
         /**
-         * Deze functie accepteerd een serie van booleans welke de comboboxen
+         * Deze functie accepteert een serie van booleans welke de comboboxen
          * en weergeef knop actief en inactief maken.
          */
         yearChoiceBox.setDisable(bool1);
