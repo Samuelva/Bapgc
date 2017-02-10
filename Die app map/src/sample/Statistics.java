@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 import java.util.*;
 
 /**
- * Deze class bevat een methodes voor het bereken van statistieken.
+ * Deze class bevat methodes voor het berekenen van statistieken.
  */
 public class Statistics {
 
@@ -53,7 +53,7 @@ public class Statistics {
     
     public static double median(double[] values) {
         /**
-         * Bereken het mediaan van een double array.
+         * Bereken de mediaan van een double array.
          */
         Arrays.sort(values);
         double median;
@@ -97,7 +97,7 @@ public class Statistics {
 
     public static double sd(int[] values){
         /**
-         * Bereken de standaard deviatie van een int array.
+         * Bereken de standaarddeviatie van een int array.
          */
         double var = var(values);
         return Math.sqrt(var);
@@ -105,7 +105,7 @@ public class Statistics {
 
     public static double sd(double[] values){
         /**
-         * Bereken de standaard deviatie van een double array.
+         * Bereken de standaarddeviatie van een double array.
          */
         double var = var(values);
         return Math.sqrt(var);
@@ -113,7 +113,7 @@ public class Statistics {
 
     public static double percentage(int value, int max){
         /**
-         * Bereken het percentage dat 'value' is van 'max' waarbij beide int zijn.
+         * Bereken het percentage dat 'value' is van 'max', waarbij beide int zijn.
          */
         if (!(max > 0)) {
             throw new IllegalArgumentException("max should be higher than 0.");
@@ -123,7 +123,7 @@ public class Statistics {
 
     public static double percentage(int value, double max){
         /**
-         * Bereken het percentage dat 'value' is van 'max' waarbij 'value' een int is een 'max' een double.
+         * Bereken het percentage dat 'value' is van 'max', waarbij 'value' een int is een 'max' een double.
          */
         if (!(max > 0)) {
             throw new IllegalArgumentException("max should be higher than 0.");
@@ -133,7 +133,7 @@ public class Statistics {
 
     public static double percentage(double value, int max){
         /**
-         * Bereken het percentage dat 'value' is van 'max' waarbij 'value' een double is een 'max' een int.
+         * Bereken het percentage dat 'value' is van 'max', waarbij 'value' een double is een 'max' een int.
          */
         if (!(max > 0)) {
             throw new IllegalArgumentException("max should be higher than 0.");
@@ -143,7 +143,7 @@ public class Statistics {
 
     public static double percentage(double value, double max){
         /**
-         * Bereken het percentage dat 'value' is van 'max' waarbij beide double zijn.
+         * Bereken het percentage dat 'value' is van 'max', waarbij beide double zijn.
          */
         if (!(max > 0)) {
             throw new IllegalArgumentException("max should be higher than 0.");
@@ -166,8 +166,8 @@ public class Statistics {
 
     public static double grade(int[] values, int threshold, int max){
         /**
-         * Bereken het cijfer voor een int array van punten 'values' met behulp van een maximum aantal punten
-         * 'max' en een censuur 'threshold'. Deze cijfer worden als doubles terug gegeven, afgerond op 1 cijfer
+         * Bereken het cijfer voor een int array van punten 'values', met behulp van een maximum aantal punten
+         * 'max' en een cesuur 'threshold'. Deze cijfers worden als doubles teruggegeven, afgerond op 1 cijfer
          * na de komma.
          */
         int total = sum(values);
@@ -236,7 +236,7 @@ public class Statistics {
 
     public static int[] stringToIntArray(String[] values, int skip){
         /**
-         * Verander een String[] naar en int[]. Skip de eerste 'skip' waardes.
+         * Verander een String[] naar een int[]. Skip de eerste 'skip' waardes.
          */
         int[] out = new int[values.length-skip];
         for (int i = 0; i < values.length-skip; i++){
@@ -247,7 +247,7 @@ public class Statistics {
 
     public static double[] stringToDoubleArray(String[] values, int skip){
         /**
-         * Verander een String[] naar en double[]. Skip de eerste 'skip' waardes.
+         * Verander een String[] naar een double[]. Skip de eerste 'skip' waardes.
          */
         double[] out = new double[values.length-skip];
         for (int i = 0; i < values.length-skip; i++){
@@ -260,8 +260,7 @@ public class Statistics {
             threshold, int max){
         /**
          *  Voeg het cijfer en totaal aantal punten toe aan de String[][] die
-         *  per student het aantal punten
-         *  per vraag bevat.
+         *  per student het aantal punten per vraag bevat.
          */
         String[][] out = new String[original.length][original[0].length+2];
         for (int i = 0; i < original.length; i++){
@@ -353,7 +352,7 @@ public class Statistics {
 
     public static double kthQuartile(int k, double[] values) {
         /**
-         * Berekend 1, 2, of 3 kwartiel van de opgegeven in array.
+         * Berekend 1e, 2e, of 3e kwartiel van de opgegeven in array.
          * 25 = 1e kwartiel, 50 = 2e kwartiel, 75 = 3e kwartiel.
          */
         Arrays.sort(values);
@@ -363,7 +362,7 @@ public class Statistics {
 
     public static int[] getBiggerThan(int value, int[] values){
         /**
-         * Maak een int[] met alle waardes uit 'values' die hoger zijn dan 'value'.
+         * Maak een int[] met alle waarden uit 'values' die hoger zijn dan 'value'.
          */
         List<Integer> out = new ArrayList();
         for (int i: values){
@@ -380,7 +379,7 @@ public class Statistics {
 
     public static int[] getBiggerThan(double value, int[] values){
         /**
-         * Maak een int[] met alle waardes uit 'values' die hoger zijn dan 'value'.
+         * Maak een int[] met alle waarden uit 'values' die hoger zijn dan 'value'.
          */
         List<Integer> out = new ArrayList();
         for (int i: values){
@@ -397,7 +396,7 @@ public class Statistics {
 
     public static double[] getBiggerThan(int value, double[] values){
         /**
-         *  Maak een double[] met alle waardes uit 'values' die hoger zijn dan 'value'.
+         *  Maak een double[] met alle waarden uit 'values' die hoger zijn dan 'value'.
          */
         List<Double> out = new ArrayList();
         for (double i: values){
@@ -414,7 +413,7 @@ public class Statistics {
 
     public static double[] getBiggerThan(double value, double[] values){
         /**
-         *  Maak een double[] met alle waardes uit 'values' die hoger zijn dan 'value'.
+         *  Maak een double[] met alle waarden uit 'values' die hoger zijn dan 'value'.
          */
         List<Double> out = new ArrayList<Double>();
         for (double i: values){
@@ -492,7 +491,7 @@ public class Statistics {
     public static double cohen(double meanPoints, double mastery, double
             chancePoints){
         /**
-         * Bereken de Cohen-Schotanus censuur.
+         * Bereken de Cohen-Schotanus cesuur.
          */
         return (meanPoints-chancePoints) * mastery + chancePoints;
     }
@@ -512,9 +511,9 @@ public class Statistics {
 
     public static Object[] examStats(int examID){
         /**
-         * Bereken de statistieken voor een toets voor gebruik in het vergelijk scherm.
+         * Bereken de statistieken voor een toets voor gebruik in het vergelijkscherm.
          * Open een connectie met de database en haal de behaalde scores, cesuur en maximum van de
-         * meegegeven toets op. Sluit de connectie. Bereken de cijfer met behulp van de updateGradeTableArray
+         * meegegeven toets op. Sluit de connectie. Bereken het cijfer met behulp van de updateGradeTableArray
          * functie en haal de cijfers eruit met behulp van de getColumn functie. Maak een Object array aan
          * en vul deze met de volgende waardes:
          *  - het gemiddelde cijfer, afgerond op een plaats na de komma (double)
@@ -542,13 +541,13 @@ public class Statistics {
 
     public static Object[] courseStats(String courseID){
         /**
-         * Deze methode berekend de statistieken van een module.
+         * Deze methode berekent de statistieken van een module.
          * Er wordt een CourseStatsCalculator instantie gemaakt voor de module
          * die het gemiddelde cijfer berekend. Ook wordt er dit object gebruikt
          * om lijsten van deelnemers en voldoendes op te halen, waarvan de
          * lengtes gebruikt wordt om de aantallen deelnemers, voldoendes en
          * onvoldoendes te bepalen. De volgende waardes worden in de volgende
-         * volgorde als Object[] terug gegeven.
+         * volgorde als Object[] teruggegeven.
          * - het gemiddelde cijfer, afgerond op een plaats na de komma (double)
          * - het aantal deelnemers (int)
          * - het aantal onvoldoendes (int)
@@ -568,7 +567,7 @@ public class Statistics {
     public static Object[] periodStats(String selectedYear, String
             selectedSchoolYear, String selectedBlock){
         /**
-         * Deze methode bereken de statistieken voor en periode.
+         * Deze methode berekent de statistieken voor een periode.
          * De modules van de periode worden opgehaald met behulp van de meegegeven
          * waardes. Vervolgens wordt er voor iedere module een instantie aangemaakt
          * van CourseStatsCalculator die de statistieken van de module bepaald.
@@ -576,11 +575,11 @@ public class Statistics {
          * worden als Set toegevoegd aan een List van Sets genaamd participants.
          * Hetzelfde gebeurt voor degene die de gehele module gehaald hebben
          * in de List
-         * van Sets passes. Tegelijkertijd worden het aantal cijfer dat behaald zijn
+         * van Sets passes. Tegelijkertijd worden het aantal cijfers dat behaald zijn
          * in de periode en de som van de cijfers bepaald.
-         * Al deze waardes worden aal determinePeriodStats meegegeven. Deze methode
-         * berekend de getallen uit en geeft ze terug in een Object[] die ook door
-         * deze methode terug gegeven wordt.
+         * Al deze waardes worden aan determinePeriodStats meegegeven. Deze methode
+         * berekent de getallen uit en geeft ze terug in een Object[] die ook door
+         * deze methode teruggegeven wordt.
          * De output bevat de volgende waardes in de volgende volgorde:
          * - het gemiddelde cijfer, afgerond op een plaats na de komma (double)
          * - het aantal deelnemers (int)
@@ -619,15 +618,15 @@ public class Statistics {
                                                  List<Set<String>>
                                                          participants) {
         /**
-         * Deze methode bepaald de statistieken voor een periode met de meegegeven waardes.
-         * De volgende waardes worden bepaald en terug gegeven:
+         * Deze methode bepaalt de statistieken voor een periode met de meegegeven waarden.
+         * De volgende waarden worden bepaald en teruggegeven:
          * - gemiddelde cijfer: sum wordt door number gedeeld en afgerond op
-         * 1 plaats.
-         * - aantal deelnemers: de grootte van de Set die multipleIntersect terug geeft voor
+         * één plaats.
+         * - aantal deelnemers: de grootte van de Set die multipleIntersect teruggeeft voor
          *      de List van Sets participants.
          * - aantal voldoendes (deze waarde wordt op index 3 gezet aangezien dit de volgorde
          *      is van de waardes in het scherm en wordt voor index 2 berekend omdat de uitkomst
-         *      nodig is voor het bereken van index 2): hier wordt hetzelfde uitgevoerd als
+         *      nodig is voor het berekenen van index 2): hier wordt hetzelfde uitgevoerd als
          *      bij het aantal deelnemers, maar met passes.
          * - aantal onvoldoendes: aantal deelnemers min het aantal voldoendes
          * - rendement: het percentage van voldoendes, afgerond op 2 plaatsen.
@@ -643,16 +642,16 @@ public class Statistics {
 
     public static <T> Set<T> multipleSetIntersect(List<Set<T>> setList){
         /**
-         * Deze methode bepaald welke waardes er in iedere Set in setList voorkomen.
+         * Deze methode bepaald welke waarden er in iedere Set in setList voorkomen.
          * Eerst wordt de eerste Set in setList apart genomen en een Set out aangemaakt.
-         * Als firstSet leeg is wordt er een lege Set terug gegeven.
-         * Vervolgens wordt er door die eerste Set heen geloopd en voor iedere andere set
+         * Als firstSet leeg is wordt er een lege Set teruggegeven.
+         * Vervolgens wordt er door die eerste Set heen geloopt en voor iedere andere set
          * gecontroleerd of de waarde ook in iedere andere Set zit. Als de waarde niet in
-         * een van de Sets zit wordt de boolean include op false bezet wordt er gestopt
+         * een van de Sets zit wordt de boolean include op false gezet en wordt er gestopt
          * met controleren. Zodra alle Sets gecontroleerd zijn wordt er gekeken of include
-         * op true of false staat, als die true is wordt de waarde aan de Set out
-         * toegevoegd. Zodra alle waardes gecontroleerd zijn wordt out terug gegeven, deze
-         * Set bevat nu alle waardes die in iedere Set in setList zat.
+         * op true of false staat. Als die true is wordt de waarde aan de Set out
+         * toegevoegd. Zodra alle waarden gecontroleerd zijn wordt out teruggegeven, deze
+         * Set bevat nu alle waarden die in iedere Set in setList zat.
          */
         Set<T> firstSet;
         Set<T> out = new HashSet();
