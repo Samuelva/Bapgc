@@ -14,7 +14,7 @@ import javafx.scene.layout.*;
 import java.util.Random;
 
 /**
- * Klasse welke het vergelijkscherm aanmaakt.
+ * Klasse dat het vergelijkscherm aanmaakt.
  */
 public class CompareScreen extends StackPane {
 
@@ -85,8 +85,8 @@ public class CompareScreen extends StackPane {
     private void choiceMenuAllButtonEvent() {
         /**
          * Event voor de alles knop. Zorgt ervoor dat alles in het
-         * selectiemenu geselecteerd wordt, deze waardes toegekend worden aan
-         * een variabele, en de tabel in de 3 tabjes gevuld worden met de
+         * selectiemenu geselecteerd wordt, deze waarden toegekend worden aan
+         * een variabele, en de tabel in de drie tabjes gevuld worden met de
          * data voor de selectie.
          */
         testChoiceMenu.allButton.setOnAction(event -> {
@@ -227,7 +227,7 @@ public class CompareScreen extends StackPane {
 
         // Goedkope fix
         // Vergelijkscherm past zich niet aan aan de
-        // veticale hoogte van de applet voor een of andere reden.
+        // verticale hoogte van de applet om een of andere reden.
         tabPane.setPrefHeight(1080);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
     }
@@ -255,7 +255,7 @@ public class CompareScreen extends StackPane {
 
     private void fillTabs() {
         /**
-         * maakt boxjes voor de tabs aan, vult deze, en past het toe op de tabs
+         * Maakt boxjes voor de tabs aan, vult deze, en past het toe op de tabs
          */
         testTabBox = new HBox();
         courseTabBox = new HBox();
@@ -280,7 +280,7 @@ public class CompareScreen extends StackPane {
 
     private void displayWarning(String selected) {
         /**
-         * Functie welke een waarschuwing weergeeft voor elke tab als er geen
+         * Functie dat een waarschuwing weergeeft voor elke tab als er geen
          * data beschikbaar is voor de geselecteerde toets in het selectiemenu.
          */
         Alert alert = new Alert(Alert.AlertType.WARNING);
