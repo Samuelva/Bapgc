@@ -69,6 +69,13 @@ public class Main extends Application {
     }
 
     private void updateAccountability() {
+        /**
+         * Met behulp van de vraagnummer en toetsid
+         * word het meerekenen op de juistte waarde ingesteld in de
+         * database. Door middel van een loop wordt er over vragen heen
+         * gelooped waarna met een ternary wordt bepaald of de
+         * waarde true of false moet zijn.
+         */
         if (toevoeg.questionPropertyCheckBox.isSelected()) {
             DatabaseConn databaseConn = new DatabaseConn();
             for (String[] questionInfoArray : toevoeg.getQuestionInfo()) {
