@@ -9,7 +9,7 @@ class InputToets {
      * Deze klasse verzorgt het invullen van de toets tabel in de
      * database. Hierbij is een sql opgesteld voor het invullen en
      * één voor het checken of het bestaat. De connectie en de
-     * QueryStrings die nodig zijn worden gedefineerd.
+     * QueryStrings die nodig zijn worden gedefinieerd.
      */
     private final String MODULESQL = "INSERT INTO TOETS" +
             " (Jaar, Schooljaar, Periode, ModuleCode, Toetsvorm, " +

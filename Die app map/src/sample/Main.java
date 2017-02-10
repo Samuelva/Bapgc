@@ -11,9 +11,11 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-
+/**
+ * Main klasse. Deze creëert het venster met de tabs waarin alle andere
+ * schermen in zitten.
+ */
 public class Main extends Application {
-
     private static Stage window;
     private static Scene scene;
     private static VBox frame;
@@ -27,24 +29,25 @@ public class Main extends Application {
     private static Tab inzien;
     private static Tab vergelijken;
 
-    private static DatabaseConn databaseConn;
-
     public static void main(String[] args) {
+        /**
+         * Main klasse.
+         */
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        /**
+         * Roept functies aan welke de interface aanmaakt, het switchen
+         * tussen de schermen mogelijk maakt en het scherm laat zien.
+         */
         window = primaryStage;
 
         initLayout();
-
         initTabs();
-
         events();
-
         showScreen();
-
     }
 
     private void events() {
@@ -75,14 +78,13 @@ public class Main extends Application {
                         questionInfoArray[2].equals("true") ? true : false);
             }
             databaseConn.CloseConnection();
-
         }
     }
 
     private void putExamPropertiesInDatabase() {
         /**
          * Maakt database verbinding
-         * past met het ingeladen toetsID de cessuur en gokkans aan
+         * past met het ingeladen toetsID de cesuur en gokkans aan
          *
          * Als er vragen voor de toetsaanwezig zijn worden de verschillende
          * vragen ook in de database geladen
@@ -101,7 +103,7 @@ public class Main extends Application {
          * de gegevens in de klasse toets hiermee kunnen worden opgehaald.
          *
          * Als er geen data wordt gevonden wordt er een pop-up weergeven
-         * met een waarshuwing dat er geen data is gevonden
+         * met een waarschuwing dat er geen data is gevonden
          */
 
         DatabaseConn databaseConn = new DatabaseConn();
@@ -122,7 +124,7 @@ public class Main extends Application {
 
     private void warnNoData() {
         /**
-         * Deze methode toont een pop-up met een waarchuwing als er geen
+         * Deze methode toont een pop-up met een waarschuwing als er geen
          * data bekend is voor een toets die geladen wordt.
          */
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -133,6 +135,11 @@ public class Main extends Application {
     }
 
     public static void updateSelectionMenu() {
+        /**
+         * Wordt aangeroepen als de database leeg wordt gemaakt of als er
+         * nieuwe modulen worden toegevoegd. Het selectiemenu in het
+         * vergelijkscherm wordt dan geupdate met nieuwe data, of geleegd.
+         */
         vergelijk.testChoiceMenu.updateSelectionMenu();
         vergelijk.courseChoiceMenu.updateSelectionMenu();
         vergelijk.blockChoiceMenu.updateSelectionMenu();
@@ -140,7 +147,7 @@ public class Main extends Application {
 
     private static void initLayout(){
         /**
-         * Initieren van de layout voor het hoofdscherm
+         * Initiëren van de layout voor het hoofdscherm
          * Er wordt een policy gezet op de tabs dat deze niet kunnen worden
          * afgesloten. De verschillende tabs worden aangemaakt en krijgen namen
          *
@@ -168,9 +175,12 @@ public class Main extends Application {
 
 
     private static void initTabs(){
+        /**
+         * Creeert een instantie voor elk scherm en voegt deze toe aan hun
+         * respectievelijke tabs.
+         */
         toevoeg = new AddScreen();
         toevoegen.setContent(toevoeg);
-
 
         invoer = new AlterScreen();
         invoeren.setContent(invoer);
@@ -186,6 +196,10 @@ public class Main extends Application {
     }
 
     private void showScreen(){
+        /**
+         * Creëert het venster voor de schermen met een standaard hoogte en
+         * breedte en laat deze zien.
+         */
         scene = new Scene(frame, 1000, 600);
         window.setScene(scene);
         window.setTitle("Bapgc");

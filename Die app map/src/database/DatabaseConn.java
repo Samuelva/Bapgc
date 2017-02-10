@@ -9,13 +9,13 @@ public class DatabaseConn {
     /**
      * Deze klasse is de connectie met de database.
      * Eerst staat een lijst met de tabellen die in de database
-     * zouden moeten zitten gedefineerd. Dan staan een aantal strings
-     * met daarin de query's omde tabellen aan te maken. Hierna volgen
+     * zouden moeten zitten gedefinieerd. Dan staan een aantal strings
+     * met daarin de query's om de tabellen aan te maken. Hierna volgen
      * een aantal gespecialiseerde query's.
-     * Hierna staat een set gedefineert, waarin de huidig beschikbare
+     * Hierna staat een set gedefinieerd, waarin de huidig beschikbare
      * tabellen worden opgeslagen. Daarna volgen een connection en een
      * statement variabele.
-     * Als laatst worden de inputclasses geinstantieert.
+     * Als laatst worden de inputclasses geïnstantieert.
      */
     private final List<String> TABLES = Arrays.asList(
             "student", "module", "toets", "vraag", "score"
@@ -167,7 +167,7 @@ public class DatabaseConn {
          * Deze methode is de contructor van de class.
          * Eerst wordt de driver van psql geladen. Dan wordt de
          * connection gemaakt met de inlognaam en password.
-         * Een statement wordt aangemaakt, zodat query's uitgevoert
+         * Een statement wordt aangemaakt, zodat query's uitgevoerd
          * kunnen worden.
          * Met de metadata van de database wordt dan in een loop door
          * de tabellen gecheckt of alles aanwezig is. Zodra een tabel
@@ -578,7 +578,7 @@ public class DatabaseConn {
          * Hierbij wordt eerst een arraylist in een arraylist
          * aangemaakt, omdat nog niet bekend is hoelang de lijsten
          * worden.
-         * Dan wordt de quer opgesteld met het meegegeven toetsID en
+         * Dan wordt de query opgesteld met het meegegeven toetsID en
          * wordt deze uitgevoerd.
          * Dan wordt in een loop door de rijen heen achter elkaar het
          * studentnummer toegevoegd, waarna in een loop alle scores
@@ -750,7 +750,7 @@ public class DatabaseConn {
          * - enz.
          * Dit wordt gedaan bij een specifieke module die wordt
          * meegegeven.
-         * De query hiervoor wordt eerst uitgevoert, waarna door de
+         * De query hiervoor wordt eerst uitgevoerd, waarna door de
          * rijen van de tabel wordt geloopt. Dan slaat het in een
          * tijdelijke arraylist eerst de toesvorm op en dan in een
          * extra loop alle kansen. de rij wordt aan de tabel
@@ -962,7 +962,7 @@ public class DatabaseConn {
 
     public String[][] GetToetsData() {
         /**
-         * Deze methode haald alle informatie voor alle toetsen op uit
+         * Deze methode haalt alle informatie voor alle toetsen op uit
          * de database. Hierbij worden de verschillende gelegenheden
          * genegeerd. De SQL statement this.GETTOETSDATASQL wordt hiervoor
          * gebruikt. De resultaten worden onder resultSet opgeslagen en
@@ -1046,7 +1046,7 @@ public class DatabaseConn {
         /**
          * Deze functie wordt gebruikt in het vergelijkscherm keuzemenu.
          * De modules worden uit de database gereturned, afhankelijk van de
-         * combobox selectie en wordten weergegeven in het selectiemenu.
+         * combobox selectie en worden weergegeven in het selectiemenu.
          */
         List<String> filteredModules;
         try {
@@ -1132,7 +1132,7 @@ public class DatabaseConn {
     public void DeleteScoresForQuestion(Integer questionID){
         /**
          * In deze methode wordt de SQL statement uitgevoerd die onder
-         * this.DELETESCORES gedefineerd staat. Hierdoor worden de
+         * this.DELETESCORES gedefinieerd staat. Hierdoor worden de
          * scores voor de vraag met ID questionID verwijderd uit de database.
          */
         try {

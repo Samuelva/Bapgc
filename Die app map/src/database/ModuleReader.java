@@ -16,7 +16,7 @@ public class ModuleReader {
     /**
      * Deze class maakt connectie met de database. Er wordt een CSV
      * ingelezen en ingevoerd in de database. Eerst worden alle
-     * modullen ingevoerd en vervolgens worden alle toetsen uit de CSV
+     * modulen ingevoerd en vervolgens worden alle toetsen uit de CSV
      * file daaraan gekoppeld. Dit wordt gedaan voor alle drie de
      * gelegenheden en voor alle soorten toetsvormen.
      * @param csvFile
@@ -62,7 +62,8 @@ public class ModuleReader {
         }
         for (int i = 0; i < modules.size(); i++) {
             for (int j = 0; j < gelegenheid.size(); j++) {
-                for (int n = 0; n < modules.get(i)[3].toString().split(",").length; n++) {
+                for (int n = 0; n < modules.get(i)[3].toString().split( ",")
+                        .length; n++) {
                     d.InputToets(modules.get(i)[0],
                             modules.get(i)[4].replaceAll(" ", ""),
                             modules.get(i)[5],

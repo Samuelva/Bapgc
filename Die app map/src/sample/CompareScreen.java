@@ -46,7 +46,7 @@ public class CompareScreen extends StackPane {
          * gedeelte aan te maken.
          */
         d = new DatabaseConn();
-        createTabs(); // Initieerd de tabs
+        createTabs(); // Initieert de tabs
         createChoiceMenus(); // Maakt instanties voor keuzemenu
         createStatistics(); // Maakt instanties voor statistieken
         fillTabs(); // Maakt boxjes voor elke tab en stopt deze in de tabs
@@ -195,9 +195,10 @@ public class CompareScreen extends StackPane {
                         schoolYear, block);
 
                 data.add(new Row(s.toString(), (double) blockStatisticsObj[0],
-                        (int) blockStatisticsObj[1], (int) blockStatisticsObj[2],
-                        (int) blockStatisticsObj[3], (double)
-                        blockStatisticsObj[4]));
+                        (int) blockStatisticsObj[1],
+                        (int) blockStatisticsObj[2],
+                        (int) blockStatisticsObj[3],
+                        (double) blockStatisticsObj[4]));
             }
             blockStatistics.fillTable(data);
         } catch (Exception e) {
@@ -233,7 +234,7 @@ public class CompareScreen extends StackPane {
 
     private void createChoiceMenus() {
         /**
-         * Initieerd instanties voor het keuzemenu
+         * Initieert instanties voor het keuzemenu
          */
         testChoiceMenu = new CompareScreenChoiceMenu(1);
         courseChoiceMenu = new CompareScreenChoiceMenu(2);
@@ -242,7 +243,7 @@ public class CompareScreen extends StackPane {
 
     private void createStatistics() {
         /**
-         * Initieerd instanties voor het statistiek gedeelte
+         * Initieert instanties voor het statistiek gedeelte
          */
         testStatistics = new CompareScreenStatistics(1);
         testStatistics.setTestTableColumns();

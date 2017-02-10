@@ -7,8 +7,8 @@ class InputStudent {
     /**
      * Deze klasse verzorgt het invullen van de student tabel in de
      * database. Hierbij is een sql opgesteld en worden de
-     * connectie en statement gedefineerd. Ook worden de QueryStrings
-     * die nodig zijn gedefineerd.
+     * connectie en statement gedefinieerd. Ook worden de QueryStrings
+     * die nodig zijn gedefinieerd.
      */
     private final String MODULESQL = "INSERT INTO STUDENT" +
             " (StudentID, Naam, Klas)" +

@@ -3,7 +3,7 @@ package database;
 public class QueryString {
     /**
      * Deze klasse verzorgt de correcte opmaak vin een string voor
-     * een query. Hierbij wordt de string van tevoren gedefineerd.
+     * een query. Hierbij wordt de string van tevoren gedefinieerd.
      */
     private String string;
 

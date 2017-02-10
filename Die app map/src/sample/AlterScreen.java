@@ -102,7 +102,7 @@ final class AlterScreen extends StackPane {
          * Er volgt een if-else statement. Als result gelijk is aan 'OK' moet 
          * alles gewist worden. Dit wordt gedaan door de rijen leeg te maken.
          * Ook wordt de importCSV knop weer actief gemaakt, zo kan er opnieuw 
-         * een CSV worden geïmporteerd.Ook wordt de globale boolean 'emptied' 
+         * een CSV worden geïmporteerd. Ook wordt de globale boolean 'emptied'
          * op true gezet. Verder wordt de opslaanknop klikbaar gemaakt en de 
          * leegmaakknop onklikbaar. Als result niet gelijk is aan 'OK' wordt 
          * de pop-up afgesloten.
@@ -158,7 +158,7 @@ final class AlterScreen extends StackPane {
         column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<String[], String>,
                 ObservableValue<String>>() {
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<String[], String> values) {
+            public ObservableValue<String>call(TableColumn.CellDataFeatures<String[], String> values) {
                 return new SimpleStringProperty((values.getValue()[INDEX]));
             }
         });
@@ -185,7 +185,7 @@ final class AlterScreen extends StackPane {
          * Eerst wordt de nieuwe waarde omgezet naar een int. Als deze groter
          * is dan 9999 of kleiner dan 0, wordt er een NumberFormatException
          * gegooid. Dit gebeurt ook als er iets anders dan cijfer zijn ingevuld.
-         * Vervolgens wordt er voor gezorgt dat de nieuwe waarde in de tabel 
+         * Vervolgens wordt er voor gezorgd dat de nieuwe waarde in de tabel
          * komt te staan en wordt de wijziging in de Map gezet die de 
          * wijzigingen bijhoudt met behulp van de storeChange methode. 
          * Ook wordt de opslaan knop klikbaar gemaakt.
@@ -201,10 +201,12 @@ final class AlterScreen extends StackPane {
             }
             ObservableList items = pointsTable.getItems();
             String[] newRow = ((String[]) event.getRowValue());
-            newRow[pointsTable.getColumns().indexOf(column)] = event.getNewValue().toString();
+            newRow[pointsTable.getColumns().indexOf(column)] = event
+                    .getNewValue().toString();
             items.set(event.getTablePosition().getRow(), newRow);
             pointsTable.setItems(items);
-            storeChange(newRow[0], pointsTable.getColumns().indexOf(column), newValue);
+            storeChange(newRow[0], pointsTable.getColumns().indexOf(column),
+                    newValue);
             saveChanges.setDisable(false);
         } catch (NumberFormatException e) {
             column.setVisible(false);
@@ -258,12 +260,14 @@ final class AlterScreen extends StackPane {
         if (Arrays.deepToString(questionData).equals("[]")) {
             warnNoData();
         } else {
-            this.questionIDs = Statistics.stringToIntArray(Statistics.getColumn(0, questionData), 0);
+            this.questionIDs = Statistics.stringToIntArray(Statistics
+                    .getColumn( 0, questionData), 0);
             String[] questionLabels = Statistics.getColumn(1, questionData);
             setupTable(questionLabels);
             String[][] pointsArray = d.GetStudentScores(examID);
             if (pointsArray[0][0] != null) {
-                ObservableList<String[]> data = FXCollections.observableArrayList();
+                ObservableList<String[]> data = FXCollections
+                        .observableArrayList();
                 data.addAll(Arrays.asList(pointsArray));
                 pointsTable.setItems(data);
                 this.emptied = false;
@@ -292,7 +296,7 @@ final class AlterScreen extends StackPane {
          * worden meegegeven aan de methode maakObject. saveChanges krijgt de 
          * label "Wijzigingen opslaan" en de afmetingen 150 bij 30 worden 
          * meegegeven aan de methode maakObject. importCSV krijgt de label 
-         * "Import CSV" en de ametingen 150 bij 30 worden meegegeven aan de 
+         * "Import CSV" en de afmetingen 150 bij 30 worden meegegeven aan de
          * methode ImportCSV. Er wordt nog een regio gemaakt voor het centreren 
          * van de knoppen. Er wordt een HBox aangemaakt met de naam hbox.
          * Vervolgens worden alle knoppen en regio's toegevoegd aan de hbox.
@@ -310,7 +314,8 @@ final class AlterScreen extends StackPane {
         HBox.setHgrow(rightFill, Priority.ALWAYS);
 
         HBox hbox = new HBox();
-        hbox.getChildren().addAll(rightFill, emptyButton, midFill, saveChanges, leftFill);
+        hbox.getChildren().addAll(rightFill, emptyButton, midFill,
+                saveChanges, leftFill);
         hbox.setSpacing(20);
         return hbox;
 
@@ -354,12 +359,15 @@ final class AlterScreen extends StackPane {
         pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
 
             @Override
-            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
-                TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
+            public void changed(ObservableValue<? extends Number> source,
+                                Number oldWidth, Number newWidth) {
+                TableHeaderRow header = (TableHeaderRow) pointsTable.lookup
+                        ("TableHeaderRow");
                 header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
 
                     @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+                    public void changed(ObservableValue<? extends Boolean>
+                                                observable, Boolean oldValue,
                                         Boolean newValue) {
                         header.setReordering(false);
                     }
@@ -510,7 +518,7 @@ final class AlterScreen extends StackPane {
 
     private void setLoadEvent() {
         /**
-         * Deze methode voegt de functonaliteit van de laadknop toe.
+         * Deze methode voegt de functionaliteit van de laadknop toe.
          * Als er een toets geladen wordt, wordt de globale variabele
          * emptied op "false" gezet. De Map die de aangepaste waardes bevat
          * wordt leeggemaakt. Er wordt een connectie gemaakt met de
@@ -526,7 +534,8 @@ final class AlterScreen extends StackPane {
                 changes.clear();
                 DatabaseConn d = new DatabaseConn();
                 List<String> selection = choiceMenu.getSelection();
-                int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
+                int id = d.GetToetsID(selection.get(0), selection.get(1), 
+                        selection.get(2), selection.get(3),
                         selection.get(4), selection.get(5));
                 fillTable(id);
                 d.CloseConnection();

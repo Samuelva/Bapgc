@@ -105,7 +105,7 @@ public class Statistics {
 
     public static double sd(double[] values){
         /**
-         * Bereken de standaard deviate van een double array.
+         * Bereken de standaard deviatie van een double array.
          */
         double var = var(values);
         return Math.sqrt(var);
@@ -177,7 +177,8 @@ public class Statistics {
         } else if (total < threshold){
             return round(1 + total / threshold2 * 4.5, 1);
         } else {
-            return round(5.5 + (total - threshold2) / (max - threshold2) * 4.5, 1);
+            return round(5.5 + (total - threshold2) / (max - threshold2) *
+                    4.5, 1);
         }
     }
 
@@ -255,9 +256,11 @@ public class Statistics {
         return out;
     }
 
-    public static String[][] updateGradeTableArray(String[][] original, int threshold, int max){
+    public static String[][] updateGradeTableArray(String[][] original, int
+            threshold, int max){
         /**
-         *  Voeg het cijfer en totaal aantal punten toe aan de Strig[][] die per student het aantal punten
+         *  Voeg het cijfer en totaal aantal punten toe aan de String[][] die
+         *  per student het aantal punten
          *  per vraag bevat.
          */
         String[][] out = new String[original.length][original[0].length+2];
@@ -444,10 +447,11 @@ public class Statistics {
 
     public static double correlation(int[] values1, int[] values2) {
         /**
-         * Bereken de correlatie tusen twee int[].
+         * Bereken de correlatie tussen twee int[].
          */
         if (values1.length != values2.length){
-            throw new IllegalArgumentException("Arrays zhould be of equal size.");
+            throw new IllegalArgumentException("Arrays should be of equal " +
+                    "size.");
         }
         double sum1 = sum(values1);
         double sum2 = sum(values2);
@@ -461,9 +465,12 @@ public class Statistics {
             sum22 += val2 * val2;
             sum12 += val1 * val2;
         }
-        double cov = sum12/values1.length - sum1*sum2/values1.length/values1.length;
-        double error1 = Math.sqrt(sum11/values1.length -  sum1*sum1/values1.length/values1.length);
-        double error2 = Math.sqrt(sum22/values1.length -  sum2*sum2/values1.length/values1.length);
+        double cov = sum12/values1.length -
+                sum1*sum2/values1.length/values1.length;
+        double error1 = Math.sqrt(sum11/values1.length -
+                sum1*sum1/values1.length/values1.length);
+        double error2 = Math.sqrt(sum22/values1.length -
+                sum2*sum2/values1.length/values1.length);
         return cov / error1 / error2;
     }
 
@@ -482,7 +489,8 @@ public class Statistics {
         return n / (n-1) * (1 - questionsVar/examVar);
     }
 
-    public static double cohen(double meanPoints, double mastery, double chancePoints){
+    public static double cohen(double meanPoints, double mastery, double
+            chancePoints){
         /**
          * Bereken de Cohen-Schotanus censuur.
          */
@@ -520,7 +528,8 @@ public class Statistics {
         String[][] points = d.GetStudentScores(examID);
         Integer[] thresholdMaxGeuss = d.GetCesuurMaxGok(examID);
         d.CloseConnection();
-        String[][] gradesTable = updateGradeTableArray(points, thresholdMaxGeuss[0], thresholdMaxGeuss[1]);
+        String[][] gradesTable = updateGradeTableArray(points,
+                thresholdMaxGeuss[0], thresholdMaxGeuss[1]);
         double[] grades = stringToDoubleArray(getColumn(1, gradesTable),0);
         Object[] out = new Object[5];
         out[0] = round(mean(grades), 1); //gemiddelde cijfer
@@ -556,18 +565,20 @@ public class Statistics {
         return out;
     }
 
-    public static Object[] periodStats(String selectedYear, String selectedSchoolYear, String selectedBlock){
+    public static Object[] periodStats(String selectedYear, String
+            selectedSchoolYear, String selectedBlock){
         /**
          * Deze methode bereken de statistieken voor en periode.
-         * De modules van de periode worden opgehaald met behulp van de de meegegeven
+         * De modules van de periode worden opgehaald met behulp van de meegegeven
          * waardes. Vervolgens wordt er voor iedere module een instantie aangemaakt
          * van CourseStatsCalculator die de statistieken van de module bepaald.
          * De student IDs van degene die aan de gehele module mee hebben gedaan
          * worden als Set toegevoegd aan een List van Sets genaamd participants.
-         * Hetzelfde gebeurt voor degene die de gehele module gehald hebben in de List
+         * Hetzelfde gebeurt voor degene die de gehele module gehaald hebben
+         * in de List
          * van Sets passes. Tegelijkertijd worden het aantal cijfer dat behaald zijn
          * in de periode en de som van de cijfers bepaald.
-         * All deze waardes worden aal determinePeriodStats meegegeven. Deze methode
+         * Al deze waardes worden aal determinePeriodStats meegegeven. Deze methode
          * berekend de getallen uit en geeft ze terug in een Object[] die ook door
          * deze methode terug gegeven wordt.
          * De output bevat de volgende waardes in de volgende volgorde:
@@ -578,14 +589,16 @@ public class Statistics {
          * - het rendement, afgerond op twee plaatsen na de komma (double)
          */
         DatabaseConn d = new DatabaseConn();
-        List<String> courses = d.getCourses(selectedYear, selectedSchoolYear, selectedBlock);
+        List<String> courses = d.getCourses(selectedYear, selectedSchoolYear,
+                selectedBlock);
         d.CloseConnection();
         List<Set<String>> passes = new ArrayList();
         List<Set<String>> participants = new ArrayList();
         double sum = 0;
         int number = 0;
         for (String course: courses){
-            CourseStatsCalculator courseStats = new CourseStatsCalculator(course);
+            CourseStatsCalculator courseStats = new CourseStatsCalculator
+                    (course);
             if (Double.toString(courseStats.getAverageGrade()) == "NaN") {
                 continue;
             }
@@ -601,12 +614,15 @@ public class Statistics {
         return determinePeriodStats(sum, number, passes, participants);
     }
 
-    private static Object[] determinePeriodStats(double sum, int number, List<Set<String>> passes,
-                                                 List<Set<String>> participants) {
+    private static Object[] determinePeriodStats(double sum, int number,
+                                                 List<Set<String>> passes,
+                                                 List<Set<String>>
+                                                         participants) {
         /**
          * Deze methode bepaald de statistieken voor een periode met de meegegeven waardes.
          * De volgende waardes worden bepaald en terug gegeven:
-         * - gemiddelde cijfer: sum wordt door number gedeelt en afgerond op 1 plaats.
+         * - gemiddelde cijfer: sum wordt door number gedeeld en afgerond op
+         * 1 plaats.
          * - aantal deelnemers: de grootte van de Set die multipleIntersect terug geeft voor
          *      de List van Sets participants.
          * - aantal voldoendes (deze waarde wordt op index 3 gezet aangezien dit de volgorde
@@ -614,7 +630,7 @@ public class Statistics {
          *      nodig is voor het bereken van index 2): hier wordt hetzelfde uitgevoerd als
          *      bij het aantal deelnemers, maar met passes.
          * - aantal onvoldoendes: aantal deelnemers min het aantal voldoendes
-         * - rendement: het percentage van voldoendes, afegerond op 2 plaatsen.
+         * - rendement: het percentage van voldoendes, afgerond op 2 plaatsen.
          */
         Object[] out = new Object[5];
         out[0] = round(sum/number, 1);

@@ -28,7 +28,7 @@ public class ChoiceMenu {
 
     public ChoiceMenu() {
         /**
-         * Initieerd klasse welke voor database connectie zorgt en maakt de
+         * Initieert klasse welke voor database connectie zorgt en maakt de
          * knoppen voor het vergelijkscherm.
          */
         choiceMenuDB = new ChoiceMenuDatabaseConnect();
@@ -110,7 +110,7 @@ public class ChoiceMenu {
     private void boxSelectedEventCheck(ObservableValue observable, ComboBox
             comboBox) {
         /**
-         * Als er een waarde in de combobox wordt geselecteerd, wordt er
+         * Als er een waarde in de combobox wordt geselecteert, wordt er
          * eerst gekeken of deze niet null is (voor een of andere reden wordt
          * de geselecteerde waarde soms als null gezien wat problemen
          * veroorzaakt).

@@ -59,7 +59,7 @@ public class AddScreen extends TabPane{
     //SELECTION MENU
     public ChoiceMenu choiceMenu;
 
-    public Button saveExamBtn = new Button("Update cessuur/gokkans");
+    public Button saveExamBtn = new Button("Update cesuur/gokkans");
     public Button updateAccountAbility = new Button("Update meerekenen");
 
     //EXAM PROPERTIES
@@ -111,7 +111,7 @@ public class AddScreen extends TabPane{
          * element omgevast naar een HBox. De elementen die zich in deze
          * HBOx bevinden worden weer naar hun oorspronkelijke element gecast
          * waarna de informatie eruit geextraheerd kan worden en het dan
-         * kan worden toegevoed aan de 2d array.
+         * kan worden toegevoegd aan de 2d array.
          */
         String[][] questionInformation =
                 new String[
@@ -134,7 +134,7 @@ public class AddScreen extends TabPane{
 
     public void resetWarning() {
         /**
-         * Aanmaken van een een pop-up waarschuwing die zal aangeven wat
+         * Aanmaken van een pop-up waarschuwing die zal aangeven wat
          * er zal gebeuren zodra de toets punten worden gereset.
          *
          * Er wordt een nieuwe alert aangemaakt met type confirmation
@@ -166,7 +166,7 @@ public class AddScreen extends TabPane{
          *
          * Gegevens worden verwijderd van de betreffende toets. Ook worden
          * schermen leeg gemaakt die van belang waren bij deze gegevens.
-         * Tekstvelden van de gokkans en cessuur worden ook op 0 gezet.
+         * Tekstvelden van de gok kans en cesuur worden ook op 0 gezet.
          * knoppen worden uitgezet zodat er niet meer op gedrukt kan worden
          */
         examTab.questionAndCheckboxes.getChildren().clear();
@@ -335,7 +335,7 @@ public class AddScreen extends TabPane{
 
         private void setQuestionAndCheckboxesFlowpaneSettings() {
             /**
-             * Nieuwe flowpane aangemaakt met de juistte instellingen
+             * Nieuwe flowpane aangemaakt met de juiste instellingen
              */
             questionAndCheckboxes = new FlowPane();
             questionAndCheckboxes.setMaxHeight(250);
@@ -344,7 +344,8 @@ public class AddScreen extends TabPane{
             questionAndCheckboxes.setHgap(10);
         }
 
-        private void extractQuestionsFromLines(String[] subQuestions,String[] accountAbility,
+        private void extractQuestionsFromLines(String[] subQuestions,
+                                               String[] accountAbility,
                                                String[] subQuestionsPoints) {
             /**
              * Extraheren van de juiste gegevens uit de variabelen questions,
@@ -374,13 +375,14 @@ public class AddScreen extends TabPane{
                                 accountAbility[i]));
             }
             questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
-            pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
+            pointDistributionBox.getChildren().add(2,
+                    questionAndCheckBoxesScrollpane);
         }
 
 
         public void setExamPropertiesScreen(String[] examProperties) {
             /**
-             * Deze functie wordt aangeroepen zodra er op de knop toetsweer
+             * Deze functie wordt aangeroepen zodra er op de knop toets weer
              * geven wordt gedrukt.
              *
              * Met behulp van de verschillende eigenschappen van de toets
@@ -410,7 +412,7 @@ public class AddScreen extends TabPane{
              * tabel. In de if statement wordt er gecheckt of er data
              * is teruggehaald uit de database. Er wordt door de variabel
              * question info gelooped waarmee de nieuwe classes QuestionBox-
-             * WithCheck wordt aangemaakt met deze gegegvens.
+             * WithCheck wordt aangemaakt met deze gegevens.
              *
              * Hierna wordt de connectie gestopt en worden buttons aan en uit
              * gezet. In de catch worden de buttons in hun oorspronkelijke
@@ -421,23 +423,31 @@ public class AddScreen extends TabPane{
             setQuestionAndCheckboxesFlowpaneSettings();
             questionAndCheckBoxesScrollpane = new ScrollPane();
             pointDistributionBox = new VBox();
-            pointDistributionBox.getChildren().addAll(new BoxHeaders("Puntenverdeling/Meerekenen:"), getImportQuestionButtons());
+            pointDistributionBox.getChildren().addAll(new BoxHeaders(
+                    "Puntenverdeling/Meerekenen:"), getImportQuestionButtons
+                    ());
             try {
                 DatabaseConn databaseConn = new DatabaseConn();
-                String[][] questionInfo  = databaseConn.GetTable("vraag", "toetsid = " +
-                        databaseConn.GetToetsID(examProperties[0],examProperties[1], examProperties[2],
-                                examProperties[3], examProperties[4], examProperties[5]));
+                String[][] questionInfo  = databaseConn.GetTable("vraag",
+                        "toetsid = " +
+                        databaseConn.GetToetsID(examProperties[0],
+                                examProperties[1], examProperties[2],
+                                examProperties[3], examProperties[4],
+                                examProperties[5]));
                 if (questionInfo.length == 0) {
                     throw new EmptyStackException();
                 }
                 for (String[] info: questionInfo) {
-                    questionAndCheckboxes.getChildren().add(new QuestionBoxWithCheck(info[1], info[2],info[4]));
+                    questionAndCheckboxes.getChildren().add(new
+                            QuestionBoxWithCheck(info[1], info[2],info[4]));
                 }
                 databaseConn.CloseConnection();
                 importCsvButton.setDisable(true);
                 resetPointDistributionButton.setDisable(false);
-                questionAndCheckBoxesScrollpane.setContent(questionAndCheckboxes);
-                pointDistributionBox.getChildren().add(2,questionAndCheckBoxesScrollpane);
+                questionAndCheckBoxesScrollpane.setContent(
+                        questionAndCheckboxes);
+                pointDistributionBox.getChildren().add(2,
+                        questionAndCheckBoxesScrollpane);
 
             } catch (EmptyStackException e) {
                 importCsvButton.setDisable(false);
@@ -455,7 +465,8 @@ public class AddScreen extends TabPane{
              * rechts in de hoek staan.
              */
             HBox questionButtonBox = new HBox();
-            questionButtonBox.getChildren().addAll(importCsvButton, resetPointDistributionButton);
+            questionButtonBox.getChildren().addAll(importCsvButton,
+                    resetPointDistributionButton);
             resetPointDistributionButton.setDisable(true);
             importCsvButton.setMinWidth(150);
             resetPointDistributionButton.setMinWidth(150);
@@ -471,7 +482,8 @@ public class AddScreen extends TabPane{
              * en een textfield die van belang is voor de beheersgraad.
              */
             HBox hbox = new HBox();
-            hbox.getChildren().addAll(createExamData(examProperties), getExamGrader());
+            hbox.getChildren().addAll(createExamData(examProperties),
+                    getExamGrader());
             hbox.setHgrow(hbox.getChildren().get(0), Priority.ALWAYS);
             hbox.setHgrow(hbox.getChildren().get(1), Priority.ALWAYS);
             hbox.setPadding(new Insets(0, 0, 0, 5));
@@ -491,7 +503,8 @@ public class AddScreen extends TabPane{
             hbox.setHgrow(leftSpring, Priority.ALWAYS);
             hbox.setHgrow(rightSpring, Priority.ALWAYS);
             hbox.setMaxWidth(vbox.getMaxWidth());
-            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"), getGradeData(), hbox);
+            vbox.getChildren().addAll(new BoxHeaders("Cijfer Gegevens"),
+                    getGradeData(), hbox);
             vbox.setSpacing(20);
             return vbox;
         }
@@ -551,12 +564,16 @@ public class AddScreen extends TabPane{
              */
             chanceByGamblingTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                public void changed(ObservableValue<? extends String>
+                                            observable, String oldValue,
+                                    String newValue) {
                     if (!newValue.matches("\\d{1,3}")) {
-                        chanceByGamblingTextfield.setText(newValue.replaceAll("[^\\d]", ""));
+                        chanceByGamblingTextfield.setText(newValue
+                                .replaceAll("[^\\d]", ""));
                     }
                     if (chanceByGamblingTextfield.getText().length() > 4) {
-                        String s = chanceByGamblingTextfield.getText().substring(0, 4);
+                        String s = chanceByGamblingTextfield.getText()
+                                .substring(0, 4);
                         chanceByGamblingTextfield.setText(s);
                     }
                 }
@@ -572,7 +589,9 @@ public class AddScreen extends TabPane{
              */
             thresholdTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
-                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                public void changed(ObservableValue<? extends String>
+                                            observable, String oldValue,
+                                    String newValue) {
                     if (!newValue.matches("\\d{1,3}")) {
                         thresholdTextfield.setText(newValue.replaceAll("[^\\d]", ""));
                     }
@@ -603,14 +622,16 @@ public class AddScreen extends TabPane{
 
         private void showQuestionPropertiesCheckBoxEvent() {
             /**
-             * Funtionaliteit aan checkbox gegeven.
+             * Functionaliteit aan checkbox gegeven.
              *
              * Als deze aangevinkt staat wordt het puntenverdelingscherm
              * weergeven. Anders staat deze verstopt.
              */
             questionPropertyCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                public void changed(ObservableValue<? extends Boolean>
+                                            observable, Boolean oldValue,
+                                    Boolean newValue) {
                     if (newValue) {
                         pointDistributionBox.setVisible(true);
                         thresholdTextfield.setVisible(true);
@@ -640,14 +661,15 @@ public class AddScreen extends TabPane{
              * Box met toetsgegevens.
              */
             VBox vbox = new VBox();
-            vbox.getChildren().addAll(new BoxHeaders("Toets Gegevens"), getExamDataBox(examProperties));
+            vbox.getChildren().addAll(new BoxHeaders("Toets Gegevens"),
+                    getExamDataBox(examProperties));
             vbox.setSpacing(20);
             return vbox;
         }
 
         private VBox getExamDataBox(String[] examProperties) {
             /**
-             * VBox met verschilllende eigenschappen over de toets.
+             * VBox met verschillende eigenschappen over de toets.
              *
              * Bevat de choiceboxes en datepicker voor de juiste invoer
              * van de toetsen.
@@ -656,9 +678,11 @@ public class AddScreen extends TabPane{
             examDataVbox.getChildren().addAll(
                     new labelPropertyWithValue("Module", examProperties[0]),
                     new labelPropertyWithValue("Jaar", examProperties[1]),
-                    new labelPropertyWithValue("Schooljaar", examProperties[2]),
+                    new labelPropertyWithValue("Schooljaar",
+                            examProperties[2]),
                     new labelPropertyWithValue("Periode", examProperties[3]),
-                    new labelPropertyWithValue("Gelegenheid", examProperties[4]),
+                    new labelPropertyWithValue("Gelegenheid",
+                            examProperties[4]),
                     new labelPropertyWithValue("Toetsvorm", examProperties[5])
             );
             examDataVbox.setSpacing(12);
@@ -667,7 +691,7 @@ public class AddScreen extends TabPane{
 
         private class labelPropertyWithValue extends Label {
             /**
-             * Inner klasse voor het aanmaken van een label objext
+             * Inner klasse voor het aanmaken van een label object
              */
 
             public labelPropertyWithValue(String property, String value) {
@@ -706,7 +730,8 @@ public class AddScreen extends TabPane{
         String subQuestionPoints;
         CheckBox accountable;
 
-        public QuestionBoxWithCheck(String questionNumber, String subQuestionPoints, String accoubtAble) {
+        public QuestionBoxWithCheck(String questionNumber, String
+                subQuestionPoints, String accoubtAble) {
             /**
              * Constructor voor het juist aanmaken van een hbox, die van belang
              * is voor het juist weergeven van de punten.
@@ -727,7 +752,8 @@ public class AddScreen extends TabPane{
              * Label met gegevens en een checkbox die informatie geeft
              * over het meerekenen van de vraag
              */
-            Label question = new Label("Vraag " + this.question+ ": " + subQuestionPoints);
+            Label question = new Label("Vraag " + this.question + ": " +
+                    subQuestionPoints);
             Region spacer = new Region();
             this.getChildren().addAll(question, spacer, accountable);
             this.setHgrow(spacer, Priority.ALWAYS);
@@ -742,7 +768,8 @@ public class AddScreen extends TabPane{
             super(text);
             createModuleTabButtons();
             HBox hbox = new HBox();
-            hbox.getChildren().addAll(fillRegion(), emptyButton, fillRegion(), importCSV, fillRegion());
+            hbox.getChildren().addAll(fillRegion(), emptyButton, fillRegion()
+                    , importCSV, fillRegion());
             hbox.setSpacing(20);
             VBox.setMargin(hbox, new Insets(5));
             pointsTable = new TableView();
@@ -764,7 +791,7 @@ public class AddScreen extends TabPane{
             /**
              * Deze methode zorgt ervoor dat als er op "Database leeg maken" gedrukt
              * wordt, dat er een waarschuwing getoond wordt. Als er op OK gedrukt
-             * wordt in die waarchuwing wordt de database leeg gemaakt.
+             * wordt in die waarschuwing wordt de database leeg gemaakt.
              */
             emptyButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -780,6 +807,8 @@ public class AddScreen extends TabPane{
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.get() == OK) {
                         emptyDatabase();
+                        // Update selectie menu in vergelijkscherm als
+                        // database leeg wordt gemaakt.
                         Main.updateSelectionMenu();
                     } else {
                         alert.close();
@@ -790,7 +819,7 @@ public class AddScreen extends TabPane{
 
         private void emptyDatabase() {
             /**
-             * Deze methode maakt een connctie met de database, maakt hem
+             * Deze methode maakt een connectie met de database, maakt hem
              * leeg en update de tabel op het scherm.
              */
             DatabaseConn d = new DatabaseConn();
@@ -832,6 +861,7 @@ public class AddScreen extends TabPane{
                 if (file != null) {
                     Object moduleReader = new ModuleReader(file.toString());
                     fillTable();
+                    // Update selectiemenu in vergelijkscherm met nieuwe data.
                     Main.updateSelectionMenu();
                 }
             });
@@ -841,12 +871,12 @@ public class AddScreen extends TabPane{
             /**
              * Deze methode vult de tabel in de module tab van het 
              * toevoegscherm met data. Eerst wordt de tabel leeggemaakt en de 
-             * kolommen wordem verwijderd. Daarna worden de kolommen opnieuw 
+             * kolommen worden verwijderd. Daarna worden de kolommen opnieuw
              * aangemaakt. Er wordt een connectie gemaakt met de database en de 
              * informatie van de toetsen wordt opgehaald. Vervolgens wordt
              * er voor iedere toets een instantie gemaakt van de DataForTable 
              * class. De connectie met de database wordt gesloten en de 
-             * DataForTable instaties worden aan de tabel toegevoegd.
+             * DataForTable instanties worden aan de tabel toegevoegd.
              */
             pointsTable.getItems().clear();
             pointsTable.getColumns().clear();
@@ -859,8 +889,10 @@ public class AddScreen extends TabPane{
             String[][] list = d.GetToetsData();
             DataForTable[] rows = new DataForTable[list.length];
             for (int i = 0; i < list.length; ++i){
-                List<String> types = d.getTypes(list[i][1], list[i][3], list[i][2], list[i][0]);
-                rows[i] = new DataForTable(list[i][0], list[i][1], list[i][2], list[i][3], types);
+                List<String> types = d.getTypes(list[i][1], list[i][3],
+                        list[i][2], list[i][0]);
+                rows[i] = new DataForTable(list[i][0], list[i][1],
+                        list[i][2], list[i][3], types);
             }
             d.CloseConnection();
             pointsTable.getItems().addAll(rows);
@@ -871,11 +903,11 @@ public class AddScreen extends TabPane{
              * Deze methode maakt een nieuwe kolom aan voor pointsTable.
              * Eerst wordt er een kolom gemaakt met de naam die under label 
              * gedefinieerd is, de cellValueFactory wordt vervolgens zo 
-             * gedifinieerd dat de waarde die getoond wordt automatich uit een 
+             * gedefinieerd dat de waarde die getoond wordt automatisch uit een
              * klasse gehaald kan worden. De waarde in de klasse die
              * opgehaald zal worden is degene onder de variabele naam die under 
              * value staat. De kolom wordt op niet aanpasbaar gezet en 
-             * toegevoegt aan de tabel.
+             * toegevoegd aan de tabel.
              */
             TableColumn column = new TableColumn(label);
             column.setCellValueFactory(new PropertyValueFactory(value));

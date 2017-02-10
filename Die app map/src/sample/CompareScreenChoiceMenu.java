@@ -57,7 +57,7 @@ public class CompareScreenChoiceMenu {
 
     private void createComboBoxes() {
         /**
-         * Creërt het keuzemenu gedeelte met de comboBoxen.
+         * Creëert het keuzemenu gedeelte met de comboBoxen.
          */
         setSelections();
         choiceMenuSelectionBox = new VBox();
@@ -294,7 +294,7 @@ public class CompareScreenChoiceMenu {
 
     private void createButtons() {
         /**
-         * Creërt het keuzemenu gedeelte met de "Alles" en "Reset" knoppen.
+         * Creëert het keuzemenu gedeelte met de "Alles" en "Reset" knoppen.
          */
         allButton = new Button("Alles");
         resetButton = new Button("Reset");
@@ -357,7 +357,7 @@ public class CompareScreenChoiceMenu {
 
     public VBox getTestChoiceMenu() {
         /**
-         * Returned het volledge keuzemenu met de opgegeven comboBoxen.
+         * Returned het volledige keuzemenu met de opgegeven comboBoxen.
          * Wordt gebruikt voor de toetstab.
          */
         choiceMenuSelectionBox.getChildren().addAll(year, studyYear, block,
@@ -369,7 +369,7 @@ public class CompareScreenChoiceMenu {
 
     public VBox getCourseChoiceMenu() {
         /**
-         * Returned het volledge keuzemenu met de opgegeven comboBoxen.
+         * Returned het volledige keuzemenu met de opgegeven comboBoxen.
          * Wordt gebruikt voor de moduletab.
          */
         choiceMenuSelectionBox.getChildren().addAll(year, studyYear, block);
@@ -380,7 +380,7 @@ public class CompareScreenChoiceMenu {
 
     public VBox getBlockChoiceMenu() {
         /**
-         * Returned het volledge keuzemenu met de opgegeven comboBoxen.
+         * Returned het volledige keuzemenu met de opgegeven comboBoxen.
          * Wordt gebruikt voor de periodeTab.
          */
         choiceMenuSelectionBox.getChildren().addAll(year, studyYear);

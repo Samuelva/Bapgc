@@ -11,7 +11,7 @@ import java.util.List;
 public class DataForTable {
     /**
      * De globale variabelen bevatten de data die in de kolommen
-     * van de de tabel in het toevoeg scherm komen te staan als
+     * van de tabel in het toevoeg scherm komen te staan als
      * SimpleStringProperties.
      */
     private SimpleStringProperty code;
@@ -20,7 +20,8 @@ public class DataForTable {
     private SimpleStringProperty studyYear;
     private SimpleStringProperty type;
 
-    public DataForTable(String codeIn, String yearIn, String periodIn, String studyYearIn, List<String> typeIn) {
+    public DataForTable(String codeIn, String yearIn, String periodIn, String
+            studyYearIn, List<String> typeIn) {
         /**
          * De meegegeven waardes worden aan de bijbehorende globale variabelen gezet.
          * De '[' en ']' worden hierbij verwijderd bij het converteren van een List

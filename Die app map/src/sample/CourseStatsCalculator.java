@@ -56,7 +56,7 @@ public class CourseStatsCalculator {
          * Als hierin een null staat, betekent dat dat de student
          * niet aan een toets heeft deelgenomen. Als er geen null
          * gevonden wordt, heeft de student meegedaan aan de gehele
-         * module en wordt zijn cijfer gekopiëerd naar de map
+         * module en wordt zijn cijfer gekopieerd naar de map
          * this.finalGrades.
          */
         for (String key: this.initialGrades.keySet()){
@@ -80,7 +80,7 @@ public class CourseStatsCalculator {
          * student een Set met de posities waar een null waarde staat.
          * Voeg deze toe aan nullIndex.
          * Intersect alle Sets in nullIndex om te achterhalen welke positie
-         * altijd een null waarde heeft. Vervijder deze positie voor iedere
+         * altijd een null waarde heeft. Verwijder deze positie voor iedere
          * student uit de Map die de cijfers bevat.
          */
         List<Set<Integer>> nullIndex = new ArrayList();
@@ -94,9 +94,11 @@ public class CourseStatsCalculator {
             }
             nullIndex.add(innerNullIndex);
         }
-        List<Integer> remove = new ArrayList(Statistics.multipleSetIntersect(nullIndex));
+        List<Integer> remove = new ArrayList(Statistics.multipleSetIntersect
+                (nullIndex));
         for (String key : this.initialGrades.keySet()) {
-            Double[] newValue = removeIndices(this.initialGrades.get(key), remove);
+            Double[] newValue = removeIndices(this.initialGrades.get(key),
+                    remove);
             this.initialGrades.replace(key, newValue);
         }
     }
@@ -123,7 +125,7 @@ public class CourseStatsCalculator {
 
     private void compileFinalGrades() {
         /**
-         * Deze method bepaalt de cijfers die voor iedere toets door iedere
+         * Deze methode bepaalt de cijfers die voor iedere toets door iedere
          * student gehaald is en zet ze in this.initialGrades.
          * Er wordt door de toetsen van de modulen geloopt. Voor iedere toets
          * wordt er door de gelegenheden geloopt. De scores, cesuur en maximum
@@ -135,12 +137,16 @@ public class CourseStatsCalculator {
          * map.
          */
         for (int examPos = 0; examPos < this.attempts.length; ++examPos) { //loop door toetsen
-            for (int chance = 1; chance < this.attempts[examPos].length; ++chance) { //loop door kansen
+            for (int chance = 1; chance < this.attempts[examPos].length;
+                 ++chance) { //loop door kansen
                 String[][] grades;
                 try {
-                    Integer[] values = d.GetCesuurMaxGok((int) this.attempts[examPos][chance]);
-                    grades = Statistics.updateGradeTableArray(d.GetStudentScores(
-                            (int) this.attempts[examPos][chance]), values[0], values[1]);
+                    Integer[] values = d.GetCesuurMaxGok((int) this
+                            .attempts[examPos][chance]);
+                    grades = Statistics.updateGradeTableArray(d
+                            .GetStudentScores(
+                            (int) this.attempts[examPos][chance]), values[0],
+                            values[1]);
                 } catch (EmptyStackException e){
                     continue;
                 }

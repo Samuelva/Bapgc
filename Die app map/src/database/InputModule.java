@@ -7,7 +7,7 @@ class InputModule {
     /**
      * Deze klasse verzorgt het invullen van de module tabel in de
      * database. Hierbij is een sql opgesteld en worden de
-     * connectie en statement gedefineerd. Ook worden de QueryStrings
+     * connectie en statement gedefinieerd. Ook worden de QueryStrings
      * die nodig zijn gedefineerd.
      */
     private final String MODULESQL = "INSERT INTO MODULE" +

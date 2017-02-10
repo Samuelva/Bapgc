@@ -40,14 +40,14 @@ import javax.imageio.ImageIO;
  */
 public class ViewScreen extends StackPane{
     /**
-     * De volgende globale variabelen worden gedefineerd.
+     * De volgende globale variabelen worden gedefinieerd.
      * - plotChoiceBox: Een ChoiceBox voor het selecteren van
      *      het soort grafiek.
      * - calculateBtn: Een knop voor het berekenen van de
      *      Cohen-Schotanus cesuur.
      * - savePlotBtn: Een knop voor het opslaan van de grafiek.
      * - exportBtn: Een knop voor het opslaan van een CSV.
-     * - qualityText: Een veld die text over de kwaliteit
+     * - qualityText: Een veld die tekst over de kwaliteit
      *      van de toets bevat.
      * - cohenText: Een veld die de statistiek met betrekking
      *      tot de Cohen-Schotanus cesuur bevat
@@ -130,7 +130,7 @@ public class ViewScreen extends StackPane{
 
     private VBox makeSelectionBox(){
         /**
-         * Deze methode maakt een label met de text "Keuzemenu"
+         * Deze methode maakt een label met de tekst "Keuzemenu"
          * aan. Daaronder wordt een keuzemenu toegevoegd.
          */
         Label label = new Label("Keuzemenu");
@@ -279,7 +279,7 @@ public class ViewScreen extends StackPane{
          * Deze functie zet het bovenste gedeelte van het scherm in elkaar.
          * Hierbij worden de twee statistiek stukken (TopLeft en TopMiddle)
          * gebruikt om de hele breedte te vullen.
-         * Het bovenste gedeelte wordt als hbox terugggegeven.
+         * Het bovenste gedeelte wordt als hbox teruggegeven.
          */
         VBox leftBox = makeTopLeftBox();
         HBox.setHgrow(leftBox, Priority.ALWAYS);
@@ -318,7 +318,8 @@ public class ViewScreen extends StackPane{
         this.exportBtn.setOnAction(e -> {
             if (this.gradeTable != null) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV (*.csv)",
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("CSV (*.csv)",
                         "*.csv"));
                 fileChooser.setTitle("Opslaan Als");
                 File file = fileChooser.showSaveDialog(new Stage());
@@ -334,11 +335,12 @@ public class ViewScreen extends StackPane{
          * Deze methode schrijft en maakt een CSV bestand van de labels en
          * scores die meegegeven worden in het bestand dat meegegeven wordt.
          *
-         * Als er iets fout gaat wordt er een error weegegeven.
+         * Als er iets fout gaat wordt er een error weergegeven.
          */
         try {
             FileWriter writer = new FileWriter(file);
-            writer.write("Studentnr;Cijfer;Totaal;" + String.join(";", labels) + "\n");
+            writer.write("Studentnr;Cijfer;Totaal;" +
+                    String.join(";", labels) + "\n");
             for (String[] student: scores){
                 writer.write(String.join(";", student) + "\n");
             }
@@ -372,14 +374,16 @@ public class ViewScreen extends StackPane{
         this.pointsTable.getSelectionModel().setCellSelectionEnabled(true);
         this.pointsTable.getFocusModel().focusedCellProperty().addListener(new ChangeListener<TablePosition>() {
             @Override
-            public void changed(ObservableValue<? extends TablePosition> observable, TablePosition oldValue,
+            public void changed(ObservableValue<? extends TablePosition>
+                                        observable, TablePosition oldValue,
                                 TablePosition newValue) {
                 columnSelectionChange(newValue);
             }
         });
         pointsTable.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
-            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
+            public void changed(ObservableValue<? extends Number> source,
+                                Number oldWidth, Number newWidth) {
                 TableHeaderRow header = (TableHeaderRow) pointsTable.lookup("TableHeaderRow");
                 header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
                     @Override
@@ -404,13 +408,14 @@ public class ViewScreen extends StackPane{
          * wordt graphUpdateGrades aangeroepen om de grafiek te updaten.
          * Als het de derde kolom (totaal) is, wordt hetzelfde gedaan,
          * maar dan met graphUpdateTotal. Als een van de eerste drie
-         * kolomen geselecteerd is, worden de statistieken voor
+         * kolommen geselecteerd is, worden de statistieken voor
          * de gehele toets weergegeven. Als een andere kolom
          * geselecteerd wordt, worden de grafiek en de statistieken
          * geüpdate voor de waardes in de kolom.
          */
         if (newValue.getTableColumn() != null) {
-            pointsTable.getSelectionModel().selectRange(0, newValue.getTableColumn(),
+            pointsTable.getSelectionModel().selectRange(0,
+                    newValue.getTableColumn(),
                     pointsTable.getItems().size(), newValue.getTableColumn());
             tablePos = newValue;
             if (newValue.getColumn() < 3){
@@ -498,20 +503,27 @@ public class ViewScreen extends StackPane{
          * opgehaald. Het gemiddelde wordt berekend. Vervolgens
          * worden de verschillende statistieken berekend met de
          * methodes in de Statistics class. Deze waardes worden
-         * direct meegegeven aan de methode die de text op het
+         * direct meegegeven aan de methode die de tekst op het
          * scherm aanpast.
          */
-        int[] points = Statistics.stringToIntArray(Statistics.getColumn(i, gradeTable), 0);
-        int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
+        int[] points = Statistics.stringToIntArray(Statistics.getColumn(i,
+                gradeTable), 0);
+        int[] total = Statistics.stringToIntArray(Statistics.getColumn(2,
+                gradeTable), 0);
         double average = Statistics.mean(points);
-        updateStats(questionData[i-3][2].toString(), (boolean) questionData[i-3][3],
-                Integer.toString(Statistics.max(points)), Integer.toString(Statistics.min(points)),
-                Integer.toString(Statistics.count((int) questionData[i-3][2], points)),
+        updateStats(questionData[i-3][2].toString(),
+                (boolean) questionData[i-3][3],
+                Integer.toString(Statistics.max(points)),
+                Integer.toString(Statistics.min(points)),
+                Integer.toString(Statistics.count((int) questionData[i-3][2],
+                        points)),
                 Integer.toString(Statistics.count(0, points)),
                 Double.toString(Statistics.round(average, 2)),
                 Double.toString(Statistics.round(Statistics.var(points), 2)),
-                Double.toString(Statistics.round(Statistics.correlation(points, total), 2)),
-                Double.toString(Statistics.round(average /((int) questionData[i-3][2]), 2)));
+                Double.toString(Statistics.round(Statistics.correlation(points,
+                        total), 2)),
+                Double.toString(Statistics.round(average /
+                        ((int) questionData[i-3][2]), 2)));
     }
 
     private void examSelectedUpdate() {
@@ -525,20 +537,25 @@ public class ViewScreen extends StackPane{
          * bepaald. Het aantal onvoldoendes en het rendement worden
          * uitgerekend. Vervolgens worden de verschillende statistieken
          * uitgerekend met de methodes uit de Statistics class. Deze
-         * worden direct meegegeven aan de methode die de text update op
+         * worden direct meegegeven aan de methode die de tekst update op
          * het scherm.
          */
-        double[] grades = Statistics.stringToDoubleArray(Statistics.getColumn(1, gradeTable), 0);
+        double[] grades = Statistics.stringToDoubleArray(Statistics.getColumn
+                ( 1, gradeTable), 0);
         int passes = Statistics.getPasses(grades);
         int fails = gradeTable.length - passes;
         double performance = Statistics.percentage(passes, gradeTable.length);
         updateStats(Integer.toString(questionLabels.length),
-                Integer.toString(this.examPoints[1]), Integer.toString(this.examPoints[2]),
+                Integer.toString(this.examPoints[1]), Integer.toString(this
+                        .examPoints[2]),
                 Integer.toString(this.examPoints[1]-this.examPoints[2]),
-                Double.toString(Statistics.round(Statistics.percentage(examPoints[0]-this.examPoints[2],
-                        this.examPoints[1]),2)),
-                Integer.toString(examPoints[0]), Integer.toString(gradeTable.length),
-                Integer.toString(passes), Integer.toString(fails), Double.toString(performance),
+                Double.toString(Statistics.round(Statistics.percentage(
+                        examPoints[0]-this.examPoints[2], this
+                                .examPoints[1]),2)),
+                Integer.toString(examPoints[0]),
+                Integer.toString(gradeTable.length),
+                Integer.toString(passes), Integer.toString(fails), Double
+                        .toString(performance),
                 Double.toString(Statistics.round(Statistics.mean(grades), 2)));
     }
 
@@ -556,24 +573,33 @@ public class ViewScreen extends StackPane{
         return new VBox(topBox, middleBox, this.pointsTable);
     }
 
-    protected void updateStats(String questions, String maxPoints, String guessPoints, String earnablePoints,
-                               String degree, String threshold, String participants, String passes, String fails,
+    protected void updateStats(String questions, String maxPoints,
+                               String guessPoints, String earnablePoints,
+                               String degree, String threshold,
+                               String participants, String passes, String fails,
                                String performance, String average) {
         /**
          * Deze methode past de statistiek voor de gehele toets toe.
          * De tekst wordt aangepast om alle meegegeven waardes weer
          * te geven.
          */
-        this.statisticsText.setText("Aantal vragen: " + questions + "\nMaximum punten: " + maxPoints +
-                "\nPunten door gokkans: " + guessPoints + "\nTotaal te verdienen: " + earnablePoints + "" +
+        this.statisticsText.setText("Aantal vragen: " + questions +
+                "\nMaximum punten: " + maxPoints +
+                "\nPunten door gokkans: " + guessPoints +
+                "\nTotaal te verdienen: " + earnablePoints + "" +
                 "\nBeheersgraad: " + degree + "%\nCesuur: " + threshold + "\n");
-        this.resultsText.setText("Aantal deelnemers: " + participants + "\nAantal voldoendes: " + passes +
-                "\nAantal onvoldoendes: " + fails + "\nRendement: " + performance + "\nGemiddelde cijfer: " +
+        this.resultsText.setText("Aantal deelnemers: " + participants +
+                "\nAantal voldoendes: " + passes +
+                "\nAantal onvoldoendes: " + fails + "\nRendement: " +
+                performance + "\nGemiddelde cijfer: " +
                 average + "\n");
     }
 
-    protected void updateStats(String maxPoints,  boolean countsBoolean, String highGiven, String lowGiven,
-                               String maxGiven, String noneGiven, String average, String varPoints, String r, String p){
+    protected void updateStats(String maxPoints,  boolean countsBoolean,
+                               String highGiven, String lowGiven,
+                               String maxGiven, String noneGiven,
+                               String average, String varPoints,
+                               String r, String p){
         /**
          * Deze methode past de statistieken toe voor als er een vraag 
          * geselecteerd wordt. Eerst wordt de boolean counts omgezet naar "ja" 
@@ -586,11 +612,15 @@ public class ViewScreen extends StackPane{
         } else {
             counts = "Nee";
         }
-        this.statisticsText.setText("Maximum punten: " + maxPoints + "\nMeerekenen: " + counts + "\n");
+        this.statisticsText.setText("Maximum punten: " + maxPoints +
+                "\nMeerekenen: " + counts + "\n");
         this.resultsText.setText("Hoogste behaald: " + highGiven +
-                "\nLaagste behaald: " + lowGiven + "\nAantal met maximum punten: " + maxGiven +
-                "\nAantal met nul punten: " + noneGiven + "\nGemiddelde punten behaald: " + average +
-                "\nVariantie gehaalde punten: "+ varPoints + "\nR(item-rest): " + r + "\np-waarde: " + p + "\n\n");
+                "\nLaagste behaald: " + lowGiven +
+                "\nAantal met maximum punten: " + maxGiven +
+                "\nAantal met nul punten: " + noneGiven +
+                "\nGemiddelde punten behaald: " + average +
+                "\nVariantie gehaalde punten: "+ varPoints +
+                "\nR(item-rest): " + r + "\np-waarde: " + p + "\n\n");
     }
 
     protected void updateQualityStats() {
@@ -601,11 +631,14 @@ public class ViewScreen extends StackPane{
          * om deze weer te geven.
          */
         double varQuestions = Statistics.varianceQuestions(gradeTable);
-        double varTest = Statistics.var(Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable),
-                0));
-        double cronbach = Statistics.cronbach(questionData.length, varQuestions, varTest);
-        this.qualityText.setText("Variantie vragen: " + Statistics.round(varQuestions, 2) +
-                "\nVariantie Toets: " + Statistics.round(varTest, 2) + "\nCronbach alfa: " +
+        double varTest = Statistics.var(Statistics.stringToIntArray(
+                Statistics.getColumn(2, gradeTable),0));
+        double cronbach = Statistics.cronbach(questionData.length,
+                varQuestions, varTest);
+        this.qualityText.setText("Variantie vragen: " +
+                Statistics.round(varQuestions, 2) +
+                "\nVariantie Toets: " + Statistics.round(varTest, 2) +
+                "\nCronbach alfa: " +
                 Statistics.round(cronbach, 2) + "\n");
     }
 
@@ -619,15 +652,21 @@ public class ViewScreen extends StackPane{
          * gewijzigd om deze weer te geven.
          */
         if (! (this.gradeTable == null)) {
-            int[] total = Statistics.stringToIntArray(Statistics.getColumn(2, gradeTable), 0);
-            double percentilePoints = Statistics.kthPercentile(this.percentileSlider.getValue(), total);
+            int[] total = Statistics.stringToIntArray(Statistics.getColumn(
+                    2, gradeTable), 0);
+            double percentilePoints = Statistics.kthPercentile(
+                    this.percentileSlider.getValue(), total);
             double average = Statistics.percentileMean(total, percentilePoints);
             double cohen = Statistics.cohen(average,
-                    Statistics.percentage(this.examPoints[0] - this.examPoints[2],
+                    Statistics.percentage(
+                            this.examPoints[0] - this.examPoints[2],
                             this.examPoints[1]) / 100, this.examPoints[2]);
-            this.cohenText.setText("Punten percentiel: " + Statistics.round(percentilePoints, 2) +
-                    "\nGemiddelde punten percentiel: " + Statistics.round(average, 2) +
-                    "\nCohen-Schotanus cesuur: " + Statistics.round(cohen, 2) + "\n");
+            this.cohenText.setText("Punten percentiel: " +
+                    Statistics.round(percentilePoints, 2) +
+                    "\nGemiddelde punten percentiel: " +
+                    Statistics.round(average, 2) +
+                    "\nCohen-Schotanus cesuur: " +
+                    Statistics.round(cohen, 2) + "\n");
         }
     }
 
@@ -670,9 +709,11 @@ public class ViewScreen extends StackPane{
          */
         TableColumn column = new TableColumn(columnLabel);
         final int INDEX = i;
-        column.setCellValueFactory(new Callback<CellDataFeatures<String[], String>, ObservableValue<String>>() {
+        column.setCellValueFactory(new Callback<CellDataFeatures<String[],
+                String>, ObservableValue<String>>() {
             @Override
-            public ObservableValue<String> call(CellDataFeatures<String[], String> values) {
+            public ObservableValue<String> call(CellDataFeatures<String[],
+                    String> values) {
                 return new SimpleStringProperty((values.getValue()[INDEX]));
             }
         });
@@ -689,8 +730,8 @@ public class ViewScreen extends StackPane{
     protected void fillTable(int examID){
         /**
          * Deze methode vult de tabel.
-         * Kijk eersy of er data bekend is voor de toets. Als dit niet zo is
-         * geef dan een waarchuwing. Anders wordt het volgende gedaan:
+         * Kijk eerst of er data bekend is voor de toets. Als dit niet zo is
+         * geef dan een waarschuwing. Anders wordt het volgende gedaan:
          * De vragen, maximum aantal punten, punten door gokkans en cesuur
          * worden opgehaald voor de meegegeven toets. De scores die behaald
          * zijn voor de vragen worden ook opgehaald en de cijfers worden hier
@@ -705,7 +746,8 @@ public class ViewScreen extends StackPane{
         if (checkIfDataExists(examID, d)) {
             this.questionData = d.GetVragenVanToets(examID);
             this.examPoints = d.GetCesuurMaxGok(examID);
-            this.gradeTable = Statistics.updateGradeTableArray(d.GetStudentScores(examID), this.examPoints[0],
+            this.gradeTable = Statistics.updateGradeTableArray(d
+                            .GetStudentScores(examID), this.examPoints[0],
                     this.examPoints[1]);
             this.questionLabels = Statistics.getColumn(1, questionData);
             setupTable(this.questionLabels);
@@ -721,9 +763,9 @@ public class ViewScreen extends StackPane{
 
     private boolean checkIfDataExists(int examID, DatabaseConn d) {
         /**
-         * Probeer de data van de meegegevn toets op te halen.
+         * Probeer de data van de meegegeven toets op te halen.
          * Als er een error plaatsvind, return false, anders true.
-         * Als er geen scores ophelaad worden return dan ook false.
+         * Als er geen scores opgehaald worden return dan ook false.
          */
         try {
             d.GetVragenVanToets(examID);
@@ -909,7 +951,8 @@ public class ViewScreen extends StackPane{
             public void handle(ActionEvent event) {
                 DatabaseConn d = new DatabaseConn();
                 List<String> selection = choiceMenu.getSelection();
-                int id = d.GetToetsID(selection.get(0), selection.get(1), selection.get(2), selection.get(3),
+                int id = d.GetToetsID(selection.get(0), selection.get(1),
+                        selection.get(2), selection.get(3),
                         selection.get(4), selection.get(5));
                 fillTable(id);
                 d.CloseConnection();

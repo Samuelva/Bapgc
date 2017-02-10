@@ -7,7 +7,7 @@ class InputVraag {
     /**
      * Deze klasse verzorgt het invullen van de vraag tabel in de
      * database. Hierbij is een sql opgesteld en worden de
-     * connectie en de QueryStrings die nodig zijn gedefineerd.
+     * connectie en de QueryStrings die nodig zijn gedefinieerd.
      */
     private final String MODULESQL = "INSERT INTO VRAAG" +
             " (Vraagnummer, MaxScore, ToetsID, Meerekenen)" +

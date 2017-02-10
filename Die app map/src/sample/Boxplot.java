@@ -63,7 +63,8 @@ public class Boxplot {
         for (int i = 0; i < data.length; i++) {
             double[] day = data[i];
             series.getData().add(
-                    new XYChart.Data<>(day[0],day[1],new CandleStickExtraValues(day[2],day[3],day[4],day[5]))
+                    new XYChart.Data<>(day[0], day[1] ,new
+                            CandleStickExtraValues(day[2],day[3],day[4],day[5]))
             );
         }
         ObservableList<XYChart.Series<Number,Number>> data2 = chart.getData();
