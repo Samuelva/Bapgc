@@ -50,11 +50,14 @@ public class AddScreen extends TabPane{
      * dan kan worden gewijzigd. Deze bevat verschillende eigenschappen
      * om de juiste toets te selecteren.
      *
-     * De tweede alinea bevat twee van de knoppen die aanwezig zijn 
-     * op het scherm.
+     * Hierna volgend de variabelen voor de knoppen
      *
-     * Toets eigenschappen gaat over de eigenschappen die van de toets kunnen
-     * worden aangepast. Deze staan in choiceboxes.
+     * Met behulp van de checkboxen en de textfield elementen kunnen de eigenschappen
+     * van de toets ingeladen en aangepast worden
+     *
+     * Hierna worden de twee tabbladen aangemaakt examtab en moduletab. En volgen
+     * als laatst 2 elementen die van belang zijn voor de modulen weergeven en de
+     * examenID die van belang is voor de database.
      */
     //SELECTION MENU
     public ChoiceMenu choiceMenu;
@@ -335,7 +338,9 @@ public class AddScreen extends TabPane{
 
         private void setQuestionAndCheckboxesFlowpaneSettings() {
             /**
-             * Nieuwe flowpane aangemaakt met de juiste instellingen.
+             * Nieuwe flowpane aangemaakt.
+             *
+             * Er wordt een flowpane aangemaakt , met de juistte instellingen
              */
             questionAndCheckboxes = new FlowPane();
             questionAndCheckboxes.setMaxHeight(250);
@@ -494,6 +499,8 @@ public class AddScreen extends TabPane{
         private Node getExamGrader() {
             /**
              * Een vbox met informatie over de cijfer gegevens.
+             *
+             *
              */
             Region leftSpring    = new Region();
             Region rightSpring = new Region();
@@ -560,7 +567,7 @@ public class AddScreen extends TabPane{
              * Textfield input instellingen.
              *
              * Getallen mogen niet langer zijn dan 4 cijfers. Letters invoeren
-             * is niet mogelijk
+             * is niet mogelijk.
              */
             chanceByGamblingTextfield.textProperty().addListener(new ChangeListener<String>() {
                 @Override
@@ -764,6 +771,18 @@ public class AddScreen extends TabPane{
     }
 
     private class ModuleTab extends Tab{
+        /**
+         * In de ze inner klasse wordt het scherm voor de module
+         * aangemaakt. Deze wordt geextend uit een tab.
+         *
+         * De constructor zet als eerst de naam voor de tab
+         * hierna worden de knoppen aan gemaakt.
+         * Er wordt hierna een hbox aangemaakt die de onderdelen bevat
+         * Daarna volgr een vbox waar de hbox uiteindelijk in wordt
+         * toegevoegd als laatst wordt de tab gevuld met de vbox door
+         * middel van setcontent.
+         * @param text
+         */
         public ModuleTab(String text) {
             super(text);
             createModuleTabButtons();
@@ -782,6 +801,10 @@ public class AddScreen extends TabPane{
         }
 
         private void events() {
+            /**
+             * Verschillende functies worden aangeroepen die de voor
+             * de juistte invoer van de tabellen en database zorgen
+             */
             fillTable();
             importModuleCSV();
             setEmptyDatabaseEvent();
@@ -851,7 +874,9 @@ public class AddScreen extends TabPane{
 
         private void importModuleCSV() {
             /**
-             * Importeren van module
+             * In deze methode wordt een file gekozen
+             * die uiteindelijk wordt gebruikt voor het vullen van de database
+             *
              *
              */
             importCSV.setOnAction( e -> {
