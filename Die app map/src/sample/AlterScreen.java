@@ -110,8 +110,12 @@ final class AlterScreen extends StackPane {
         emptyButton.setOnAction(e -> {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Waarschuwing");
-            alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt maken?");
-            alert.setContentText("Druk op OK als u het zeker weet, ander drukt u op Cancel");
+            alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt " +
+                    "maken?\nAls u dit doet zal u een nieuwe toets moeten " +
+                    "inladen,\nanders kunt u de module en periode waar deze " +
+                    "toets in zit niet vergelijken.");
+            alert.setContentText("Druk op OK als u het zeker weet, druk " +
+                    "anders op cancel.");
             ButtonType OK = new ButtonType("OK");
             ButtonType Cancel = new ButtonType("Cancel");
             alert.getButtonTypes().setAll(OK, Cancel);
