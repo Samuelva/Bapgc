@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Samuel on 23-1-2017.
  * Deze klasse zorgt voor de connectie tussen de database en het keuzemenu.
  * De geselecteerde waarden van de comboboxen in het keuzemenu worden hierin
- * opgeslagen, en waardes, waarmee de comboboxen worden gevuld, worden hier
+ * opgeslagen, en waarden waarmee de comboboxen worden gevuld, worden hier
  * verkregen.
  */
 public class ChoiceMenuDatabaseConnect {
@@ -42,7 +42,7 @@ public class ChoiceMenuDatabaseConnect {
     }
     public void setYearSelection(String selectedYearI) {
         /**
-         * slaat de jaar selectie uit het keuzemenu op.
+         * Slaat de jaar selectie uit het keuzemenu op.
          */
         selectedYear = selectedYearI;
     }
