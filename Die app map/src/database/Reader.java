@@ -26,6 +26,11 @@ public class Reader {
     ArrayList<String[]> scores = new ArrayList<>();
     DatabaseConn d = new DatabaseConn();
     public Reader(String csvFile, int toetsID) {
+        /**
+         * In deze functie wordt de csv ingelezen en wordt elke lijn
+         * opgeslagen in een lijst. De "Writer" functie wordt
+         * aangeroepen en errors worden opgevangen.
+         */
         try {
             br = new BufferedReader(new FileReader(csvFile));
             deelvraag = br.readLine();
@@ -52,6 +57,12 @@ public class Reader {
         d.CloseConnection();
     }
     public void Writer(int toetsID){
+        /**
+         * In deze functie worden eerste de vragen en deelvragen
+         * toegevoegd aan de database en worden vervolgens de
+         * juiste studenten en hun aantal punten per vraag eraan
+         * gekoppeld.
+         */
         for(int i=2; i<deelvraag.split(";").length; i++){
             d.InputVraag(
                     deelvraag.split(";")[i],

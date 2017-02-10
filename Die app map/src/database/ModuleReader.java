@@ -28,6 +28,11 @@ public class ModuleReader {
     List<String> gelegenheid = new ArrayList<String>();
     DatabaseConn d = new DatabaseConn();
     public ModuleReader(String csvFile){
+        /**
+         * In deze functie wordt de csv ingelezen en wordt elke lijn
+         * opgeslagen in een lijst. De "Writer" functie wordt
+         * aangeroepen en errors worden opgevangen.
+         */
         gelegenheid.add("1");
         gelegenheid.add("2");
         gelegenheid.add("3");
@@ -56,6 +61,11 @@ public class ModuleReader {
     }
 
     public void Writer(){
+        /**
+         * In deze functie worden eerste de modullen toegevoegd aan
+         * de database en worden vervolgens de juiste toetsen eraan
+         * gekoppeld.
+         */
         for (int i = 0; i < modules.size(); i++) {
             d.InputModule(modules.get(i)[1], modules.get(i)[1],
                     Integer.parseInt(modules.get(i)[2]));
