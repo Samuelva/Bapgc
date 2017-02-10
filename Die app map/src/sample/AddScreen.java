@@ -101,17 +101,17 @@ public class AddScreen extends TabPane{
     public String[][] getQuestionInfo() {
         /**
          * Functie die het terughalen van de ingevoerde vragen naar
-         * in een array zet zodat het in kan worden geladen in de
+         * in een array zet, zodat het in kan worden geladen in de
          * database
          *
-         * In de eerste regel wordt er een 2d array aangemaakt met
+         * In de eerste regel wordt er een 2D array aangemaakt met
          * de grootte van het aantal vragen dat er aanwezig is.
          * De lijst bevat alle elementen die zich in de questionAndCheckboxes
          * flowpane bevinden. Hier wordt overheen geloopt en wordt het
-         * element omgevast naar een HBox. De elementen die zich in deze
-         * HBOx bevinden worden weer naar hun oorspronkelijke element gecast
-         * waarna de informatie eruit geextraheerd kan worden en het dan
-         * kan worden toegevoegd aan de 2d array.
+         * element omgezet naar een HBox. De elementen die zich in deze
+         * HBox bevinden worden weer naar hun oorspronkelijke element gecast,
+         * waarna de informatie eruit geëxtraheerd kan worden en het dan
+         * kan worden toegevoegd aan de 2D array.
          */
         String[][] questionInformation =
                 new String[
@@ -137,9 +137,9 @@ public class AddScreen extends TabPane{
          * Aanmaken van een pop-up waarschuwing die zal aangeven wat
          * er zal gebeuren zodra de toets punten worden gereset.
          *
-         * Er wordt een nieuwe alert aangemaakt met type confirmation
+         * Er wordt een nieuwe alert aangemaakt met type confirmation.
          * Verschillende strings worden toegevoegd om het scherm duidelijk te
-         * maken. Er worden twee knoppen aan toegevoegd Ja en Nee.
+         * maken. Er worden twee knoppen aan toegevoegd: Ja en Nee.
          * Als er op de knop wordt gedrukt wordt de waarde van de gedrukte
          * knop opgeslagen in result. Als dit gelijk is aan de Ja knop
          * dan wordt de database vragen verwijderd die gelijk is aan de
@@ -167,7 +167,7 @@ public class AddScreen extends TabPane{
          * Gegevens worden verwijderd van de betreffende toets. Ook worden
          * schermen leeg gemaakt die van belang waren bij deze gegevens.
          * Tekstvelden van de gok kans en cesuur worden ook op 0 gezet.
-         * knoppen worden uitgezet zodat er niet meer op gedrukt kan worden
+         * Knoppen worden uitgezet zodat er niet meer op gedrukt kan worden
          */
         examTab.questionAndCheckboxes.getChildren().clear();
         examTab.pointDistributionBox.getChildren().remove(
@@ -186,7 +186,7 @@ public class AddScreen extends TabPane{
 
     public class ExamTab extends Tab {
         /**
-         * Inner klasse voor het aanmaken van de toetstab
+         * Inner klasse voor het aanmaken van de toetstab.
          *
          * Borderpane voor het instellen van de elementen op de juiste
          * positie. Selectionmenu vbox zal de elementen bevatten die van
@@ -248,7 +248,7 @@ public class AddScreen extends TabPane{
 
         private VBox getChoiceBoxesSelectionMenu() {
             /**
-             * Vbox wordt hier aangemaakt die de verschillende choiceboxes
+             * Vbox wordt hier aangemaakt, die de verschillende choiceboxes
              * goed zet. Ook wordt er een header aan toegevoegd. Hierna
              * volgt een layout stap met spacing, waarna de vbox teruggestuurd
              * wordt.
@@ -277,7 +277,7 @@ public class AddScreen extends TabPane{
              *
              * resetPointDistributionButton actie zorgt voor het resetten
              * van de punten distributie. Hij wordt volledig uit het scherm
-             * verwijderd zodat er nieuwe mogelijkheid wordt gegeven om een
+             * verwijderd, zodat er nieuwe mogelijkheid wordt gegeven om een
              * csv opnieuw in te laden.
              */
             importCsvButton.setOnAction( e -> {
@@ -335,7 +335,7 @@ public class AddScreen extends TabPane{
 
         private void setQuestionAndCheckboxesFlowpaneSettings() {
             /**
-             * Nieuwe flowpane aangemaakt met de juiste instellingen
+             * Nieuwe flowpane aangemaakt met de juiste instellingen.
              */
             questionAndCheckboxes = new FlowPane();
             questionAndCheckboxes.setMaxHeight(250);
@@ -382,7 +382,7 @@ public class AddScreen extends TabPane{
 
         public void setExamPropertiesScreen(String[] examProperties) {
             /**
-             * Deze functie wordt aangeroepen zodra er op de knop toets weer
+             * Deze functie wordt aangeroepen zodra er op de knop toets weer-
              * geven wordt gedrukt.
              *
              * Met behulp van de verschillende eigenschappen van de toets
@@ -406,19 +406,19 @@ public class AddScreen extends TabPane{
             /**
              * Aanmaken van de vbox die de puntenverdeling zal laten zien.
              *
-             * Voor de try clause worden er diverse elementen aangemaakt
+             * Voor de try-clause worden er diverse elementen aangemaakt
              * en gevuld. In de try wordt er een database connectie gemaakt
              * hierin worden de gegevens opgehaald van het toetsid uit de vraag
-             * tabel. In de if statement wordt er gecheckt of er data
+             * tabel. In de if-statement wordt er gecheckt of er data
              * is teruggehaald uit de database. Er wordt door de variabel
-             * question info gelooped waarmee de nieuwe classes QuestionBox-
+             * question info geloopt waarmee de nieuwe classes QuestionBox-
              * WithCheck wordt aangemaakt met deze gegevens.
              *
              * Hierna wordt de connectie gestopt en worden buttons aan en uit
              * gezet. In de catch worden de buttons in hun oorspronkelijke
              * staat gezet.
              *
-             * De functie returnd de VBOX met punten informatie
+             * De functie returned de VBOX met punten informatie
              */
             setQuestionAndCheckboxesFlowpaneSettings();
             questionAndCheckBoxesScrollpane = new ScrollPane();
@@ -610,7 +610,7 @@ public class AddScreen extends TabPane{
              */
             VBox vbox1 = new VBox();
             Label lbl1 = new Label("Vragen aanwezig:");
-            lbl2 = new Label("Cessuur:");
+            lbl2 = new Label("Cesuur:");
             lbl3 = new Label("Punten door gokkans:");
             lbl1.setPrefSize(160, 25);
             lbl2.setPrefSize(160, 25);
@@ -791,7 +791,7 @@ public class AddScreen extends TabPane{
             /**
              * Deze methode zorgt ervoor dat als er op "Database leeg maken" gedrukt
              * wordt, dat er een waarschuwing getoond wordt. Als er op OK gedrukt
-             * wordt in die waarschuwing wordt de database leeg gemaakt.
+             * wordt in die waarschuwing wordt de database leeggemaakt.
              */
             emptyButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
