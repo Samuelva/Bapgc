@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>C:\Users\timo9\Documents\Git\Bapgc\App\InspectorGadget.jar</jar>
-  <outfile>C:\Users\timo9\Documents\Git\Bapgc\App\Inspector Gadget V1.0.exe</outfile>
+  <outfile>C:\Users\timo9\Documents\Git\Bapgc\App\Inspector Gadget V1.1.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
