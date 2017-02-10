@@ -46,7 +46,7 @@ public class LineGraph {
     public void addLine(String[] xValues, double[] yValues, String name) {
         /**
          * Met deze functie kan er een lijn toegevoegd worden aan de grafiek
-         * met legenda waarde.
+         * met legenda waarden.
          */
         XYChart.Series series = new XYChart.Series();
         series.setName(name);
