@@ -20,16 +20,16 @@ import java.io.IOException;
 
 /**
  * Created by Samuel on 5-12-2016.
- * Deze klasse regelt het statistiek gedeelte van het vergelijkscherm.
- * Dus alles van het vergelijkscherm behalve het keuzemenu.
+ * Deze klasse regelt het statistiekgedeelte van het vergelijkscherm.
+ * Dus alles van het vergelijkscherm, behalve het keuzemenu.
  */
 public class CompareScreenStatistics {
     // Geeft aan voor welke tab de klasse wordt aangeroepen. 1 = toetstab,
     // 2 = moduletab, 3 = periodetab.
     private Integer instance;
     private VBox compareStatisticsBox;
-    private VBox statisticsTableBox; // Box met statistieken tabel
-    private BorderPane graphButtonPane; // Box met grafiek optie knoppen
+    private VBox statisticsTableBox; // Box met statistiekentabel
+    private BorderPane graphButtonPane; // Box met grafiekoptie knoppen
     private StackPane graphPane; // Pane met de grafiek
 
     private ComboBox graphSelectionButton;
@@ -56,8 +56,8 @@ public class CompareScreenStatistics {
 
     public CompareScreenStatistics(Integer instanceI) {
         /**
-         * Roept functies aan welke de boxjes aanmaken en vullen met de
-         * jusite inhoud (statistiek en grafiek)
+         * Roept functies aan die de boxjes aanmaken en vullen met de
+         * juiste inhoud (statistiek en grafiek)
          */
         instance = instanceI;
         createTable();
@@ -144,7 +144,7 @@ public class CompareScreenStatistics {
 
     private void createColumns() {
         /**
-         * Maakt de kolommen voor de statistieken tabel aan.
+         * Maakt de kolommen voor de statistiekentabel aan.
          */
         testCol = new TableColumn("Toets");
         moduleCol = new TableColumn("Module");
@@ -170,7 +170,7 @@ public class CompareScreenStatistics {
 
     private StackPane createGraphPane() {
         /**
-         * Maakt het grafiek gedeelte aan met de box voor de grafiek knoppen
+         * Maakt het grafiekgedeelte aan met de box voor de grafiekknoppen
          * en de grafiek zelf.
          */
         graphPane = new StackPane();
@@ -195,7 +195,7 @@ public class CompareScreenStatistics {
 
     private void createGraphButtons() {
         /**
-         * Maakt de grafiek selectie en grafiek opslaan knop aan.
+         * Maakt de grafiekselectie en grafiek opslaan knop aan.
          */
         setGraphSelectionButton();
         setGraphSaveButton();
@@ -203,9 +203,9 @@ public class CompareScreenStatistics {
 
     private void setGraphSelectionButton() {
         /**
-         * Maakt de grafiek selectie knop aan. Als er een grafiek gekozen
+         * Maakt de grafiekselectie knop aan. Als er een grafiek gekozen
          * wordt, zonder dat er een kolom in de tabel geselecteerd is, wordt
-         * de grafiek keuze alleen opgeslagen. Als er wel een kolom
+         * de grafiekkeuze alleen opgeslagen. Als er wel een kolom
          * geselecteerd is, wordt er een nieuwe grafiek gemaakt.
          */
         graphSelectionButton = new ComboBox();
@@ -275,7 +275,7 @@ public class CompareScreenStatistics {
 
     public VBox getCompareStatisticsBox() {
         /**
-         * Returned de box met toets statistieken, grafiekopties en de grafiek
+         * Returned de box met toetsstatistieken, grafiekopties en de grafiek.
          */
         compareStatisticsBox = new VBox();
         compareStatisticsBox.setPadding(new Insets(0, 0, 0, 5));
@@ -287,8 +287,8 @@ public class CompareScreenStatistics {
 
     public void setTestTableColumns() {
         /**
-         * Voegt de kolommen die gebruikt worden in de toets tab toe aan het
-         * statistieken tabje.
+         * Voegt de kolommen die gebruikt worden in de toetstab toe aan de
+         * statistiekentab.
          */
         table.getColumns().addAll(testCol, averageGradeCol, participantsCol,
                 failedCol, passedCol, passRateCol);
@@ -296,8 +296,8 @@ public class CompareScreenStatistics {
 
     public void setModuleTableColumns() {
         /**
-         * Voegt de kolommen die gebruikt worden in de modulen tab toe aan het
-         * statistieken tabje.
+         * Voegt de kolommen die gebruikt worden in de modulentab toe aan de
+         * statistiekentab.
          */
         table.getColumns().addAll(moduleCol, averageGradeCol,
                 participantsCol, failedCol, passedCol, passRateCol);
@@ -305,8 +305,8 @@ public class CompareScreenStatistics {
 
     public void setPeriodTableColumns() {
         /**
-         * Voegt de kolommen die gebruikt worden in de periode tab toe aan het
-         * statistieken tabje.
+         * Voegt de kolommen die gebruikt worden in de periodetab toe aan de
+         * statistiekentab.
          */
         table.getColumns().addAll(periodCol, averageGradeCol,
                 participantsCol, failedCol, passedCol, passRateCol);
@@ -322,7 +322,7 @@ public class CompareScreenStatistics {
     private void fillGraph(TableColumn column, String
             title) {
         /**
-         * Kijkt welke grafiek geselecteerd is, en roept de functies aan om
+         * Kijkt welke grafiek geselecteerd is en roept de functies aan om
          * deze te vullen.
          */
         switch (selectedGraph) {
@@ -341,9 +341,9 @@ public class CompareScreenStatistics {
                                String title) {
         /**
          * Maakt de histogram aan en vult deze met de geselecteerde data uit
-         * de geselecteerde kolom. If statements kijken naar of de meegegeven
+         * de geselecteerde kolom. If-statements kijken naar of de meegegeven
          * waardes integers of doubles zijn. Dit is nodig omdat de data dan
-         * op een andere manier meegegeven moet worden.
+         * op een andere manieren meegegeven moet worden.
          */
         setBarChart(column.getText(), tablePos.getTableColumn().getText(),
                 tablePos.getTableColumn().getText() + title, tablePos
@@ -368,8 +368,8 @@ public class CompareScreenStatistics {
     private void fillLineGraph(TableColumn column,
                                String title) {
         /**
-         * Stopt de geselecteerde kolom data in arrays voor de lijngrafiek. If
-         * statements kijken naar of de meegegeven
+         * Stopt de geselecteerde kolom data in arrays voor de lijngrafiek. 
+         * If-statements kijken of de meegegeven
          * waardes integers of doubles zijn. Dit is nodig omdat de data dan
          * op een andere manier meegegeven moet worden.
          */
@@ -405,7 +405,7 @@ public class CompareScreenStatistics {
     private void saveGraph(File savePath) {
         /**
          * Functie voor het opslaan van de grafieken. Maakt een snapshot van
-         * de grafieken, en probeert deze weg te schrijven. Als het niet kan
+         * de grafieken en probeert deze weg te schrijven. Als het niet kan
          * worden weggeschreven, wordt er een foutmelding getoond.
          */
         BarChart<String, Number> barChartGraph;
@@ -469,7 +469,7 @@ public class CompareScreenStatistics {
     private void setBarChart(String xAxis, String yAxis, String title, String
             legend) {
         /**
-         * Initieerd de barchart met x-as, y-as en title, maakt de grafiek
+         * Initieert de barchart met x-as, y-as en titel, maakt de grafiek
          * pane leeg en voegt de nieuwe grafiek er aan toe.
          */
         barChart = new Barchart(xAxis, yAxis, title, legend);
@@ -482,7 +482,7 @@ public class CompareScreenStatistics {
          * Maakt en vult de boxplot met geselecteerde data.
          * Voor alle data in de geselecteerde kolom wordt het minimum,
          * maximum, 1e kwartiel, 2e kwartiel en mediaan bepaald, welke
-         * vervolgens geplot worden. If statements kijken naar of de meegegeven
+         * vervolgens geplot worden. If-statements kijken of de meegegeven
          * waardes integers of doubles zijn. Dit is nodig omdat de data dan
          * op een andere manier meegegeven moet worden.
          */
