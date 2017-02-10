@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  * Created by Samuel on 22-1-2017.
  * Deze klasse zorgt ervoor dat er makkelijk rijen toegevoegd kunnen worden
- * aan de tabel in de modulen en periode tab.
+ * aan de tabel in de modulen- en periodetab.
  */
 public class Row {
     private SimpleStringProperty name;
