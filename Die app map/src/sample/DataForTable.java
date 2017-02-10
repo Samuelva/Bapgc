@@ -6,12 +6,12 @@ import javafx.beans.property.SimpleStringProperty;
 import java.util.List;
 
 /**
- * Deze class bevat data voor in de tabel in het toevoeg scherm.
+ * Deze class bevat data voor in de tabel in het toevoegscherm.
  */
 public class DataForTable {
     /**
      * De globale variabelen bevatten de data die in de kolommen
-     * van de tabel in het toevoeg scherm komen te staan als
+     * van de tabel in het toevoegscherm komen te staan als
      * SimpleStringProperties.
      */
     private SimpleStringProperty code;
@@ -23,7 +23,7 @@ public class DataForTable {
     public DataForTable(String codeIn, String yearIn, String periodIn, String
             studyYearIn, List<String> typeIn) {
         /**
-         * De meegegeven waardes worden aan de bijbehorende globale variabelen gezet.
+         * De meegegeven waarden worden aan de bijbehorende globale variabelen gezet.
          * De '[' en ']' worden hierbij verwijderd bij het converteren van een List
          * van toetsenvormen naar een String.
          */
@@ -37,7 +37,7 @@ public class DataForTable {
 
     public String getCode() {
         /**
-         * Geef de module code terug.
+         * Geef de modulecode terug.
          */
         return code.get();
     }
@@ -72,7 +72,7 @@ public class DataForTable {
 
     public void setCode(String codeIn) {
         /**
-         * Verander de module code.
+         * Verander de modulecode.
          */
         code.set(codeIn);
     }
