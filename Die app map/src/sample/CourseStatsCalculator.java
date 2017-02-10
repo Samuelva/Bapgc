@@ -14,7 +14,7 @@ public class CourseStatsCalculator {
      * De volgende globale variabelen worden gebruikt:
      * - attempts: de IDs van alle gelegenheden van alle
      *      toetsen van de module
-     * - initialGrades: Alle cijfer voor de toetsen van de
+     * - initialGrades: Alle cijfers voor de toetsen van de
      *      module voor alle deelnemers.
      * - finalGrades: De data van initialGrades, maar
      *      alleen voor degene die aan alle toetsen
@@ -75,7 +75,7 @@ public class CourseStatsCalculator {
 
     private void removeEmptyExams(){
         /**
-         * Verwijder volledig niet gemakte toetsen uit de Map met cijfer.
+         * Verwijderd volledig niet gemaakte toetsen uit de Map met cijfer.
          * Maak een List nullIndex. Loop door de studenten en maak voor iedere
          * student een Set met de posities waar een null waarde staat.
          * Voeg deze toe aan nullIndex.
@@ -106,7 +106,7 @@ public class CourseStatsCalculator {
     private Double[] removeIndices(Double[] values, List<Integer> indices){
         /**
          * Verwijder de posities in indices uit values.
-         * Maak een List. Loop door values en voeg ze de waardes toe
+         * Maak een List. Loop door values en voeg de waardes toe
          * aan de List out als de positie niet in indices staat.
          * Converteer de List out naar een Double[] en geef die terug.
          */
@@ -163,8 +163,8 @@ public class CourseStatsCalculator {
          * Deze methode voegt een cijfer toe aan de map this.initialGrades.
          * Als de student al bekend is in de Map, wordt er gekeken of er
          * al een cijfer bekend is voor dezelfde toets. Als dit zo is,
-         * word dit cijfer vervangen met het nieuwe cijfer.
-         * Als er geen cijfer bekend is wordt het cijfer in de map gezet.
+         * wordt dit cijfer vervangen met het nieuwe cijfer.
+         * Als er geen cijfer bekend is, wordt het cijfer in de map gezet.
          * Als de student nog niet bekend is, wordt er een Double[] in de
          * map gezet met een positie voor iedere toets en wordt het cijfer
          * aan de map toegevoegd.
@@ -192,7 +192,7 @@ public class CourseStatsCalculator {
     protected Set<String> getParticipant(){
         /**
          * Geeft de keys van this.finalGrades terug. Dit zijn de student
-         * IDs van alle studenten die aan de gehele modulen mee
+         * IDs van alle studenten die aan de gehele module mee
          * gedaan hebben.
          */
         return this.finalGrades.keySet();
@@ -217,12 +217,12 @@ public class CourseStatsCalculator {
     protected Set<String> getPasses(){
         /**
          * Deze methode maakt een set van student IDs die een voldoende hebben
-         * gehaald voor de gehele modulen.
+         * gehaald voor de gehele module.
          * Eerst wordt een list gemaakt, vervolgens wordt er door de cijfer van
          * iedere student geloopt. Als er een cijfer lager is dan 5.5, wordt de
          * boolean include op false gezet en worden de rest van de cijfers voor
          * die student niet meer gecontroleerd.
-         * Als alle cijfers gecontroleerd zijn wordt het ID van de student
+         * Als alle cijfers gecontroleerd zijn, wordt het ID van de student
          * toegevoegd aan de list, als include true is.
          * Van de list wordt een set gemaakt die teruggegeven wordt.
          */
