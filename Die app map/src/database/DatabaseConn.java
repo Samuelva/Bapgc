@@ -107,7 +107,7 @@ public class DatabaseConn {
             " GROUP BY ToetsVorm;";
     private final String DELETEVRAGENSQL = "DELETE FROM SCORE" +
             " USING VRAAG" +
-            " WHERE VRAAG.ToetsID=%s;" +
+            " WHERE SCORE.VraagID = VRAAG.VraagID AND VRAAG.ToetsID=%s;" +
             " DELETE FROM VRAAG" +
             " WHERE ToetsID=%s;";
     private final String JAARTALLENSQL = "SELECT Jaar FROM TOETS ORDER BY " +
