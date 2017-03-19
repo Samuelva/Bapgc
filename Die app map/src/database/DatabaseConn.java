@@ -154,6 +154,8 @@ public class DatabaseConn {
             "LIKE '%s' AND Schooljaar LIKE '%s' AND Periode LIKE '%s' AND " +
             "ModuleCode LIKE '%s' AND Toetsvorm LIKE '%s' AND Gelegenheid " +
             "LIKE '%s';";
+    private final String GETEXAMIDSQL = "SELECT ToetsID FROM VRAAG WHERE " +
+            "VraagID = '%s';";
     private Set<String> tablesPresent = new HashSet<String>();
     private Connection connection;
     private Statement statement;
@@ -1166,5 +1168,25 @@ public class DatabaseConn {
         } catch (Exception e) {
             throw new EmptyStackException();
         }
+    }
+
+    public Integer getExamID(Integer vraagID) {
+        /**
+         * Deze functie returned het toets ID welke bij de opgegeven vraag ID
+         * hoort. Met een querry wordt er gekeken welke toets ID geassocieerd
+         * is met het vraag ID.
+         */
+        Integer id = 0;
+        try {
+            this.statement = this.connection.createStatement();
+            ResultSet resultSet = this.statement.executeQuery(String.format
+                    (this.GETEXAMIDSQL, vraagID));
+            resultSet.next();
+            id = resultSet.getInt(1);
+            this.statement.close();
+        } catch (Exception e) {
+            throw new EmptyStackException();
+        }
+        return id;
     }
 }

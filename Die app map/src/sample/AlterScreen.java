@@ -111,9 +111,7 @@ final class AlterScreen extends StackPane {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Waarschuwing");
             alert.setHeaderText("Weet u zeker dat u het bestand leeg wilt " +
-                    "maken?\nAls u dit doet zal u een nieuwe toets moeten " +
-                    "inladen,\nanders kunt u de module en periode waar deze " +
-                    "toets in zit niet vergelijken.");
+                    "maken?");
             alert.setContentText("Druk op OK als u het zeker weet, druk " +
                     "anders op cancel.");
             ButtonType OK = new ButtonType("OK");
@@ -122,6 +120,7 @@ final class AlterScreen extends StackPane {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == OK) {
                 this.pointsTable.getItems().clear();
+                this.pointsTable.getColumns().clear();
                 this.emptied = true;
                 this.saveChanges.setDisable(false);
                 this.emptyButton.setDisable(true);
@@ -288,7 +287,8 @@ final class AlterScreen extends StackPane {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Waarschuwing!");
         alert.setHeaderText("Er is geen data bekend voor deze toets!");
-        alert.setContentText("U kunt alleen scores aanpassen voor toetsen waarbij er al scores ingevoerd zijn.");
+        alert.setContentText("U kunt alleen scores aanpassen voor toetsen " +
+                "waarbij er al scores ingevoerd zijn.");
         alert.showAndWait();
     }
 
@@ -510,13 +510,13 @@ final class AlterScreen extends StackPane {
 
     private void clearScores() {
         /**
-         * Deze methode verwijdert alle gehaalde scores voor
-         * alle vragen van de ingeladen toets.
+         * Deze methode verwijdert de geselecteerde toets.
          */
         DatabaseConn d = new DatabaseConn();
-        for (Integer id : this.questionIDs) {
-            d.DeleteScoresForQuestion(id);
-        }
+        Integer examID = d.getExamID(this.questionIDs[0]);
+        d.UpdateCesuurGok(examID, 0, 0);
+        d.DeleteVragenToets(d.getExamID(this.questionIDs[0]));
+
         d.CloseConnection();
     }
 
